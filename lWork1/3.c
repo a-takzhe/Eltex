@@ -1,40 +1,46 @@
 #include <stdio.h>
 
-//Output elements of array
-void ShowArr(int arr[], int N)
-{
-    for(int i=0; i<N; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-    puts("");
-}
-
 int main(int argc, char* argv[])
 {
-    int N, tmp;
+    int N, tmp, e;
     
     do
     {
-        getchar(); getchar();
         printf("Enter the N: ");
-    }while(scanf("%d", &N)!=1);
-
-
-    //fill array
-    //for(int i=0; i<N; i++) { arr[i]=i+1; }
- 
-    //printf("\e[38;5;40m initial array -> "); ShowArr(arr, N);
-
-    //reverse array
-    //for(int i=0; i < N/2; i++)
-    ///{
-     //   tmp = arr[i];
-       // arr[i]=arr[N-i-1];
-       // arr[N-i-1]=tmp;
-    //}
-
-    //printf("\e[38;5;51mreversed array -> "); ShowArr(arr, N);
-    //printf("\e[38;5;255m");
+        e = scanf(" %d", &N);
+        while(getchar()!='\n'){}
+    }
+    while(e!=1);
+    
+    puts("========================");
+    
+    do
+    {
+        printf("1)Top triangle of zeros\n");
+        printf("2)Bottom triangle of zeros\n");
+        printf("Choose an option:");
+        e = scanf("%d", &tmp);
+        while(getchar()!='\n'){}
+    }
+    while(e!=1);
+    
+    for(int i=0; i<N; i++)
+    {
+        for(int j=0; j<N; j++)
+        {
+            if(tmp == 1)
+            {
+                if(j<N-i){printf("0 ");}
+                else{printf("1 ");}
+            }
+            else
+            {
+                if(j<N-i){printf("1 ");}
+                else{printf("0 ");}
+            }
+        }
+        puts("");
+    }
+    
     return 0;
 }
