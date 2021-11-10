@@ -1,38 +1,47 @@
 #include <stdio.h>
 
+//+++++++++++++++++++++++++++++
+//Заполнить верхний треугольник матрицы 
+// 0 или 1, а нижний 1 или 0
+//+++++++++++++++++++++++++++++
+
 int main(int argc, char* argv[])
 {
     int N, tmp, e;
     
+	//Считывание чиса N
     do
     {
-        printf("Enter the N: ");
+        printf("Введите число N: ");
         e = scanf(" %d", &N);
         while(getchar()!='\n'){}
     }
     while(e!=1);
-    
-    puts("========================");
-    
+
+	//Выбирается вариант заполнения
     do
     {
-        printf("1)Top triangle of zeros\n");
-        printf("2)Bottom triangle of zeros\n");
-        printf("Choose an option:");
+		puts("========================");
+        printf("1)Верхний треугольник заполняется нулями\n");
+        printf("2)Нижний треугольник заполняется нулями\n");
+        printf("Выберите один вариант: ");
         e = scanf("%d", &tmp);
         while(getchar()!='\n'){}
     }
     while(e!=1);
    
+	//Выводится матрица
     for(int i=0; i<N; i++)
     {
         for(int j=0; j<N; j++)
         {
+			//Если верхний заполняется нулями
             if(tmp == 1)
             {
                 if(j<N-i){printf("0 ");}
                 else{printf("1 ");}
             }
+			//Если нижний заполняется нулями
             else
             {
                 if(j<N-i){printf("1 ");}

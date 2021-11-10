@@ -1,6 +1,12 @@
 #include <stdio.h>
 
-//Output elements of array
+//+++++++++++++++++++++++++++++
+//Вывести заданный массив размером N
+// в обратном порядке
+//+++++++++++++++++++++++++++++
+
+
+//Функция вывода елементов массива
 void ShowArr(int arr[], int N)
 {
     for(int i=0; i<N; i++)
@@ -16,12 +22,12 @@ int main(int argc, char* argv[])
     int arr[N];
     int tmp;
 
-    //fill array
+    //Начальное заполнение массива
     for(int i=0; i<N; i++) { arr[i]=i+1; }
  
-    printf("\e[38;5;40m initial array -> "); ShowArr(arr, N);
+    printf("\e[38;5;40m изначальный массив -> "); ShowArr(arr, N);
 
-    //reverse array
+    //Разворачивание массива
     for(int i=0; i < N/2; i++)
     {
         tmp = arr[i];
@@ -29,9 +35,10 @@ int main(int argc, char* argv[])
         arr[N-i-1]=tmp;
     }
 
-    printf("\e[38;5;51mreversed array -> "); ShowArr(arr, N);
+    printf("\e[38;5;51mперевернутый массив -> "); ShowArr(arr, N);
 	printf("\e[38;5;255m");
-    return 0;
+    
+	return 0;
 }
 
 
