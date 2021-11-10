@@ -2,32 +2,37 @@
 
 int main(int argc, char* argv[])
 {
-    int N = 5;
+    const int N = 5;
     int arr[N][N];
     
     int n=N;
     int a = 1;
+	char* c = "  ";
+	int added = N%2>0 ? 1 : 0;	
 
-    for(int i=0; i<N/2; i++)
+    for(int i=0; i<N/2+added; i++)
     {
-        for(int j=i; j<n+i; j++)
+		//left to right
+        for(int j=0; j<n; j++)
         {
-            arr[i][j]=a++;
+            arr[i][j+i]=a++;
         }
         n--;
-        for(int j=i+1; j<N; j++)
+		//top to bottom
+        for(int j=0; j<n; j++)
         {
-            arr[j][N-1-i]=a++;
+            arr[j+i+1][N-1-i]=a++;
         }
-        if(a>16){break;}
-        for(int j=n-1; j>=i; j--)
+		//right to left
+        for(int j=n-1; j>=0; j--)
         {
-            arr[n-i][j]=a++;
+            arr[N-1-i][j+i]=a++;
         }
         n--;
-        for(int j=n; j>=i+1; j--)
+		//bottom to top
+        for(int j=n; j>0; j--)
         {
-            arr[j][i]=a++;
+            arr[j+i][i]=a++;
         }
     }
 
@@ -35,8 +40,12 @@ int main(int argc, char* argv[])
     {
         for(int j=0; j<N; j++)
         {
-            printf("%d ", arr[i][j]);
-        }
+			if(arr[i][j] > 9){c = " ";}
+			if(arr[i][j] < 10){c="  ";}
+           
+			 printf("%d", arr[i][j]);
+			printf("%s", c);
+		}
         puts("");
     }
 
