@@ -1,45 +1,56 @@
 #include <stdio.h>
 
+//++++++++++++++++++++++++++++
+//Заполнить матрицу от 1 до N в квадрате улиткой
+//++++++++++++++++++++++++++++
+
 int main(int argc, char* argv[])
 {
-    int N = 5;
+    const int N = 5;
     int arr[N][N];
     
-    int n=N;
-    int a = 1;
+    int n=N; //Число элементов в строке или столбце
+	int a = 1; 
+	int d = N%2>0 ? 1 : 0; //добавочная единица при нечетном N
 
-    for(int i=0; i<N/2; i++)
+    for(int i=0; i<N/2+d; i++)
     {
-        for(int j=i; j<n+i; j++)
+		//Заполнение слева направо
+        for(int j=0; j<n; j++)
         {
-            arr[i][j]=a++;
+            arr[i][j+i]=a++;
         }
         n--;
-        for(int j=i+1; j<N; j++)
+		//Заполнение сверху вниз
+        for(int j=0; j<n; j++)
         {
-            arr[j][N-1-i]=a++;
+            arr[j+i+1][N-1-i]=a++;
         }
-        if(a>16){break;}
-        for(int j=n-1; j>=i; j--)
+		//Заполнение справа налево
+        for(int j=n-1; j>=0; j--)
         {
-            arr[n-i][j]=a++;
+            arr[N-1-i][j+i]=a++;
         }
         n--;
-        for(int j=n; j>=i+1; j--)
+		//Заполнение снизу вверх
+        for(int j=n; j>0; j--)
         {
-            arr[j][i]=a++;
+            arr[j+i][i]=a++;
         }
     }
-
-    for(int i=0; i<N; i++)
+	
+	//вывод на экран
+	char* c = "  ";
+	for(int i=0; i<N; i++)
     {
         for(int j=0; j<N; j++)
         {
-            printf("%d ", arr[i][j]);
-        }
+			if(arr[i][j] > 9){c = " ";}
+			if(arr[i][j] < 10){c="  ";}
+           
+			printf("%d", arr[i][j]);
+			printf("%s", c);
+		}
         puts("");
     }
-
-    
-    return 0;
 }
