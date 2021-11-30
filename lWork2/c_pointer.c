@@ -2,6 +2,12 @@
 
 #define uchar unsigned char
 
+int test(int a)
+{
+   int b = 0;
+   retutn b+a;
+}
+
 int main(void)
 {
     int a = 25963548;
@@ -10,6 +16,8 @@ int main(void)
     uchar e = 253;
     uchar f = 252;
     uchar* ptr = (uchar*)&a;
+
+    a = test(a);
 
     printf("1 -> %x\n", *ptr);
     ptr++;
@@ -27,3 +35,4 @@ int main(void)
 
     printf("char c = %x\n", c);
 }
+
