@@ -1,0 +1,11 @@
+all: main
+
+main: main.o
+	gcc main.o -o main -L. -lcalc
+
+main.o: main.c
+	gcc main.c -c
+
+clean:
+	rm -rf *.o main
+
