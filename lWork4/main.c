@@ -3,6 +3,9 @@
 
 #define clrscr() printf("\e[1;1H\e[2J")
 
+void bOperation(double* a, double* b, char* oper);
+void uOperation(double* a);
+
 int main(void)
 {
   double a, b, c;
@@ -16,6 +19,7 @@ int main(void)
            "|2 - dividing numbers\n"
            "|3 - multiply numbers\n"
            "|4 - subtracts numbers\n"
+           "|5 - factorial of number\n"
            "========================\n"
            "choose operation>> ");
     
@@ -25,14 +29,25 @@ int main(void)
     {
       case 1:
         printf("you select adding\n");
+        bOperation(&a, &b, "addition numbers (a+b)");
+        c = add(a, b);
+        printf("(%f + %f) = %f\n", a, b, c);
         return 0;
       default:
         printf("error key!\n");
         return 0;
     }
   }
+}
 
-  //c = add(a,b);
-  //printf("c = %f\n",c);
+void bOperation(double* a, double* b, char* oper)
+{
+  clrscr();
+  printf("%s\n",oper);
+  puts("========================");
+  printf("enter number a: ");
+  scanf("%lf",a);
+  printf("enter number b: ");
+  scanf("%lf",b);
 }
 

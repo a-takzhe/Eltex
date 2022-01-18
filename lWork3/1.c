@@ -16,6 +16,8 @@ int main(void)
       printf("Bad password!\n");
       exit(1);
    }
+
+
    else{
       printf("Access granted!\n");
    }

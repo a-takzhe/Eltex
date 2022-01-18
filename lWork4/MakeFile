@@ -1,10 +1,17 @@
 all: main
 
-main: main.o
+main: calc.a main.o
 	gcc main.o -o main -L. -lcalc
 
 main.o: main.c
 	gcc main.c -c
+
+calc.a: calc.o
+	ar rc libcalc.a calc.o
+
+
+calc.o: calc.c
+	gcc calc.c -c 
 
 clean:
 	rm -rf *.o main
