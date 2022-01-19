@@ -1,17 +1,22 @@
 all: main
 
-main: calc.a main.o
-	gcc main.o -o main -L. -lcalc
+main: calc.a input_validation.a main.o
+	gcc main.o -o main -L. -lcalc -linput_validation
 
 main.o: main.c
-	gcc main.c -c
+	gcc main.c -c -g
+
+input_validation.a: input_validation.o
+	ar rc libinput_validation.a input_validation.o
 
 calc.a: calc.o
 	ar rc libcalc.a calc.o
 
-
 calc.o: calc.c
 	gcc calc.c -c 
+
+input_validation.o: input_validation.c
+	gcc input_validation.c -c
 
 clean:
 	rm -rf *.o main

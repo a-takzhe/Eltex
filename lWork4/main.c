@@ -1,21 +1,21 @@
 #include <stdio.h>
 #include "calc.h"
+#include "input_validation.h"
 
-#define clrscr() printf("\e[1;1H\e[2J")
-
-void bOperation(double* a, double* b, char* oper);
-void uOperation(double* a);
 
 int main(void)
 {
   double a, b, c;
   int opt;
+  char ch;
+  
 
   while(1)
   {
     clrscr();
     puts("========================");
-    printf("|1 - adding numbers\n"
+    printf("|0 - exit\n"
+           "|1 - adding numbers\n"
            "|2 - dividing numbers\n"
            "|3 - multiply numbers\n"
            "|4 - subtracts numbers\n"
@@ -28,26 +28,46 @@ int main(void)
     switch (opt)
     {
       case 1:
-        printf("you select adding\n");
-        bOperation(&a, &b, "addition numbers (a+b)");
+        bOperInput(&a, &b, "addition numbers (a+b)");
         c = add(a, b);
         printf("(%f + %f) = %f\n", a, b, c);
+        break;
+
+      case 2:
+        bOperInput(&a, &b, "division numbers (a/b)");
+        c = divide(a, b);
+        printf("(%f \\ %f) = %f\n", a, b, c);
+        break;
+
+      case 3:
+        bOperInput(&a, &b, "multiplication numbers (a*b)");
+        c = multiply(a, b);
+        printf("(%f * %f) = %f\n", a, b, c);
+        break;
+
+      case 4:
+        bOperInput(&a, &b, "numbers subtraction (a-b)");
+        c = subtract(a, b);
+        printf("(%f - %f) = %f\n", a, b, c);
+        break;
+
+      case 5:
+        uOperInput(&a, "factorial of number (!a)");
+        c = factorial(a);
+        printf("!%f = %f\n", a, c);
+        break;
+
+      case 0:
         return 0;
+      
       default:
         printf("error key!\n");
-        return 0;
+        break;
     }
+    
+    printf("Press Any Key to Continue\n");
+    getchar();
+    scanf("%c",&ch);
   }
-}
-
-void bOperation(double* a, double* b, char* oper)
-{
-  clrscr();
-  printf("%s\n",oper);
-  puts("========================");
-  printf("enter number a: ");
-  scanf("%lf",a);
-  printf("enter number b: ");
-  scanf("%lf",b);
 }
 

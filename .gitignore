@@ -1,2 +1,4 @@
 #for ignore compiled files
 *.exe
+*.o
+*.a
