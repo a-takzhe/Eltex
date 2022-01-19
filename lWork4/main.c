@@ -6,8 +6,7 @@
 int main(void)
 {
   double a, b, c;
-  int opt;
-  char ch;
+  int opt, ch;
   
 
   while(1)
@@ -24,37 +23,37 @@ int main(void)
            "choose operation>> ");
     
     scanf("%d",&opt); 
-    
+
     switch (opt)
     {
       case 1:
-        bOperInput(&a, &b, "addition numbers (a+b)");
-        c = add(a, b);
-        printf("(%f + %f) = %f\n", a, b, c);
+        //bOperInput(&a, &b, "addition numbers (a+b)");
+        //c = add(a, b);
+        //printf("(%f + %f) = %f\n", a, b, c);
         break;
 
       case 2:
-        bOperInput(&a, &b, "division numbers (a/b)");
-        c = divide(a, b);
-        printf("(%f \\ %f) = %f\n", a, b, c);
+        //bOperInput(&a, &b, "division numbers (a/b)");
+        //c = divide(a, b);
+        //printf("(%f \\ %f) = %f\n", a, b, c);
         break;
 
       case 3:
-        bOperInput(&a, &b, "multiplication numbers (a*b)");
-        c = multiply(a, b);
-        printf("(%f * %f) = %f\n", a, b, c);
+        //bOperInput(&a, &b, "multiplication numbers (a*b)");
+        //c = multiply(a, b);
+        //printf("(%f * %f) = %f\n", a, b, c);
         break;
 
       case 4:
-        bOperInput(&a, &b, "numbers subtraction (a-b)");
-        c = subtract(a, b);
-        printf("(%f - %f) = %f\n", a, b, c);
+        //bOperInput(&a, &b, "numbers subtraction (a-b)");
+        //c = subtract(a, b);
+        //printf("(%f - %f) = %f\n", a, b, c);
         break;
 
       case 5:
-        uOperInput(&a, "factorial of number (!a)");
-        c = factorial(a);
-        printf("!%f = %f\n", a, c);
+        //uOperInput(&a, "factorial of number (!a)");
+        //c = factorial(a);
+        //printf("!%f = %f\n", a, c);
         break;
 
       case 0:
@@ -66,8 +65,8 @@ int main(void)
     }
     
     printf("Press Any Key to Continue\n");
+    while((ch = getchar()) != EOF && ch != '\n');
     getchar();
-    scanf("%c",&ch);
   }
 }
 

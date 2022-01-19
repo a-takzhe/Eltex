@@ -10,6 +10,7 @@ void validator(double* num, char sym)
   {
     printf("insert number %c: ",sym);
     e = scanf("%lf", num);
+    while(getchar()!='\n'){}
   }
 }
 
