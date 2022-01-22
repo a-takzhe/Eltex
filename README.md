@@ -1,2 +1,2 @@
 # ltex
-test assignments for the ltex course
+test assignments for the eltex course
