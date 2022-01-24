@@ -4,13 +4,14 @@
 
 void validator(double* num, char sym)
 {
-  int e = 0;
+  int e = 0, ch;
 
   while(e!=1)
   {
     printf("insert number %c: ",sym);
     e = scanf("%lf", num);
-    while(getchar()!='\n'){}
+    if(e == 1) break;
+    while((ch = getchar()) != EOF && ch != '\n');
   }
 }
 

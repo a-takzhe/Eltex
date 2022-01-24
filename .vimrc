@@ -2,18 +2,24 @@ syntax on
 set number
 set secure
 set exrc
-
+ 
 set expandtab
-set tabstop=3
-set softtabstop=3
-set shiftwidth=3
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 set noswapfile
 set smarttab
 set smartindent
-set t_C0=256
+set t_Co=257
+
+set foldmethod=syntax
+
 
 "mapper
-nnoremap <C-Left> :tabprevious<CR>                                                                         
+nnoremap <C-p> :!%astyle <CR>
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <z-v> <z-o>
+ca tn tabnew
 nnoremap <C-Right> :tabnext<CR>
 nnoremap <C-o> <c-w>gf
 map <C-n> :NERDTreeToggle<CR>
@@ -110,4 +116,7 @@ endif
 
 "COC_NVIM
 let g:coc_disable_startup_warning = 1
-
+" Let clangd fully control code completion
+let g:ycm_clangd_uses_ycmd_caching = 0
+" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
+let g:ycm_clangd_binary_path = exepath("clangd")
