@@ -1,36 +1,23 @@
 #include <stdio.h>
-#include <dirent.h>
-#include <string.h>
+#include <stdlib.h>
+#include "plug_worker.h"
 
-struct PlugCNFG
+void main(int argc, char* argv[])
 {
-    char* flName;
-    char* fnName;
-    char* fnType;
-};
+   struct PlugConf* pf;
+   int cnt = 0;
+   
+   cnt=pCnt("./bin");
+   printf("libs count: %d\n", cnt);
 
-int main(void)
-{
-    //PlugCNFG Pconf[10];
-    struct dirent *dir;
-    int f_count;
-    DIR *d;
-    
-    d=opendir("./bin");
-
-    if(d)
-    {
-        while ((dir = readdir(d)) != NULL)
-        {
-            if(strstr(dir->d_name, ".txt"))
-            {
-                printf("%s\n", dir->d_name);
-            }
-        }
-        closedir(d);
-    }
-
-    return 0;
+   pf = (struct PlugConf*)malloc(sizeof(struct PlugConf)*cnt);
+   
+   if(pf == NULL)
+   {
+      puts("malloc error!\n");
+      return;
+   }
+   
+   exit(1);
 }
-
 
