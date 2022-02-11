@@ -7,7 +7,7 @@ main.o: main.c
 	gcc main.c -c -g
 
 plug_worker.o: plug_worker.c lib_add.so lib_subtract.so
-	gcc plug_worker.c -c
+	gcc plug_worker.c -c -g
 
 lib_add.so: ./bin/add.o
 	gcc -shared ./bin/add.o -o ./bin/lib_add.so
