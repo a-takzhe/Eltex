@@ -4,6 +4,17 @@
 #include <dlfcn.h>
 #include <string.h>
 
+int lenght_list(struct pw_node *pw)
+{
+   int i = 0;
+   while (pw != NULL) 
+   {
+      i++;
+      pw=pw->next;
+   }
+   return i;
+}
+
 void print_list(struct pw_node *pw)
 {
    while (pw != NULL) 
@@ -16,13 +27,50 @@ void print_list(struct pw_node *pw)
    }
 }
 
-int init_plug_worker(struct pw_node *pw, char *dirname)
+struct pw_node* create_node(int oKey, char *flName, char *fnName, char *fnType)
+{
+   struct pw_node* pw = (struct pw_node*)malloc(sizeof(struct pw_node));
+   if(pw == NULL)
+   {
+      puts("Allocate error!");
+      return NULL;
+   }
+   pw->key = oKey+1;
+   strcpy(pw->flName, flName);
+   strcpy(pw->fnName, fnName);
+   strcpy(pw->fnType, fnType);
+   pw->next = NULL;
+
+   return pw;
+}
+
+struct pw_node* insert_node(struct pw_node* pw, char* fpath, void* handle)
+{
+
+   if(pw == NULL)
+   {
+     return create_node(0,
+                        fpath,
+                        exec_info_func(handle, "func_name"),
+                        exec_info_func(handle, "func_type")
+                       );
+   }
+   else
+   {
+      pw->next = insert_node(pw->next, fpath, handle);
+   }
+   
+   return pw;
+}
+
+
+
+int init_plug_worker(struct pw_node **pw, char *dirname)
 {
    DIR* d;
    void* handle;
    char fpath[100];
    struct dirent *dir;
-   struct pw_node* _pw=pw; 
    d = opendir(dirname);
 
    if(d)
@@ -35,7 +83,8 @@ int init_plug_worker(struct pw_node *pw, char *dirname)
          strcat(fpath, dir->d_name);
          if(strstr(fpath,".so") && (handle = is_plugin(fpath)) != NULL)
          {
-            _pw = add_pw_node(_pw, fpath, handle);
+            *pw = insert_node(*pw, fpath, handle);
+            dlclose(handle);
          }
          fpath[strlen(dirname)+1]=0;
       }
@@ -43,39 +92,6 @@ int init_plug_worker(struct pw_node *pw, char *dirname)
    }
 }
 
-struct pw_node* add_pw_node(struct pw_node *pw, char* fpath, void* handle)
-{
-   struct pw_node* current;
-   if(pw == NULL)
-   {
-      pw = (struct pw_node*)malloc(sizeof(struct pw_node));
-      if(pw == NULL)
-      {
-         puts("malloc error!\n");
-         exit(EXIT_FAILURE);
-      }
-      current = pw;
-      current->key = 1;
-   }  
-   else
-   {
-      current = (struct pw_node*)malloc(sizeof(struct pw_node));
-      if(current == NULL)
-      {
-         puts("malloc error!\n");
-         exit(EXIT_FAILURE);
-      }
-      current->key = pw->key+1;
-      pw->next = current;
-   }
-   current->flName = fpath;
-   current->fnName = exec_info_func(handle, "func_name");
-   current->fnType = exec_info_func(handle, "func_type");
-   current->next = NULL;
-
-   dlclose(handle);
-   return current;
-}
 
 char* exec_info_func(void* handle, char* fnName)
 {
@@ -110,18 +126,12 @@ void* is_plugin(char *fpath)
 
    inf[0]= dlsym(handle, "func_name");
    inf[1]= dlsym(handle, "func_type");
+   
    error = dlerror();
    
    if (error != NULL) 
    {
       fprintf(stderr, "%s\n", error);
-      dlclose(handle);
-      return NULL;
-   }
-
-   if(strlen(inf[0]())==0 || strlen(inf[2]())==0)
-   {
-      printf("error file: %s\nbad format!\n",fpath);
       dlclose(handle);
       return NULL;
    }
