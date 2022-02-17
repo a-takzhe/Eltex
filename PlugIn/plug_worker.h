@@ -1,20 +1,8 @@
-#include <stdio.h>
+#include "pw_list.h"
 #include <dirent.h>
-#include <string.h>
+#include <stdlib.h>
+#include <dlfcn.h>
 
-struct pw_node
-{
-   int key;
-   char flName[100];
-   char fnName[30];
-   char fnType[10];
-   struct pw_node* next;
-};
-
-int lenght_list(struct pw_node *pw);
-struct pw_node* insert_node(struct pw_node* pw, char* fpath, void* handle);
-struct pw_node* create_node(int oKey, char* flName, char* FnName, char* fnType);
-void print_list(struct pw_node* pw);
 
 /*check plugin config. fpath - path to .so file*/
 void* is_plugin(char* fpath);

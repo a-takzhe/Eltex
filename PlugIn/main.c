@@ -5,7 +5,6 @@
 void main(int argc, char* argv[])
 {
    struct pw_node* pw = NULL;
-   print_list(pw);
    init_plug_worker(&pw, "./bin");
    print_list(pw);
    exit(1);
