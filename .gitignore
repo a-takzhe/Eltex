@@ -1,5 +1,6 @@
 #for ignore compiled files
 *.exe
+*.so
 *.o
 *.a
 main
