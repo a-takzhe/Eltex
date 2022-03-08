@@ -20,11 +20,10 @@ int init_plug_worker(struct pw_node **pw, char *dirname)
          strcat(fpath, dir->d_name);
          if(strstr(fpath,".so") && (handle = is_plugin(fpath)) != NULL)
          {
-            *pw = insert_node(*pw, fpath, 
-                               exec_info_func(handle, "func_name"),
-                               exec_info_func(handle, "func_name"),
-                               lenght_list(*pw)
-                              );
+            char* fn = exec_info_func(handle, "func_name");
+            char* ft = exec_info_func(handle, "func_type");
+
+            *pw = insert_node(*pw, fpath, fn, ft, lenght_list(*pw));
             dlclose(handle);
          }
          fpath[strlen(dirname)+1]=0;
@@ -32,7 +31,6 @@ int init_plug_worker(struct pw_node **pw, char *dirname)
       closedir(d);
    }
 }
-
 
 char* exec_info_func(void* handle, char* fnName)
 {
@@ -47,6 +45,7 @@ char* exec_info_func(void* handle, char* fnName)
       dlclose(handle);
       return NULL;
    }
+   char* ff = inf();
    return inf();
 }
 
@@ -80,9 +79,69 @@ void* is_plugin(char *fpath)
    return handle;
 }
 
+void print_operations(struct pw_node *pw)
+{
+   while (pw != NULL) 
+   {
+      printf("|%d - %s\n", pw->key, pw->fnName);
+      pw=pw->next;
+   }
+}
 
+char* exec_function(struct pw_node *pw, int num, int* result)
+{
+   int a, b;
+   void *handle;
+   char *error;
+   struct pw_node* s_pw = get_node_by_key(pw, num);
+   
+   if(s_pw == NULL)
+   {
+      return "BAD KEY";
+   }
+   else
+   {
+      handle = dlopen(s_pw->flName, RTLD_LAZY);
+      if (!handle) 
+      {
+         fprintf(stderr, "%s\n", dlerror());
+         return "HANDLE";
+      }
+      dlerror();
 
+      if(strstr(s_pw->fnType, "ii2i"))
+      {
+         bOperInput(&a, &b, "input two numbers");
+         ii_2_i = dlsym(handle, s_pw->fnName);
+         
+         error = dlerror();
+   
+         if (error != NULL) 
+         {
+            fprintf(stderr, "%s\n", error);
+            dlclose(handle);
+            return error;
+         }
+         *result = (*ii_2_i)(a, b);
+         return "OK";
+      }
+      else
+      {
+         uOperInput(&a,"input one number");
 
-
-
+         i_2_i = dlsym(handle, s_pw->fnName);
+         
+         error = dlerror();
+   
+         if (error != NULL) 
+         {
+            fprintf(stderr, "%s\n", error);
+            dlclose(handle);
+            return error;
+         }
+         *result = (*i_2_i)(a);
+         return "OK";
+      }
+   }
+}
 

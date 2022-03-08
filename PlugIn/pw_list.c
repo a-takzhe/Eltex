@@ -58,3 +58,16 @@ struct pw_node* insert_node(struct pw_node* pw, char* fpath, char* fnName, char*
    
    return pw;
 }
+
+struct pw_node* get_node_by_key(struct pw_node* pw, int key)
+{
+   while (pw != NULL) 
+   {
+      if(pw->key == key)
+      {
+         return pw;
+      }
+      pw=pw->next;
+   }
+   return NULL;
+}

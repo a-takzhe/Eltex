@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 struct pw_node
@@ -24,6 +25,8 @@ int lenght_list(struct pw_node *pw);
  * @return ** void 
  */
 void print_list(struct pw_node* pw);
+
+struct pw_node* get_node_by_key(struct pw_node* pw, int key);
 
 /**
  * @brief Create a node object
