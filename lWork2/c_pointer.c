@@ -5,7 +5,7 @@
 int test(int a)
 {
    int b = 0;
-   retutn b+a;
+   return b+a;
 }
 
 int main(void)
