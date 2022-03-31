@@ -1,6 +1,21 @@
 #include "input_validation.h"
 #include <stdio.h>
+#include <limits.h>
 
+int read_uchar(uchar* ch)
+{
+  int SIZE = 100, ret = 0;
+  char input[SIZE];
+
+  fgets(input, SIZE-1, stdin);
+  if(sscanf(input, "%hhu", ch) != 1)
+  {
+    puts("Invalid sscanf()");
+    ret = -1;
+  }
+  while ( getchar() != '\n' );
+  return ret;
+}
 
 void validator(int* num, char sym)
 {

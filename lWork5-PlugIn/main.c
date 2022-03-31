@@ -1,33 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "plug_worker.h"
+
+#define DEBUG
+
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0') 
+
+
+void printUnsignedRange(int bytes)  
+{  
+    int bits = 8 * bytes;     
+    unsigned long long to = (1 << (bits - 1)) + ((1 << (bits - 1)) - 1);      
+    printf(" 0 to %llu\n\n", to);  
+}  
+void printSignedRange(int bytes)  
+{  
+   int bits = 8 * bytes;     
+   long long from  = -(1LL << (bits - 1));  
+   long long to    =  (1LL << (bits - 1)) - 1;  
+   printf(" %lld to %lld\n\n", from, to);  
+}  
 
 void main(int argc, char* argv[])
 {
    struct pw_node* pw = NULL;
-   int opt, ch;
+   uchar opt, ch;
    char* message;
    int result;
 
    init_plug_worker(&pw, "./bin");
-   print_list(pw);
-   puts("\n");
-      
+#ifdef DEBUG  
+   print_list(pw); puts("\n");
+#endif
+
    while(1)
    {
-      //clrscr();
+#ifndef DEBUG
+      clrscr();
+#endif
       puts("========================");
-      printf("|0 - exit\n");
+      puts("|0 - exit");
       print_operations(pw);
-      printf("========================\n"
-             "choose operation>> ");
+      printf("========================\nchoose operation>> ");
   
-      scanf("%d",&opt);
-
-      if(opt == 0)
-      {
-         exit(1);
-      }
+      if(read_uchar(&opt) == -1){ continue; }
+      if(opt == 0) { exit(1); }
       else
       {
          message = exec_function(pw, opt, &result);
