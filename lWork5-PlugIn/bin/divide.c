@@ -12,6 +12,7 @@ char* func_type()
 
 int divide(int a, int b)
 {
+    puts("a/b");
     if(b == 0)
     {
         return 0;

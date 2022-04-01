@@ -16,5 +16,6 @@ char* func_type()
 
 int subtract(int a, int b)
 {
+   puts("a-b");
    return  a-b;
 }

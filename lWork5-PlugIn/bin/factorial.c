@@ -12,6 +12,10 @@ char* func_type()
 
 int factorial(int a)
 {
-   if(a==0) return 1;
+   if(a==0)
+   {
+      puts("a!");
+      return 1;
+   } 
    else return a*factorial(a-1);
 }

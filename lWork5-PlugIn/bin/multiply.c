@@ -12,5 +12,6 @@ char* func_type()
 
 int multiply(int a, int b)
 {
+   puts("a*b");
    return  a*b;
 }

@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     {
         perror("lseak");
     }
-    printf("i: %ld\n", i);
+    printf("i: %d\n", i);
 
     i = 0;
     while (1)

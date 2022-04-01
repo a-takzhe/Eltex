@@ -97,7 +97,7 @@ char* exec_function(struct pw_node *pw, int num, int* result)
    
    if(s_pw == NULL)
    {
-      return "BAD KEY";
+      return "BAD KEY!";
    }
    else
    {
@@ -105,13 +105,13 @@ char* exec_function(struct pw_node *pw, int num, int* result)
       if (!handle) 
       {
          fprintf(stderr, "%s\n", dlerror());
-         return "HANDLE";
+         return "HANDLE ERROR";
       }
       dlerror();
 
       if(strstr(s_pw->fnType, "ii2i"))
       {
-         bOperInput(&a, &b, "input two numbers");
+         bOperInput(&a, &b, "enter two numbers from -256 to 256");
          ii_2_i = dlsym(handle, s_pw->fnName);
          
          error = dlerror();
@@ -127,7 +127,7 @@ char* exec_function(struct pw_node *pw, int num, int* result)
       }
       else
       {
-         uOperInput(&a,"input one number");
+         uOperInput(&a,"enter one number from -256 to 256");
 
          i_2_i = dlsym(handle, s_pw->fnName);
          
