@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <curses.h>
 
+#define TYPE_CALLOC(type,elts) typeCalloc(type, (unsigned)(elts))
+
 WINDOW *mainwnd;
 WINDOW *cwnd;
 WINDOW *subwnd;
@@ -22,6 +24,7 @@ enum COLOR_SHEMA
 void init_color_pairs()
 {
     start_color();
+    init_color(COLOR_BLACK, 20, 100, 15);
     init_pair(1, COLOR_GREEN, COLOR_BLUE);
     init_pair(2, COLOR_WHITE, COLOR_BLUE);
     init_pair(3, COLOR_WHITE, COLOR_BLACK);
