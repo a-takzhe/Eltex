@@ -1,18 +1,12 @@
 #include "compare.h"
 
-enum COLOR_SHEMA
-{
-    MAINWND_COLOR=1,
-    CMDWND_COLOR=2
-};
-
 void init_color_pairs()
 {
     start_color();
     init_color(TEXT_COLOR, 754, 669, 535);
     init_color(COLOR_BLACK, 100, 100, 100);
-    init_color(CONTROL_BACK_COLOR, 200, 200, 200);
-    init_pair(CMDWND_COLOR, TEXT_COLOR, CONTROL_BACK_COLOR);
+    init_color(CONTROL_BACK_COLOR, 400, 400, 400);
+    init_pair(CMDWND_COLOR, COLOR_GREEN, CONTROL_BACK_COLOR);
     init_pair(MAINWND_COLOR, TEXT_COLOR, COLOR_BLACK);
     init_pair(3, COLOR_GREEN, COLOR_YELLOW);
 }
@@ -40,8 +34,8 @@ int init_compare(int argc, char ** argv)
 
     cmdwnd = newwin(1, size.ws_col, size.ws_row-1, 0);
     wmove(cmdwnd, 0, 0);
-    wprintw(cmdwnd, "F1");
-    wbkgd(cmdwnd, COLOR_PAIR(CMDWND_COLOR));
+    wprintw(cmdwnd, "F1 open file");
+    wbkgd(cmdwnd, COLOR_PAIR(CMDWND_COLOR) | A_REVERSE);
     wrefresh(cmdwnd);
 }
 
@@ -68,4 +62,13 @@ void sig_winch(int signo)
     }
     // printw("Hello...: %d/%d/%d", wgetch(stdscr), KEY_RESIZE, signo);
     refresh();
+}
+
+int fill_cmdwnd(WINDOW* wnd)
+{
+    FILE* f;
+    if((f = fopen(CMDWND_CONFIG, 'r')) == NULL) return -1;
+    
+
+    fclose(f);
 }

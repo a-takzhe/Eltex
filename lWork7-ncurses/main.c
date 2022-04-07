@@ -15,48 +15,49 @@ struct command{
 
 int main(int argc, char ** argv)
 {
-    init_compare(argc, argv);
-   
-    // box(mainwnd, '.', '.');
-    // box(cmdwnd, '.', '.');
+    // init_compare(argc, argv);
     
-    // wbkgd(mainwnd, COLOR_PAIR(1) | A_BOLD);
-    
-    //getch();
-    
-    int key;
-    int i=1;
-    wmove(cmdinpwnd,0,0);
-    keypad(cmdinpwnd, TRUE);
-    while (key = wgetch(cmdinpwnd))
+    FILE* f;
+    char buf[20] = {0};
+
+    if((f = fopen("./configure/cmd.config", "r")) == NULL)
     {
-        if(key == KEY_F(3)) break;
-        //wmove(cmdinpwnd, 0, i);
-        //wechochar(cmdinpwnd, key);
-        // wprintw(cmdinpwnd,"");
-        i++;
+        puts("file note open");
+        return -1;
+    }
+    char *key_dsc;
+    char *strptr;
+    char key_ch[20];
+    //const char *s = "F1;open;file";
+    while ((fgets(buf, 20, f)))
+    {
+        &(key_ch[0]) = strtok(buf, ";");
+        //key_dsc = strtok(NULL,"");
+        //printf("fread symbols: %s", cnt);
+        printf("\tch_key: %s\n", key_ch);
+        //printf("\tkey_dsc: %s\n", key_dsc);
+        printf("buf: %s\n", buf);
     }
     
-    // wmove(mainwnd, 1, 1);
-    // //wrefresh(mainwnd);
-    // getch();
 
-    // wmove(cmdwnd, 1, 1);
-    // wrefresh(cmdwnd);
-    // getch();
-    // wnd = newwin(3, size.ws_col, size.ws_row-3, 0);
-    // box(wnd, '|', '-');
-    // //subwnd = derwin(wnd, 4, 16, 1, 1);
-    // // wprintw(subwnd, "Hello, brave new curses world!\n");
-    // wmove(wnd, 1,1);
+    fclose(f);
+        
+    // int key;
+    // int i=1;
+    // wmove(cmdinpwnd,0,0);
+    // keypad(cmdinpwnd, TRUE);
+    // wbkgd(cmdinpwnd, COLOR_PAIR(CMDWND_COLOR) | A_REVERSE);
+    // wrefresh(cmdinpwnd);
+    // while (key = wgetch(cmdinpwnd))
+    // {
+    //     if(key == KEY_F(3) || key == '\n') break;
+    //     //wmove(cmdinpwnd, 0, i);
+    //     //wechochar(cmdinpwnd, key);
+    //     // wprintw(cmdinpwnd,"");
+    //     i++;
+    // }
 
-    // wprintw(wnd, "F1 - open file");
-    // wrefresh(wnd);
-    // //delwin(subwnd);
-    // delwin(wnd);
-    // wattroff(wnd, COLOR_PAIR(1)|A_BOLD);
 
-
-    end_compare();
+    // end_compare();
     exit(EXIT_SUCCESS);
 }
