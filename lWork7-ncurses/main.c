@@ -13,35 +13,15 @@ struct command{
 
 
 
+
+
 int main(int argc, char ** argv)
 {
-    // init_compare(argc, argv);
-    
-    FILE* f;
-    char buf[20] = {0};
+    init_compare(argc, argv);
 
-    if((f = fopen("./configure/cmd.config", "r")) == NULL)
-    {
-        puts("file note open");
-        return -1;
-    }
-    char *key_dsc;
-    char *strptr;
-    char key_ch[20];
-    //const char *s = "F1;open;file";
-    while ((fgets(buf, 20, f)))
-    {
-        &(key_ch[0]) = strtok(buf, ";");
-        //key_dsc = strtok(NULL,"");
-        //printf("fread symbols: %s", cnt);
-        printf("\tch_key: %s\n", key_ch);
-        //printf("\tkey_dsc: %s\n", key_dsc);
-        printf("buf: %s\n", buf);
-    }
-    
+//    fill_cmdwnd(mainwnd);
+getch();
 
-    fclose(f);
-        
     // int key;
     // int i=1;
     // wmove(cmdinpwnd,0,0);
@@ -57,7 +37,10 @@ int main(int argc, char ** argv)
     //     i++;
     // }
 
+   
 
-    // end_compare();
+    
+
+    end_compare();
     exit(EXIT_SUCCESS);
 }

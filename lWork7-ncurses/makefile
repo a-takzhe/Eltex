@@ -15,7 +15,7 @@ main.o: main.c
 # 	gcc compare.c -c -g
 
 $(bin_dir)/%.o: $(bin_dir)/%.c
-	gcc -c -o $@ $<
+	gcc -c -o $@ $< -g3
 
 clean:
 	rm -rf *.o main $(bin_dir)/*.o 
