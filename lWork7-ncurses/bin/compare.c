@@ -4,45 +4,11 @@ void init_color_pairs()
 {
     start_color();
     init_color(TEXT_COLOR, 754, 669, 535);
-    init_color(COLOR_BLACK, 100, 100, 100);
+    init_color(MAIN_BACK_COLOR, 100, 100, 100);
     init_color(CONTROL_BACK_COLOR, 400, 400, 400);
-    init_pair(CMDWND_COLOR, COLOR_WHITE, CONTROL_BACK_COLOR);
-    init_pair(MAINWND_COLOR, TEXT_COLOR, COLOR_BLACK);
-    init_pair(3, COLOR_GREEN, COLOR_YELLOW);
-}
-
-int init_compare(int argc, char ** argv)
-{
-    initscr();
-    keypad(stdscr, TRUE);
-    signal(SIGWINCH, sig_winch);
-    init_color_pairs();
-    cbreak();
-    refresh();
-
-    struct winsize size;
-    ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
     
-    mainwnd = newwin(size.ws_row-1, size.ws_col, 0, 0);
-    wbkgd(mainwnd, COLOR_PAIR(MAINWND_COLOR));
-    wprintw(mainwnd, "Press any key to continue...");
-    wrefresh(mainwnd);
-
-    cmdinpwnd = derwin(mainwnd, 1,size.ws_col, size.ws_row - 2, 0);
-    wrefresh(cmdinpwnd);
-
-    cmdwnd = newwin(1, size.ws_col, size.ws_row-1, 0);
-    wmove(cmdwnd, 0, 0);
-    wbkgd(cmdwnd, COLOR_PAIR(CMDWND_COLOR));
-    fill_cmdwnd(cmdwnd);
-    wrefresh(cmdwnd);
-}
-
-int end_compare()
-{
-    delwin(mainwnd);
-    delwin(cmdwnd);
-    endwin();
+    init_pair(MAINWND_COLOR, TEXT_COLOR, MAIN_BACK_COLOR);
+    init_pair(TOOLSWND_COLOR, COLOR_WHITE, CONTROL_BACK_COLOR);
 }
 
 void sig_winch(int signo)
@@ -50,55 +16,115 @@ void sig_winch(int signo)
     struct winsize size;
     ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
     resizeterm(size.ws_row, size.ws_col);
+    refresh();
 
     if(wgetch(stdscr) == KEY_RESIZE)
     {
-        wresize(mainwnd, size.ws_row-1, size.ws_col);
-        wresize(cmdwnd, 1, size.ws_col);
-        mvwin(cmdwnd,size.ws_row-1, 0);
-        wrefresh(cmdwnd);
-        wrefresh(mainwnd); 
+        wresize(__MAINWND__, size.ws_row-1, size.ws_col);
+       
+        wresize(__HTOOLWND__, 1, size.ws_col);
+        mvwin(__HTOOLWND__, size.ws_row-2, 0);
+        
+        wresize(__TOOLSWND__, 1, size.ws_col);
+        mvwin(__TOOLSWND__, size.ws_row-1, 0);        
+        // fill_cmdwnd(__CMDWND__);
     }
-    // printw("Hello...: %d/%d/%d", wgetch(stdscr), KEY_RESIZE, signo);
+    wrefresh(__HTOOLWND__);
+    wrefresh(__TOOLSWND__);
+    wrefresh(__MAINWND__);
     refresh();
 }
 
-void compare(char *ckey, char *dkey, WINDOW *wnd, int col)
+int init()
 {
-    WINDOW *ckw, *dkw;
-    wmove(wnd, 0, col);
+    if(stdscr != NULL || __MAINWND__ != NULL)
+    {
+        wend();
+    }
 
-    ckw = derwin(wnd, 1,2,0,col);
-    dkw = dervin(wnd, 1,10,0,col+2);
-
+    initscr();
+    cbreak();
+    keypad(stdscr, TRUE);
+    init_color_pairs();
+    signal(SIGWINCH, sig_winch);
+    refresh();
     
-} 
+    if(init_w() == ERR);
+    if(set_default_tools() == ERR);
+}
 
-int fill_cmdwnd(WINDOW* wnd)
+int init_w()
 {
+    struct winsize size;
+    u_short res = 0;
 
+    ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
+    
+    __MAINWND__ = newwin(size.ws_row-2, size.ws_col, 0, 0);
+    res = wbkgd(__MAINWND__, COLOR_PAIR(MAINWND_COLOR));
+    
+    __HTOOLWND__ = newwin(1, size.ws_col, size.ws_row - 2, 0);
+    res = wbkgd(__HTOOLWND__, __MAINWND__->_bkgd | A_REVERSE);
+
+    __TOOLSWND__ = newwin(1, size.ws_col, size.ws_row-1, 0);
+    res = wbkgd(__TOOLSWND__, COLOR_PAIR(TOOLSWND_COLOR));
+    
+    res = wrefresh(__MAINWND__);
+    res = wrefresh(__HTOOLWND__);
+    res = wrefresh(__TOOLSWND__);
+
+    return res;
+}
+
+
+int set_default_tools()
+{
     FILE* f;
-    int pos = 0;
+    struct POINT pos = {.x=0, .y=0};
     char buffer[20];
     char *key_dsc, *key_ch;
 
     if((f=fopen(CMDWND_CONFIG, "r")) == NULL)
     {
-        wprintw(mainwnd, "cant open file\n");
-        return -1;
+        return ERR;
     } 
-    
+
+    wclear(__TOOLSWND__);
     while ((fgets(buffer, 20, f)))
     {
-        // wprintw(mainwnd, "fread symbols: %s", buffer);
         key_ch = strtok(buffer, ";");
         key_dsc = strtok(NULL,"");
+
         if(key_ch == NULL || key_dsc == NULL) continue;
-        // wprintw(mainwnd, "\tch_key: %s\n", key_ch);
-        // wprintw(mainwnd, "\tkey_dsc: %s\n", key_dsc);
+        
+        wtool_write(__TOOLSWND__, key_ch, key_dsc, &pos);
+        pos.x+=2;
     }
-    wrefresh(mainwnd);
-    refresh();
 
     fclose(f);
+}
+
+int wtool_write(WINDOW *wnd, char *ckey, char *dkey, struct POINT *pos)
+{
+    WINDOW *ckw, *dkw;
+
+    ckw = derwin(wnd, 1, strlen(ckey), pos->y, pos->x);
+
+    wmove(ckw, 0,0);
+    wbkgd(ckw, wnd->_bkgd | A_REVERSE);
+    wprintw(ckw, ckey);
+    wrefresh(ckw);
+    pos->x += strlen(ckey);
+    
+    wmove(wnd, pos->y, pos->x);
+    wprintw(wnd,":%s", dkey);
+    pos->x += strlen(dkey);
+    wrefresh(wnd);
+} 
+
+int wend()
+{
+    delwin(__MAINWND__);
+    delwin(__TOOLSWND__);
+    endwin();
 }

@@ -6,22 +6,28 @@
 
 #define TYPE_CALLOC(type,elts) typeCalloc(type, (unsigned)(elts))
 
-struct command{
-    char* key;
-    char* description;
-};
-
-
-
-
+WINDOW *__MAINWND__;
+WINDOW *__HTOOLWND__;
+WINDOW *__TOOLSWND__;
 
 int main(int argc, char ** argv)
 {
-    init_compare(argc, argv);
+    // int res = init_compare(argc, argv);
+    
+    // if(res == -1){
 
-//    fill_cmdwnd(mainwnd);
-getch();
-
+    //     end_compare();
+    //     puts("ERROR");
+    //     exit(EXIT_FAILURE);
+    // }
+    
+    init();
+    getch();
+    wmove(__HTOOLWND__, 0, 0);
+    wprintw(__HTOOLWND__, "this");
+    wrefresh(__HTOOLWND__);
+    getch();
+    wend();
     // int key;
     // int i=1;
     // wmove(cmdinpwnd,0,0);
@@ -41,6 +47,6 @@ getch();
 
     
 
-    end_compare();
+    //end_compare();
     exit(EXIT_SUCCESS);
 }

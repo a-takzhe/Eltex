@@ -12,21 +12,36 @@
 #define CONTROL_BACK_COLOR 10
 
 #define CMDWND_CONFIG "./configure/cmd.config"
-//#define CMDWND_CONFIG "./compare.h"
 
-WINDOW *mainwnd;
-WINDOW *cmdwnd;
-WINDOW *cmdinpwnd;
+
+extern WINDOW *__MAINWND__;
+extern WINDOW *__HTOOLWND__;
+extern WINDOW *__TOOLSWND__;
 
 enum COLOR_SHEMA
 {
     MAINWND_COLOR=1,
-    CMDWND_COLOR=2
+    TOOLSWND_COLOR=2
 };
 
+struct TOOL
+{
+    char* key_name;
+    char* deskript;
+};
+
+struct POINT
+{
+    unsigned short int x;
+    unsigned short int y;
+};
 
 void init_color_pairs();
 void sig_winch(int signo);
-int init_compare(int argc, char ** argv);
-int end_compare();
-int fill_cmdwnd(WINDOW* wnd);
+
+int init();
+int init_w();
+int set_default_tools();
+
+int wtool_write(WINDOW *wnd, char *ckey, char *dkey, struct POINT *pos);
+int wend();
