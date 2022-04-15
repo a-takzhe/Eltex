@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <curses.h>
 #include "bin/compare.h"
+#include "bin/read_config.h"
 
 #define TYPE_CALLOC(type,elts) typeCalloc(type, (unsigned)(elts))
 
@@ -21,13 +22,14 @@ int main(int argc, char ** argv)
     //     exit(EXIT_FAILURE);
     // }
     
-    init();
-    getch();
-    wmove(__HTOOLWND__, 0, 0);
-    wprintw(__HTOOLWND__, "this");
-    wrefresh(__HTOOLWND__);
-    getch();
-    wend();
+    
+    //init();
+    //getch();
+    //wend();
+    struct MENU* mainMenu;
+    read_file("./configure/cmd.config", mainMenu);
+
+    
     // int key;
     // int i=1;
     // wmove(cmdinpwnd,0,0);

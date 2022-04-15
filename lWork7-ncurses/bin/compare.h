@@ -17,6 +17,7 @@
 extern WINDOW *__MAINWND__;
 extern WINDOW *__HTOOLWND__;
 extern WINDOW *__TOOLSWND__;
+short wdelta;
 
 enum COLOR_SHEMA
 {
@@ -24,11 +25,6 @@ enum COLOR_SHEMA
     TOOLSWND_COLOR=2
 };
 
-struct TOOL
-{
-    char* key_name;
-    char* deskript;
-};
 
 struct POINT
 {

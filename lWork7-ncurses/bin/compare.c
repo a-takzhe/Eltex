@@ -20,14 +20,23 @@ void sig_winch(int signo)
 
     if(wgetch(stdscr) == KEY_RESIZE)
     {
-        wresize(__MAINWND__, size.ws_row-1, size.ws_col);
+        wresize(__MAINWND__, size.ws_row-2, size.ws_col);
        
         wresize(__HTOOLWND__, 1, size.ws_col);
         mvwin(__HTOOLWND__, size.ws_row-2, 0);
         
         wresize(__TOOLSWND__, 1, size.ws_col);
-        mvwin(__TOOLSWND__, size.ws_row-1, 0);        
-        // fill_cmdwnd(__CMDWND__);
+        mvwin(__TOOLSWND__, size.ws_row-1, 0);
+
+        wclear(__MAINWND__);
+        if(wdelta - size.ws_col <= -5)
+        {
+            set_default_tools();
+            wdelta = size.ws_col;
+        }     
+        else if(wdelta - size.ws_col > 0){
+            wdelta = size.ws_col;
+        }  
     }
     wrefresh(__HTOOLWND__);
     wrefresh(__TOOLSWND__);
@@ -68,7 +77,8 @@ int init_w()
 
     __TOOLSWND__ = newwin(1, size.ws_col, size.ws_row-1, 0);
     res = wbkgd(__TOOLSWND__, COLOR_PAIR(TOOLSWND_COLOR));
-    
+    wdelta = size.ws_col;
+
     res = wrefresh(__MAINWND__);
     res = wrefresh(__HTOOLWND__);
     res = wrefresh(__TOOLSWND__);
@@ -92,7 +102,7 @@ int set_default_tools()
     wclear(__TOOLSWND__);
     while ((fgets(buffer, 20, f)))
     {
-        key_ch = strtok(buffer, ";");
+        key_ch = strtok(buffer, ":");
         key_dsc = strtok(NULL,"");
 
         if(key_ch == NULL || key_dsc == NULL) continue;
@@ -125,6 +135,7 @@ int wtool_write(WINDOW *wnd, char *ckey, char *dkey, struct POINT *pos)
 int wend()
 {
     delwin(__MAINWND__);
+    delwin(__HTOOLWND__);
     delwin(__TOOLSWND__);
     endwin();
 }
