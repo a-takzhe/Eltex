@@ -5,6 +5,7 @@
 #include <curses.h>
 #include <string.h>
 #include <signal.h>
+#include "read_config.h"
 
 
 #define TEXT_COLOR 8
@@ -17,14 +18,15 @@
 extern WINDOW *__MAINWND__;
 extern WINDOW *__HTOOLWND__;
 extern WINDOW *__TOOLSWND__;
+extern MENU *__MENU__;
 short wdelta;
 
 enum COLOR_SHEMA
 {
     MAINWND_COLOR=1,
-    TOOLSWND_COLOR=2
+    TOOLSWND_COLOR=2,
+    TEST_COLOR = 3
 };
-
 
 struct POINT
 {

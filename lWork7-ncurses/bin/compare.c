@@ -86,7 +86,6 @@ int init_w()
     return res;
 }
 
-
 int set_default_tools()
 {
     FILE* f;
