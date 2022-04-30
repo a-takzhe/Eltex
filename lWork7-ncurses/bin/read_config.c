@@ -1,19 +1,22 @@
 #include "read_config.h"
 
-int read_file(char* path, MENU* menu)
+int read_file(char* path, MENU** menu)
 {
     FILE* f;
-    char buffer[20];
-    char *key, *func;
+    int count=0;
 
     if((f=fopen(path, "r")) == NULL)
     {
         return -1;
     } 
-    int a = get_count_func(f, NULL);
-    menu = (MENU*)malloc(sizeof(MENU)*a);
-    get_count_func(f, "F1");
-    get_count_func(f, "F2");
+    
+    //menu = (MENU*)malloc(sizeof(MENU));
+
+
+    fill_menu(menu, f);
+    // get_count_func(f, "F1");
+    // get_count_func(f, "F2");
+
     fclose(f);
 }
 
@@ -70,3 +73,85 @@ void clean_string(char* string)
         string[(int)(cm-string)] = 0;
     }
 }
+
+void fill_menu(MENU** menu, FILE* f)
+{
+    char buffer[100];
+
+    while ((fgets(buffer, 100, f)))
+    {
+        clean_string(buffer);
+        printf("f - %s\n", buffer);
+
+        if(strstr(buffer, "<") != NULL)
+        {
+            create_menu_node(&menu, buffer, 0);
+            // fill_subMenu(NULL, f);
+            fill_menu(&(*menu)->nextFunc, f);
+            return;
+        }
+    }
+}
+
+void fill_subMenu(MENU** menu, FILE* f)
+{
+    char buffer[100];
+    int len;
+
+    while ((fgets(buffer, 100, f)))
+    {
+        len = strlen(buffer);
+        clean_string(buffer);
+        printf("\tsf - %s\n", buffer);
+
+        if(strstr(buffer, ">>") != NULL)
+        {
+            // create_menu_node
+            fill_subMenu(menu, f);
+            return;
+        }
+        if(strstr(buffer, "<") != NULL)
+        {
+            fseek(f, -len, SEEK_CUR);
+            puts("seek back");
+            return;
+        }
+    }
+}
+
+void create_menu_node(MENU*** menu, char* string, int isSubM)
+{
+    **menu = (MENU*)malloc(sizeof(MENU));
+    printf("create menu: %s\n", string);
+    char *k, *f;
+    k = strtok(string, ":");
+    f = strtok(NULL, ":");
+
+    strcpy((**menu)->key, k);
+    // (**menu)->key[2]=0;
+    strcpy((**menu)->func, f);
+    (**menu)->func[strlen(f)]=0;
+
+    sscanf(strtok(NULL, ":"), "%hd", &(**menu)->isUseSubstr);
+}
+
+void show_menu(MENU* menu, int isSub)
+{
+    if(menu == NULL) return;
+    if(isSub){
+        printf("   key:%s,func:%s\n", menu->key, menu->func);
+    }
+    else{
+        printf(" key:%s, func:%s, use:%hd\n", menu->key, menu->func, menu->isUseSubstr);
+    }
+    show_menu(menu->subMenu, 1);
+    show_menu(menu->nextFunc, 0);
+}
+
+
+
+
+
+
+
+

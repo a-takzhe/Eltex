@@ -23,13 +23,14 @@ int main(int argc, char ** argv)
     //     exit(EXIT_FAILURE);
     // }
     
-    
     //init();
     //getch();
     //wend();
 
-    read_file("./configure/cmd.config", __MENU__);
-
+    MENU* men;
+    read_file("./configure/cmd.config", &men);
+    puts("\nmenu show:");
+    show_menu(men, 0);
     
     // int key;
     // int i=1;
