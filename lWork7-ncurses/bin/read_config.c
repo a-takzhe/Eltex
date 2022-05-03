@@ -117,17 +117,18 @@ void create_menu_node(MENU** menu, char* string, int isSubM)
     char *k, *f;
     k = strtok(string, ":");
     f = strtok(NULL, ":");
+    sscanf(strtok(NULL, ":"), "%o", &(*menu)->key); 
 
     if(isSubM == 0){
-        strcpy((*menu)->key, k+1);
+        strcpy((*menu)->key_name, k+1);
         sscanf(strtok(NULL, ":"), "%hd", &(*menu)->isUseSubstr);
     }
     else{
-        strcpy((*menu)->key, k+2);
+        strcpy((*menu)->key_name, k+2);
     }
     strcpy((*menu)->func, f);
 
-    (*menu)->key[2]=0;
+    (*menu)->key_name[2]=0;
     (*menu)->func[strlen(f)]=0;
 
 }
@@ -136,15 +137,26 @@ void show_menu(MENU* menu, int isSub)
 {
     if(menu == NULL) return;
     if(isSub){
-        printf("  key:%s, func:%s\n", menu->key, menu->func);
+        printf("  key_n:%s, func:%s, key:%04o\n", menu->key_name, menu->func, menu->key);
     }
     else{
-        printf("key:%s, func:%s, use:%hd\n", menu->key, menu->func, menu->isUseSubstr);
+        printf("key_n:%s, func:%s, key:%04o, use:%hd\n", menu->key_name, menu->func, 
+                menu->key, menu->isUseSubstr);
     }
     show_menu(menu->subMenu, 1);
     show_menu(menu->nextFunc, isSub);
 }
 
+MENU get_menu_by_key(int key, MENU* menu)
+{
+    MENU men = *menu;
+    while (men.key != key)
+    {
+        men = *men.nextFunc;
+    }
+    men.nextFunc = NULL;
+    return men;
+}
 
 
 

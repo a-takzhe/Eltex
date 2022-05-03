@@ -8,10 +8,10 @@ struct t_menu
 {
     struct t_menu* subMenu;
     struct t_menu* nextFunc;
-    int ukey;
+    int key;
     ushort isUseSubstr;
     char func[20];
-    char key[3];
+    char key_name[3];
 };
 typedef struct t_menu MENU; 
 
@@ -23,4 +23,5 @@ void fill_menu(MENU** menu, FILE* f);
 void fill_subMenu(MENU** menu, FILE* f);
 void create_menu_node(MENU** menu, char* string, int isSubM);
 void show_menu(MENU* menu, int isSub);
+MENU get_menu_by_key(int key, MENU* menu);
 

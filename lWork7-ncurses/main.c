@@ -14,18 +14,19 @@ MENU *__MENU__;
 int main(int argc, char ** argv)
 {
     init_menu(&__MENU__);
+    // show_menu(__MENU__, 0);
+    MENU men = get_menu_by_key(KEY_F(1), __MENU__);
+    // show_menu(&men, 0);
+    // puts("\nMENU");
+    // show_menu(__MENU__, 0);
+
     init();
-    getch();
-    wclear(__TOOLSWND__);
-    wrefresh(__TOOLSWND__);
-    getch();
-    fill_tools(__MENU__);
-    wrefresh(__TOOLSWND__);
+    fill_tools(men.subMenu);
+
     getch();
     wend();
 
-    // puts("\nmenu show:");
-    // show_menu(__MENU__, 0);
+
     
     // int key;
     // int i=1;

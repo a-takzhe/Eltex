@@ -93,26 +93,26 @@ int fill_tools(MENU* menu)
 
     while (menu != NULL)
     {
-        if(pos.x+strlen(menu->key)+strlen(menu->func) > __TOOLSWND__->_maxx) {
+        if(pos.x+strlen(menu->key_name)+strlen(menu->func) > __TOOLSWND__->_maxx) {
             break;
         }
-        wtool_write(__TOOLSWND__, menu->key, menu->func, &pos);
+        wtool_write(__TOOLSWND__, menu->key_name, menu->func, &pos);
         pos.x+=3;
         menu = menu->nextFunc;
     }
 }
 
-int wtool_write(WINDOW *wnd, char *key, char *func, point *pos)
+int wtool_write(WINDOW *wnd, char *key_name, char *func, point *pos)
 {
     WINDOW *ckw, *dkw;
 
-    ckw = derwin(wnd, 1, strlen(key), pos->y, pos->x);
+    ckw = derwin(wnd, 1, strlen(key_name), pos->y, pos->x);
 
     wmove(ckw, 0,0);
     wbkgd(ckw, wnd->_bkgd | A_REVERSE);
-    wprintw(ckw, key);
+    wprintw(ckw, key_name);
     wrefresh(ckw);
-    pos->x += strlen(key);
+    pos->x += strlen(key_name);
     
     wmove(wnd, pos->y, pos->x);
     wprintw(wnd,":%s", func);
