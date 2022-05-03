@@ -12,13 +12,12 @@
 #define MAIN_BACK_COLOR 9
 #define CONTROL_BACK_COLOR 10
 
-#define CMDWND_CONFIG "./configure/cmd.config"
-
 
 extern WINDOW *__MAINWND__;
 extern WINDOW *__HTOOLWND__;
 extern WINDOW *__TOOLSWND__;
 extern MENU *__MENU__;
+MENU* CMENU;
 short wdelta;
 
 enum COLOR_SHEMA
@@ -28,18 +27,18 @@ enum COLOR_SHEMA
     TEST_COLOR = 3
 };
 
-struct POINT
+typedef struct PNT
 {
     unsigned short int x;
     unsigned short int y;
-};
+} point;
 
 void init_color_pairs();
 void sig_winch(int signo);
 
 int init();
 int init_w();
-int set_default_tools();
+int fill_tools(MENU *menu);
 
-int wtool_write(WINDOW *wnd, char *ckey, char *dkey, struct POINT *pos);
+int wtool_write(WINDOW *wnd, char *key, char *func, point *pos);
 int wend();

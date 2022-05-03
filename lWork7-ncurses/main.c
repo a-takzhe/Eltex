@@ -13,24 +13,19 @@ MENU *__MENU__;
 
 int main(int argc, char ** argv)
 {
-    // int res = init_compare(argc, argv);
-    
-    // if(res == -1){
+    init_menu(&__MENU__);
+    init();
+    getch();
+    wclear(__TOOLSWND__);
+    wrefresh(__TOOLSWND__);
+    getch();
+    fill_tools(__MENU__);
+    wrefresh(__TOOLSWND__);
+    getch();
+    wend();
 
-    //     end_compare();
-    //     puts("ERROR");
-
-    //     exit(EXIT_FAILURE);
-    // }
-    
-    //init();
-    //getch();
-    //wend();
-
-    MENU* men;
-    read_file("./configure/cmd.config", &men);
-    puts("\nmenu show:");
-    show_menu(men, 0);
+    // puts("\nmenu show:");
+    // show_menu(__MENU__, 0);
     
     // int key;
     // int i=1;

@@ -31,10 +31,10 @@ void sig_winch(int signo)
         wclear(__MAINWND__);
         if(wdelta - size.ws_col <= -5)
         {
-            set_default_tools();
+            fill_tools(CMENU);
             wdelta = size.ws_col;
         }     
-        else if(wdelta - size.ws_col > 0){
+        else if(wdelta - size.ws_col >= 0){
             wdelta = size.ws_col;
         }  
     }
@@ -46,10 +46,7 @@ void sig_winch(int signo)
 
 int init()
 {
-    if(stdscr != NULL || __MAINWND__ != NULL)
-    {
-        wend();
-    }
+    if(stdscr != NULL || __MAINWND__ != NULL) wend();
 
     initscr();
     cbreak();
@@ -58,8 +55,11 @@ int init()
     signal(SIGWINCH, sig_winch);
     refresh();
     
-    if(init_w() == ERR);
-    if(set_default_tools() == ERR);
+    if(init_w() == ERR) return -1;
+    CMENU = __MENU__;
+    if(fill_tools(__MENU__) == ERR) return -1;
+
+    return 0;
 }
 
 int init_w()
@@ -86,48 +86,37 @@ int init_w()
     return res;
 }
 
-int set_default_tools()
+int fill_tools(MENU* menu)
 {
-    FILE* f;
-    struct POINT pos = {.x=0, .y=0};
-    char buffer[20];
-    char *key_dsc, *key_ch;
-
-    if((f=fopen(CMDWND_CONFIG, "r")) == NULL)
-    {
-        return ERR;
-    } 
-
+    point pos = {.x=0, .y=0};
     wclear(__TOOLSWND__);
-    while ((fgets(buffer, 20, f)))
+
+    while (menu != NULL)
     {
-        key_ch = strtok(buffer, ":");
-        key_dsc = strtok(NULL,"");
-
-        if(key_ch == NULL || key_dsc == NULL) continue;
-        
-        wtool_write(__TOOLSWND__, key_ch, key_dsc, &pos);
-        pos.x+=2;
+        if(pos.x+strlen(menu->key)+strlen(menu->func) > __TOOLSWND__->_maxx) {
+            break;
+        }
+        wtool_write(__TOOLSWND__, menu->key, menu->func, &pos);
+        pos.x+=3;
+        menu = menu->nextFunc;
     }
-
-    fclose(f);
 }
 
-int wtool_write(WINDOW *wnd, char *ckey, char *dkey, struct POINT *pos)
+int wtool_write(WINDOW *wnd, char *key, char *func, point *pos)
 {
     WINDOW *ckw, *dkw;
 
-    ckw = derwin(wnd, 1, strlen(ckey), pos->y, pos->x);
+    ckw = derwin(wnd, 1, strlen(key), pos->y, pos->x);
 
     wmove(ckw, 0,0);
     wbkgd(ckw, wnd->_bkgd | A_REVERSE);
-    wprintw(ckw, ckey);
+    wprintw(ckw, key);
     wrefresh(ckw);
-    pos->x += strlen(ckey);
+    pos->x += strlen(key);
     
     wmove(wnd, pos->y, pos->x);
-    wprintw(wnd,":%s", dkey);
-    pos->x += strlen(dkey);
+    wprintw(wnd,":%s", func);
+    pos->x += strlen(func);
     wrefresh(wnd);
 } 
 
