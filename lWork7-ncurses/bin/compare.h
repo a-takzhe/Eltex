@@ -13,11 +13,10 @@
 #define CONTROL_BACK_COLOR 10
 
 
-extern WINDOW *__MAINWND__;
-extern WINDOW *__HTOOLWND__;
-extern WINDOW *__TOOLSWND__;
-extern MENU *__MENU__;
-MENU* CMENU;
+WINDOW *__MAINWND__;
+WINDOW *__HTOOLWND__;
+WINDOW *__TOOLSWND__;
+MENU *__MENU__;
 short wdelta;
 
 enum COLOR_SHEMA
@@ -33,12 +32,6 @@ typedef struct PNT
     unsigned short int y;
 } point;
 
-void init_color_pairs();
-void sig_winch(int signo);
-
-int init();
-int init_w();
-int fill_tools(MENU *menu);
-
-int wtool_write(WINDOW *wnd, char *key, char *func, point *pos);
+int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu);
+int fill_toolbar(MENU *menu);
 int wend();

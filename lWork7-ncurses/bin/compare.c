@@ -1,5 +1,17 @@
 #include "compare.h"
 
+//-------------------
+//prototype function
+//-------------------
+int write_t(WINDOW *wnd, char *key, char *func, point *pos);
+void init_color_pairs();
+void sig_winch(int signo);
+int init_w();
+
+
+//-------------------------
+//function implementation
+//-------------------------
 void init_color_pairs()
 {
     start_color();
@@ -31,7 +43,7 @@ void sig_winch(int signo)
         wclear(__MAINWND__);
         if(wdelta - size.ws_col <= -5)
         {
-            fill_tools(CMENU);
+            fill_toolbar(__MENU__);
             wdelta = size.ws_col;
         }     
         else if(wdelta - size.ws_col >= 0){
@@ -44,20 +56,29 @@ void sig_winch(int signo)
     refresh();
 }
 
-int init()
+int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu)
 {
-    if(stdscr != NULL || __MAINWND__ != NULL) wend();
+    if(stdscr != NULL || __MAINWND__ != NULL) 
+    { 
+        wend();
+    }
+    else
+    {
+        __MAINWND__ = mainw;
+        __TOOLSWND__ = toolsw;
+        __HTOOLWND__ = htoolw;
+        __MENU__ = menu;
+    }
 
     initscr();
     cbreak();
-    keypad(stdscr, TRUE);
+    keypad(stdscr, false);
     init_color_pairs();
     signal(SIGWINCH, sig_winch);
     refresh();
     
     if(init_w() == ERR) return -1;
-    CMENU = __MENU__;
-    if(fill_tools(__MENU__) == ERR) return -1;
+    if(fill_toolbar(__MENU__) == ERR) return -1;
 
     return 0;
 }
@@ -86,23 +107,24 @@ int init_w()
     return res;
 }
 
-int fill_tools(MENU* menu)
+int fill_toolbar(MENU* menu)
 {
     point pos = {.x=0, .y=0};
     wclear(__TOOLSWND__);
+    __MENU__ = menu;
 
     while (menu != NULL)
     {
         if(pos.x+strlen(menu->key_name)+strlen(menu->func) > __TOOLSWND__->_maxx) {
             break;
         }
-        wtool_write(__TOOLSWND__, menu->key_name, menu->func, &pos);
+        write_t(__TOOLSWND__, menu->key_name, menu->func, &pos);
         pos.x+=3;
         menu = menu->nextFunc;
     }
 }
 
-int wtool_write(WINDOW *wnd, char *key_name, char *func, point *pos)
+int write_t(WINDOW *wnd, char *key_name, char *func, point *pos)
 {
     WINDOW *ckw, *dkw;
 

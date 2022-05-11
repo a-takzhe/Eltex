@@ -1,40 +1,17 @@
 #include "read_config.h"
 
-int get_count_func(FILE* f, char* key)
-{
-    int cnt = 0;
-    char buffer[100];
-    fseek(f, 0L, SEEK_SET);
+//+++++++++++++++++++++++++++++++++++++
+//prototype function
+//+++++++++++++++++++++++++++++++++++++
+int is_comment_line(char* string);
+void fill_menu(MENU** menu, FILE* f);
+void fill_subMenu(MENU** menu, FILE* f);
+void create_menu_node(MENU** menu, char* string, int isSubM);
 
-    while ((fgets(buffer, 100, f)))
-    {
-        if(key == NULL && strstr(buffer, "<") != NULL)
-        {
-            cnt += is_comment_line(buffer);
-            puts(buffer);
-        }
-        else if(key != NULL && strstr(buffer, ">>") != NULL && strstr(buffer, key) != NULL)
-        {
-            cnt += is_comment_line(buffer);
-            puts(buffer);       
-        }
-    }
-    return cnt; 
-}
 
-int is_comment_line(char* string)
-{
-    clean_string(string);
-    if(strlen(string) == 0)
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
-}
-
+//+++++++++++++++++++++++++++++++++++++
+//function implementation
+//+++++++++++++++++++++++++++++++++++++
 void clean_string(char* string)
 {
     char *cm, *n;
@@ -58,7 +35,7 @@ int init_menu(MENU** menu)
     FILE* f;
     int count=0;
 
-    if((f=fopen(CMDWND_CONFIG, "r")) == NULL) return -1;
+    if((f=fopen(PATH_CONFIG, "r")) == NULL) return -1;
 
     fill_menu(menu, f);
     fclose(f);
@@ -147,15 +124,13 @@ void show_menu(MENU* menu, int isSub)
     show_menu(menu->nextFunc, isSub);
 }
 
-MENU get_menu_by_key(int key, MENU* menu)
+MENU* get_menu_by_key(int key, MENU* menu)
 {
-    MENU men = *menu;
-    while (men.key != key)
+    while (menu != NULL && menu->key != key)
     {
-        men = *men.nextFunc;
-    }
-    men.nextFunc = NULL;
-    return men;
+        menu = menu->nextFunc;
+    }    
+    return menu;
 }
 
 
