@@ -28,8 +28,8 @@ enum COLOR_SHEMA
 
 typedef struct PNT
 {
-    unsigned short int x;
-    unsigned short int y;
+    unsigned short x;
+    unsigned short y;
 } point;
 
 int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu);

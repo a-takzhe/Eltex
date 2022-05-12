@@ -40,7 +40,6 @@ void sig_winch(int signo)
         wresize(__TOOLSWND__, 1, size.ws_col);
         mvwin(__TOOLSWND__, size.ws_row-1, 0);
 
-        wclear(__MAINWND__);
         if(wdelta - size.ws_col <= -5)
         {
             fill_toolbar(__MENU__);
@@ -72,13 +71,15 @@ int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu)
 
     initscr();
     cbreak();
-    keypad(stdscr, false);
+    keypad(stdscr, true);
     init_color_pairs();
     signal(SIGWINCH, sig_winch);
     refresh();
     
     if(init_w() == ERR) return -1;
     if(fill_toolbar(__MENU__) == ERR) return -1;
+    wmove(mainw, 0,0);
+    wrefresh(mainw);
 
     return 0;
 }
@@ -122,6 +123,7 @@ int fill_toolbar(MENU* menu)
         pos.x+=3;
         menu = menu->nextFunc;
     }
+    return 0;
 }
 
 int write_t(WINDOW *wnd, char *key_name, char *func, point *pos)
