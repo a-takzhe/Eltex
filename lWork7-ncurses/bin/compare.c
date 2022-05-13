@@ -52,7 +52,6 @@ void sig_winch(int signo)
     wrefresh(__HTOOLWND__);
     wrefresh(__TOOLSWND__);
     wrefresh(__MAINWND__);
-    refresh();
 }
 
 int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu)

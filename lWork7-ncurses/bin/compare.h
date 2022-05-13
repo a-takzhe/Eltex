@@ -30,6 +30,7 @@ typedef struct PNT
 {
     unsigned short x;
     unsigned short y;
+    unsigned short max_X, max_y;
 } point;
 
 int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu);

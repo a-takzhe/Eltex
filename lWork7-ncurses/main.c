@@ -3,29 +3,30 @@
 #include <stdlib.h>
 #include <curses.h>
 #include "bin/compare.h"
-#include "bin/read_from_file.h"
+#include "bin/rw_file.h"
 
 
 WINDOW *__MAINWND__;
 WINDOW *__HTOOLWND__;
 WINDOW *__TOOLSWND__;
 MENU *__MENU__;
+char NOTE[255][255];
 
 int change_x(point *p, short v);
 int change_y(point *p, short v);
 
 int main(int argc, char ** argv)
-{
+{    
     init_menu(&__MENU__);
     init(__MAINWND__, __TOOLSWND__, __HTOOLWND__, __MENU__);
     
     if(argc >= 2)
     {
-        read_file(argv[1], __MAINWND__);
+        read_file(argv[1], __MAINWND__, NOTE);
     }
     else
     {
-        wmove(__MAINWND__,0,0);
+        wmove(__MAINWND__, 0, 0);
         wrefresh(__MAINWND__);
     }
 
@@ -46,7 +47,7 @@ int main(int argc, char ** argv)
             fill_toolbar(a->subMenu);
 
             use_wnd = __MAINWND__;
-            wmove(__HTOOLWND__, 0, 0);
+            wmove(__HTOOLWND__, 0, 0);   
             wrefresh(__HTOOLWND__);  
         }
         switch (key)
@@ -72,6 +73,10 @@ int main(int argc, char ** argv)
                 p.x++;            
                 break;
         }
+        wmove(use_wnd, p.y, p.x);
+        chtype sym = winch(use_wnd);
+        wmove(use_wnd, 30, 30);
+        wprintw(use_wnd, "%c - %d", sym, sym);
 
         wmove(use_wnd, p.y, p.x);
         wrefresh(use_wnd);
