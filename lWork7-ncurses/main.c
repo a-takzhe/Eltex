@@ -36,7 +36,7 @@ int main(int argc, char ** argv)
     point p = {.x = use_wnd->_curx, 
                .y = use_wnd->_cury};
 
-    while (key = wgetch(use_wnd))
+    while ((key = wgetch(use_wnd)) || (key=wgetch(stdscr)))
     {
         if(key == KEY_F(3) || key == '\n') break;
         MENU* a = get_menu_by_key(key, __MENU__);
@@ -64,16 +64,21 @@ int main(int argc, char ** argv)
                 change_x(&p, +1);
                 break;
             case KEY_BACKSPACE:
-                wmove(use_wnd, p.y, --p.x);
+                change_x(&p, -1);
+                wmove(use_wnd, p.y, p.x);
                 wprintw(use_wnd," ");
                 break;
+            case KEY_RESIZE:
+                wmove(use_wnd,0,0);
+                wprintw(use_wnd,"123");
+                wrefresh(use_wnd);
             default:
                 wprintw(use_wnd, "%c", key);
                 p.x++;            
                 break;
         }
 
-        wmove(use_wnd, p.y, p.x);
+        //wmove(use_wnd, p.y, p.x);
         wrefresh(use_wnd);
 
     }
