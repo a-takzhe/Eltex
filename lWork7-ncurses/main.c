@@ -5,24 +5,26 @@
 #include "bin/compare.h"
 #include "bin/rw_file.h"
 
+#define ctrl_A_ (65&0x1F) 
+#define ctrl_z_ (122&0x1F) 
 
 WINDOW *__MAINWND__;
 WINDOW *__HTOOLWND__;
 WINDOW *__TOOLSWND__;
 MENU *__MENU__;
-char NOTE[255][255];
+ 
 
 int change_x(point *p, short v);
 int change_y(point *p, short v);
 
 int main(int argc, char ** argv)
-{    
+{   
     init_menu(&__MENU__);
     init(__MAINWND__, __TOOLSWND__, __HTOOLWND__, __MENU__);
     
     if(argc >= 2)
     {
-        read_file(argv[1], __MAINWND__, NOTE);
+        read_file(argv[1], __MAINWND__);
     }
     else
     {
@@ -50,6 +52,11 @@ int main(int argc, char ** argv)
             wmove(__HTOOLWND__, 0, 0);   
             wrefresh(__HTOOLWND__);  
         }
+        if(key >= ctrl_A_ && key <= ctrl_z_){
+            nwrite(use_wnd);
+            continue;
+        }
+        char *ins_s = NULL;
         switch (key)
         {
             case KEY_DOWN:
@@ -65,11 +72,18 @@ int main(int argc, char ** argv)
                 change_x(&p, +1);
                 break;
             case KEY_BACKSPACE:
+                ins_s = delete(p.x, p.y);
                 wmove(use_wnd, p.y, --p.x);
-                wprintw(use_wnd," ");
+                wprintw(use_wnd, "%s", ins_s);
+                wprintw(use_wnd, " ");
                 break;
+            // case ():
+            //     nwrite(use_wnd);
+            //     break;
             default:
                 wprintw(use_wnd, "%c", key);
+                ins_s = insert(use_wnd,__HTOOLWND__, p.x, p.y,(char)key);
+                wprintw(use_wnd, "%s", ins_s);
                 p.x++;            
                 break;
         }
