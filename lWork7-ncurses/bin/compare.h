@@ -1,9 +1,6 @@
 #include <termios.h>
 #include <sys/ioctl.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <curses.h>
-#include <string.h>
 #include <signal.h>
 #include "read_config.h"
 
@@ -17,6 +14,7 @@ WINDOW *__MAINWND__;
 WINDOW *__HTOOLWND__;
 WINDOW *__TOOLSWND__;
 MENU *__MENU__;
+MENU *CURMEN;
 short wdelta;
 
 enum COLOR_SHEMA
@@ -33,6 +31,6 @@ typedef struct PNT
     unsigned short max_X, max_y;
 } point;
 
-int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu);
+int init();
 int fill_toolbar(MENU *menu);
 int wend();

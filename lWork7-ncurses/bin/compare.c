@@ -42,7 +42,7 @@ void sig_winch(int signo)
 
         if(wdelta - size.ws_col <= -5)
         {
-            fill_toolbar(__MENU__);
+            fill_toolbar(CURMEN);
             wdelta = size.ws_col;
         }     
         else if(wdelta - size.ws_col >= 0){
@@ -54,31 +54,28 @@ void sig_winch(int signo)
     wrefresh(__MAINWND__);
 }
 
-int init(WINDOW* mainw, WINDOW* toolsw, WINDOW* htoolw, MENU* menu)
+int init()
 {
     if(stdscr != NULL || __MAINWND__ != NULL) 
     { 
         wend();
     }
-    else
-    {
-        __MAINWND__ = mainw;
-        __TOOLSWND__ = toolsw;
-        __HTOOLWND__ = htoolw;
-        __MENU__ = menu;
-    }
 
     initscr();
     cbreak();
+    noecho();
     keypad(stdscr, true);
+
     init_color_pairs();
     signal(SIGWINCH, sig_winch);
     refresh();
     
-    if(init_w() == ERR) return -1;
-    if(fill_toolbar(__MENU__) == ERR) return -1;
-    wmove(mainw, 0,0);
-    wrefresh(mainw);
+    if(init_w() == ERR) return ERR;
+    if(init_menu(&__MENU__) == ERR) return ERR;
+    if(fill_toolbar(__MENU__) == ERR) return ERR;
+
+    wmove(__MAINWND__, 0,0);
+    wrefresh(__MAINWND__);
 
     return 0;
 }
@@ -91,9 +88,11 @@ int init_w()
     ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
     
     __MAINWND__ = newwin(size.ws_row-2, size.ws_col, 0, 0);
+    keypad(__MAINWND__, true);
     res = wbkgd(__MAINWND__, COLOR_PAIR(MAINWND_COLOR));
     
     __HTOOLWND__ = newwin(1, size.ws_col, size.ws_row - 2, 0);
+    keypad(__HTOOLWND__, true);
     res = wbkgd(__HTOOLWND__, __MAINWND__->_bkgd | A_REVERSE);
 
     __TOOLSWND__ = newwin(1, size.ws_col, size.ws_row-1, 0);
@@ -111,7 +110,7 @@ int fill_toolbar(MENU* menu)
 {
     point pos = {.x=0, .y=0};
     wclear(__TOOLSWND__);
-    __MENU__ = menu;
+    CURMEN = menu;
 
     while (menu != NULL)
     {
