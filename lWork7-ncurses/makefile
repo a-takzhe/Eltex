@@ -3,7 +3,7 @@ SRC_LIB_FILES := $(wildcard $(bin_dir)/*.c)
 OBJ_LIB_FILES := $(patsubst $(bin_dir)/%.c, $(bin_dir)/%.o, $(SRC_LIB_FILES))
 #LIB_PLUG_FILES := $(patsubst $(bin_dir)/%.c, $(bin_dir)/%.so, $(SRC_PLUG_FILES))
 
-all: main
+all: main #delo
 
 main: $(OBJ_LIB_FILES) main.o
 	gcc main.o $(OBJ_LIB_FILES) -o main -lncurses
@@ -19,3 +19,6 @@ $(bin_dir)/%.o: $(bin_dir)/%.c
 
 clean:
 	rm -rf *.o main $(bin_dir)/*.o 
+
+delo:
+	rm -rf *.o $(bin_dir)/*.o

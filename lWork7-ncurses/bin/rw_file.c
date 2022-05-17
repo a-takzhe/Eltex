@@ -1,31 +1,9 @@
 #include "rw_file.h"
 
-// int read_file(char *path, WINDOW* wnd, char c[255][255])
-// {
-//     FILE* f;
-//     char buffer[255];
-//     int size;
-
-//     if((f = fopen(path, "r")) == NULL)
-//     {
-//         return 1;
-//     }
-
-//     wmove(wnd,0,0);
-
-//     while((size = fread(buffer, sizeof(char), 255, f)) != 0)
-//     {
-//         wprintw(wnd, "%s", buffer);
-//     }
-//     wrefresh(wnd);
-
-//     fclose(f);
-// }
-
 int read_file(char *path, WINDOW* wnd)
 {
     FILE* f;
-    char buffer[255];
+    char buffer[MAXCOL] = {0};
     int ln=0;
     int sz;
 
@@ -34,16 +12,18 @@ int read_file(char *path, WINDOW* wnd)
         return 1;
     }
 
+    wclear(wnd);
     wmove(wnd,0,0);
 
-    while((fgets(buffer, 255, f)) != 0)
+    while((fgets(buffer, MAXCOL, f)) != 0)
     {
-        strncpy(NOTE[ln],buffer,255);
+        strncpy(NOTE[ln], buffer, MAXCOL);
         wprintw(wnd, "%s", buffer);
         ln++;
     }
+    wmove(wnd,0,0);
     wrefresh(wnd);
-    lln = ln;
+    LLN = ln-1;
 
     fclose(f);
 }
@@ -51,7 +31,7 @@ int read_file(char *path, WINDOW* wnd)
 int nwrite(WINDOW* wnd)
 {
     int ln=0;
-    while(ln<=lln)
+    while(ln<=LLN)
     {
         wprintw(wnd, "%s", NOTE[ln]);
         ln++;
@@ -96,3 +76,21 @@ char* delete(int x, int y)
     strcpy(&NOTE[y][--x], bf);
     return bf;
 }
+
+char get_symbol(int x, int y)
+{
+    if(isNote == 1) return NOTE[y][x];
+    else return TROW[x-strlen(HTOOL_MES)];
+}
+
+int end_ind(int y)
+{
+    int i = 0;
+    while(NOTE[y][i] != 0){
+        i++;
+    }
+    return i;
+}
+
+
+
