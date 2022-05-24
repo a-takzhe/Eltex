@@ -23,6 +23,17 @@ void init_color_pairs()
     init_pair(TOOLSWND_COLOR, COLOR_WHITE, CONTROL_BACK_COLOR);
 }
 
+int rewrite_mwnd(int r)
+{
+    wmove(__MAINWND__, 0, 0);
+    wclear(__MAINWND__);
+    while(NOTE[r][0] != 0 && r < __MAINWND__->_maxy)
+    {
+        wprintw(__MAINWND__, "%s", NOTE[r]);
+        r++;
+    }
+}
+
 void sig_winch(int signo)
 {
     struct winsize size;
@@ -33,7 +44,8 @@ void sig_winch(int signo)
     if(wgetch(stdscr) == KEY_RESIZE)
     {
         wresize(__MAINWND__, size.ws_row-2, size.ws_col);
-       
+        rewrite_mwnd(0);
+
         wresize(__HTOOLWND__, 1, size.ws_col);
         mvwin(__HTOOLWND__, size.ws_row-2, 0);
         
