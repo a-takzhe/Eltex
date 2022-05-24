@@ -22,10 +22,13 @@ int read_file(char *path, WINDOW* wnd)
     wclear(wnd);
     wmove(wnd,0,0);
 
-    while((fgets(buffer, MAXCOL, f)) != 0)
+    while((fgets(buffer, MAXCOL, f)) != 0 && ln < MAXROW)
     {
         strncpy(NOTE[ln], buffer, MAXCOL);
-        wprintw(wnd, "%s", buffer);
+        if(ln < wnd->_maxy)
+        {
+            wprintw(wnd, "%s", buffer);
+        } 
         ln++;
     }
     wmove(wnd,0,0);
@@ -106,17 +109,6 @@ char* delete(int x, int y)
     {
         return delete_trow(x);
     }
-    // int i = x;
-    // int sl = strlen(&NOTE[y][x]);
-    // char* bf = (char*)malloc(sizeof(char)*sl+1);
-    // strncpy(bf, &NOTE[y][x], sl+1);
-
-    // while(NOTE[y][i] != 0){
-    //     NOTE[y][i] = 0;
-    //     i++;
-    // }
-    // strcpy(&NOTE[y][--x], bf);
-    // return bf;
 }
 
 char* delete_trow(int x)
@@ -135,7 +127,19 @@ char* delete_trow(int x)
     return bf;
 }
 
-char* delete_note(int x, int y){
+char* delete_note(int x, int y)
+{
+    // int i = x;
+    // int sl = strlen(&NOTE[y][x]);
+    // char* bf = (char*)malloc(sizeof(char)*sl+1);
+    // strncpy(bf, &NOTE[y][x], sl+1);
+
+    // while(NOTE[y][i] != 0){
+    //     NOTE[y][i] = 0;
+    //     i++;
+    // }
+    // strcpy(&NOTE[y][--x], bf);
+    // return bf;
     return "";
 }
 

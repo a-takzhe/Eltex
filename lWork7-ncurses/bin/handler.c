@@ -5,7 +5,6 @@ int main_handler()
     int key;
     char *ins_c;
     WINDOW* curw = __MAINWND__;
-    point p = {.x = curw->_curx, .y = curw->_cury};
     isNote = 1;
 
     while (key = wgetch(curw))
@@ -13,42 +12,38 @@ int main_handler()
         if(key == KEY_F(3) || key == 0033){
             break;
         }
-        if(menu_processing(key, &curw, &p) == 1){
+        if(menu_processing(key, &curw) == 1){
             continue;            
         }
         if(key >= CTRL('A') && key <= CTRL('z')){
-            //nwrite(curw);
             continue;
         }
         
         switch (key)
         {
             case KEY_DOWN:
-                change_y(&p, +1);
+                inc_y();
                 break;
             case KEY_UP:
-                change_y(&p, -1);
+                dec_y();
                 break;
             case KEY_LEFT:
-                change_x(&p, -1);
+                dec_x();
                 break;
             case KEY_RIGHT:
-                change_x(&p, +1);
+                inc_x();
                 break;
-            case KEY_BACKSPACE:
-                if(can_x(p, -1) == 0) break;
-                ins_c = delete(p.x, 0);
-                wmove(curw, p.y, --p.x);
-                wprintw(curw, "%s", ins_c);
-                wprintw(curw, " ");
-                break;
-            default:
-                if(can_x(p, +1) == 0) break;
-                wprintw(curw, "%c", key);    
-                ins_c = insert(p.x, p.y, (char)key);
-                wprintw(curw, "%s", ins_c);
-                p.x++;            
-                break;
+            // case KEY_BACKSPACE:
+            //     if(can_x(p, -1) == 0) break;
+            //     back_click(curw, &p);
+            //     break;
+            // default:
+            //     if(can_x(p, +1) == 0) break;
+            //     wprintw(curw, "%c", key);    
+            //     ins_c = insert(p.x, p.y, (char)key);
+            //     wprintw(curw, "%s", ins_c);
+            //     p.x++;            
+            //     break;
         }
         //wmove(curw, p.y, p.x);
         //chtype sym = winch(curw);
@@ -59,33 +54,25 @@ int main_handler()
             // wrefresh(__MAINWND__);
         }
         else{
-            // wclear(__HTOOLWND__);
-            // wmove(__HTOOLWND__, 0, 0);
-            // wprintw(__HTOOLWND__, "'%c' - %d", get_symbol(p.x,p.y), get_symbol(p.x,p.y));
-            // wrefresh(__HTOOLWND__);    
+            wclear(__HTOOLWND__);
+            wmove(__HTOOLWND__, 0, 0);
+            wprintw(__HTOOLWND__, "%c", get_symbol(PN.x,PN.y));
+            wrefresh(__HTOOLWND__);    
         }
         
 
-        wmove(curw, p.y, p.x);
+        wmove(curw, PW.y, PW.x);
         wrefresh(curw);
     }
 }
 
-int menu_processing(int key, WINDOW **curw, point* p)
+int menu_processing(int key, WINDOW **curw)
 {
     if(CURMEN != __MENU__)
     {
         if(key == CTRL('X'))
         {
-            fill_toolbar(__MENU__);
-            wclear(*curw);
-            clear_trow();
-            wrefresh(*curw);
-            *curw = __MAINWND__;
-            isNote = 1;
-            *p = (point){.x = (*curw)->_curx, .y = (*curw)->_cury};
-            wmove(*curw, p->y, p->x);
-
+            menu_back(curw);
             return 1;
         }
         return 0;
@@ -98,66 +85,236 @@ int menu_processing(int key, WINDOW **curw, point* p)
     if(tmp != NULL && tmp->isUseSubstr)
     {
         fill_toolbar(tmp->subMenu);
-
-        *curw = __HTOOLWND__;
-        isNote = 0;
-        wmove(*curw, 0, 0);   
-        wprintw(*curw, HTOOL_MES);
-        wrefresh(*curw);
-        *p = (point){.x = (*curw)->_curx, .y = (*curw)->_cury};
+        to_menu(curw);
         return 1;
     }   
     return 0; 
 }
 
-int change_x(point *p, short v)
+void menu_back(WINDOW **curw)
 {
-    if(v<0)
-    {
-        if(p->x > 0 && isNote == 1)
-        {
-            p->x--;
-        } 
-        else if(p->x - strlen(HTOOL_MES) > 0 && isNote == 0){
-            p->x--; 
-        }
-    }
-    else if(v>0)
-    {
-        if(get_symbol(p->x+1,p->y) != 0 || get_symbol(p->x+2, p->y) != 0)
-        {
-            p->x++;
-        }
-    }
-    return 1;
+    fill_toolbar(__MENU__);
+    wclear(*curw);
+    wrefresh(*curw);
+
+    isNote = 1;
+    clear_trow();
+
+    *curw = __MAINWND__;
+    PW = (point){.x = (*curw)->_curx, .y = (*curw)->_cury};
+    wmove(*curw, PW.y, PW.x);
 }
 
-int change_y(point *p, short v)
+void to_menu(WINDOW **curw)
 {
-    if(isNote == 0) return 1;
+    isNote = 0;
+    *curw = __HTOOLWND__;
+    wmove(*curw, 0, 0);   
+    wprintw(*curw, HTOOL_MES);
+    wrefresh(*curw);
+    PW = (point){.x = (*curw)->_curx, .y = (*curw)->_cury};
+    PT = (point){.x=0, .y=0};
+}
 
-    if(v<0){
-        if(p->y > 0){
-            p->y--;
 
-            if(get_symbol(p->x, p->y) == 0)
+void inc_x()
+{
+    if(isNote)
+    {
+        if(PN.x < (MAXCOL-2) && (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
+        {
+            if((PN.y)*(MAXCOL)+PN.x < __MAINWND__->_maxy*__MAINWND__->_maxx)
             {
-                p->x = end_ind(p->y)-1;
+                PN.x++;
+                if(PW.x+1 > __MAINWND__->_maxx)
+                {
+                    PW.y++;
+                    PW.x=0;
+                }
+                else{
+                    PW.x++;
+                }
             }
         }
     }
-    else if(v>0){
-        if(p->y < LLN){
-            p->y++;
+}
 
-            if(get_symbol(p->x, p->y) == 0)
-            {
-                p->x = end_ind(p->y)-1;
+void dec_x()
+{
+    if(isNote)
+    {
+        if(PN.x>0)
+        {
+            PN.x--;
+            if(PW.x!=0){
+                PW.x--;
+            }
+            else{
+                PW.y--;
+                PW.x = __MAINWND__->_maxx;
             }
         }
     }
+}
+
+void inc_y()
+{
+    if(isNote)
+    {
+        if(PN.y < LLN)
+        {
+            if((PN.y)*(MAXCOL)+PN.x < __MAINWND__->_maxy*__MAINWND__->_maxx)
+            {
+                int a = strlen(&NOTE[PN.y][PN.x]);
+                int d = 0;
+                PN.y++;
+                if(get_symbol(PN.x, PN.y) == 0)
+                {
+                    d = PN.x - (end_ind(PN.y)-1);
+                    PN.x -= d;
+                }
+
+                int more1 = a > __MAINWND__->_maxx - PW.x;
+                int more2 = PN.x > __MAINWND__->_maxx;
+
+                if( more1 || more2)
+                {
+                    if(more1)
+                    {
+                        int c = a-(__MAINWND__->_maxx - PW.x);
+                        PW.y += c / __MAINWND__->_maxx + (c % __MAINWND__->_maxx > 0) + (!more2); 
+                    }
+                    if(more2)
+                    {
+                        PW.y += (PN.x-1) / (__MAINWND__->_maxx) + ((PN.x-1) % __MAINWND__->_maxx > 0) + (!more1);
+                    }
+                }
+                else
+                {
+                    PW.y++;
+                }
+
+                if(d != 0)
+                {
+                    if(d/__MAINWND__->_maxx>0){
+                        PW.x-=d % __MAINWND__->_maxx - 1;
+                    }
+                    else{
+                        PW.x-=d % __MAINWND__->_maxx;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void dec_y()
+{
+    if(isNote)
+    {
+        if(PN.y > 0)
+        {
+            int x=PN.x;
+            int d = 0;
+            PN.y--;
+            if(get_symbol(PN.x, PN.y) == 0)
+            {
+                d = PN.x - (end_ind(PN.y)-1);
+                PN.x -= d;
+            }
+
+            int a = strlen(NOTE[PN.y]);
+            if(x > __MAINWND__->_maxx)
+            {
+               PW.y-= x / (__MAINWND__->_maxx) + (x % __MAINWND__->_maxx > 0);
+            }
+            else if(a > __MAINWND__->_maxx)
+            {
+                PW.y-= a / (__MAINWND__->_maxx) + (a % __MAINWND__->_maxx > 0);
+            }
+            else
+            {
+                PW.y--;
+            }
+            
+            if(d != 0)
+            {
+                if(d/__MAINWND__->_maxx>0){
+                    PW.x-=d % __MAINWND__->_maxx - 1;
+                }
+                else{
+                    PW.x-=d % __MAINWND__->_maxx;
+                }
+            }
+        }
+    }
+}
+
+
+
+int back_click(WINDOW *wnd, point *p)
+{
+    char *ins_c = delete(p->x, 0);
+
+    wmove(wnd, p->y, --p->x);
+    wprintw(wnd, "%s", ins_c);
+    wprintw(wnd, " ");
+}
+
+int change_x(point p, short v)
+{
+    // if(v<0)
+    // {
+    //     if(p->x > 0 && isNote == 1)
+    //     {
+    //         p->x--;
+    //     } 
+    //     else if(p->x - strlen(HTOOL_MES) > 0 && isNote == 0){
+    //         p->x--; 
+    //     }
+    // }
+    // else if(v>0)
+    // {
+    //     if(get_symbol(p->x+1,p->y) != 0 || get_symbol(p->x+2, p->y) != 0)
+    //     {
+    //         p->x++;
+    //     }
+    // }
+    // return 1;
+}
+
+int change_y(point p, short v)
+{
+    // if(isNote == 0) return 1;
+
+    // if(v<0){
+    //     if(p->y > 0){
+    //         p->y--;
+
+    //         if(get_symbol(p->x, p->y) == 0)
+    //         {
+    //             p->x = end_ind(p->y)-1;
+    //         }
+    //     }
+    // }
+    // else if(v>0)
+    // {
+    //     if(p->y < LLN)
+    //     {
+    //         p->y++;
+            
+    //         if(p->y > __MAINWND__->_maxy){
+    //             rewrite_mwnd(p->y - __MAINWND__->_maxy / 4);
+    //         }
+            
+    //         if(get_symbol(p->x, p->y) == 0)
+    //         {
+    //             p->x = end_ind(p->y)-1;
+    //         }
+    //     }
+    // }
     
-    return 1;
+    // return 1;
 }
 
 int can_x(point p, short v)

@@ -2,14 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <curses.h>
+#include "compare.h"
 
-#define HTOOL_MES "[Insert File Name]: "
-#define MAXCOL 256
-#define MAXCOL2 64
-#define MAXROW 128
 
-char NOTE[MAXROW][MAXCOL];
-char TROW[MAXCOL2];
 u_short LLN;
 u_char isNote; 
 
