@@ -16,8 +16,9 @@ int read_file(char *path, WINDOW* wnd)
 
     if((f = fopen(path, "r")) == NULL)
     {
-        return -1;
+        return 1;
     }
+
     fseek(f, 0L, SEEK_END);
     if(ftell(f) > MAXCOL*MAXROW)
     {
@@ -41,9 +42,11 @@ int read_file(char *path, WINDOW* wnd)
     }
     wmove(wnd,0,0);
     wrefresh(wnd);
-    LLN = ln-1;
+    LLN = ln-1<0?0:ln-1;
 
     fclose(f);
+    
+    return 1;
 }
 
 int nwrite(WINDOW* wnd)
