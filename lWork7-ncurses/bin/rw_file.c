@@ -16,8 +16,16 @@ int read_file(char *path, WINDOW* wnd)
 
     if((f = fopen(path, "r")) == NULL)
     {
-        return 1;
+        return -1;
     }
+    fseek(f, 0L, SEEK_END);
+    if(ftell(f) > MAXCOL*MAXROW)
+    {
+        wend();
+        printf("file %s (%ldbt) is too large\n", path, ftell(f));
+        return -1;
+    }
+    fseek(f, 0L, SEEK_SET);
 
     wclear(wnd);
     wmove(wnd,0,0);
