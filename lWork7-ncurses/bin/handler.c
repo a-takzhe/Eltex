@@ -33,17 +33,17 @@ int main_handler()
             case KEY_RIGHT:
                 inc_x();
                 break;
-            // case KEY_BACKSPACE:
-            //     if(can_x(p, -1) == 0) break;
-            //     back_click(curw, &p);
-            //     break;
-            // default:
-            //     if(can_x(p, +1) == 0) break;
-            //     wprintw(curw, "%c", key);    
-            //     ins_c = insert(p.x, p.y, (char)key);
-            //     wprintw(curw, "%s", ins_c);
-            //     p.x++;            
-            //     break;
+            case KEY_BACKSPACE:
+                if(can_x(-1) == 1) break;
+                back_click(curw);
+                break;
+            default:
+                if(can_x(+1) == 0) break;
+                wprintw(curw, "%c", key);    
+                insert((char)key);
+                rewrite(curw, 1);
+                inc_x();           
+                break;
         }
         //wmove(curw, p.y, p.x);
         //chtype sym = winch(curw);
@@ -267,12 +267,12 @@ void dec_y()
 
 
 
-int back_click(WINDOW *wnd, point *p)
+int back_click(WINDOW *wnd)
 {
-    char *ins_c = delete(p->x, 0);
-
-    wmove(wnd, p->y, --p->x);
-    wprintw(wnd, "%s", ins_c);
+    delete();
+    dec_x();
+    wmove(wnd, PW.y, PW.x);
+    rewrite(wnd, 0);
     wprintw(wnd, " ");
 }
 
@@ -332,29 +332,19 @@ int change_y(point p, short v)
     // return 1;
 }
 
-int can_x(point p, short v)
+int can_x(short v)
 {
     if(v<0)
     {
-        if(p.x > 0 && isNote == 1)
-        {
-            return 1;
-        } 
-        else if(p.x - strlen(HTOOL_MES) > 0 && isNote == 0)
-        {
-            return 1; 
-        }
+    //    if(isNote){
+    //        return (PN.x > 0);
+    //    }
     }
     else if(v>0)
     {
-        if(isNote && p.x < MAXCOL)
-        {
-            return 1;
-        }
-        else if(!isNote && p.x - strlen(HTOOL_MES) < MAXCOL2)
-        {
-            return 1;
-        }
+        if(isNote){
+           return (PN.x < MAXCOL-2  && strlen(&NOTE[PN.y][PN.x])+PN.x < MAXCOL-2);
+       }
     }
     return 0;
 }

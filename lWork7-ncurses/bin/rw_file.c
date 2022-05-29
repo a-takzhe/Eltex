@@ -1,9 +1,9 @@
 #include "rw_file.h"
 
-char* insert_note(int x, int y, char c);
+int insert_note(char c);
 char* insert_trow(int x, char c);
 
-char* delete_note(int x, int y);
+int delete_note();
 char* delete_trow(int x);
 
 
@@ -49,46 +49,53 @@ int read_file(char *path, WINDOW* wnd)
     return 1;
 }
 
-int nwrite(WINDOW* wnd)
+int rewrite(WINDOW* wnd, int d)
 {
-    int ln=0;
-    while(ln<=LLN)
+    int ln=PN.y, col = PN.x+d;
+    while(ln <= LLN)
     {
-        wprintw(wnd, "%s", NOTE[ln]);
+        if(ln < wnd->_maxy){
+            wprintw(wnd, "%s", &NOTE[ln][col]);
+        }
+        else{
+            break;
+        }
+        col=0;
         ln++;
     }
     wrefresh(wnd);
 }
 
-char* insert(int x, int y, char c)
+int insert(char c)
 {
     if (isNote)
     {
-        return insert_note(x,y,c);
+        return insert_note(c);
     }
     else
     {
-        return insert_trow(x,c);
+        //return insert_trow(x,c);
     }
     
 }
 
-char* insert_note(int x, int y, char c)
+int insert_note(char c)
 {
-    if(NOTE[y][x] == 0)
+    if(NOTE[PN.y][PN.x] == 0)
     {
-        NOTE[y][x] = c;
-        return "";
+        NOTE[PN.y][PN.x] = c;
+        return 1;
     }
 
-    int sl = strlen(&NOTE[y][x]);
+    int sl = strlen(&NOTE[PN.y][PN.x]);
     char* bf = (char*)malloc(sl+1*sizeof(char));
     
-    strncpy(bf, &NOTE[y][x], sl+1);
-    NOTE[y][x]=c;
-    strcpy(&NOTE[y][++x], bf);   
+    strncpy(bf, &NOTE[PN.y][PN.x], sl+1);
+    NOTE[PN.y][PN.x]=c;
+    strcpy(&NOTE[PN.y][PN.x+1], bf); 
+    free(bf);  
 
-    return bf;
+    return 1;
 }
 
 char* insert_trow(int x, char c)
@@ -110,15 +117,15 @@ char* insert_trow(int x, char c)
     return bf;
 }
 
-char* delete(int x, int y)
+int delete()
 {
     if(isNote)
     {
-        return delete_note(x, y);
+        return delete_note();
     }
     else
     {
-        return delete_trow(x);
+        // return delete_trow(x);
     }
 }
 
@@ -138,20 +145,40 @@ char* delete_trow(int x)
     return bf;
 }
 
-char* delete_note(int x, int y)
+int delete_note()
 {
-    // int i = x;
-    // int sl = strlen(&NOTE[y][x]);
-    // char* bf = (char*)malloc(sizeof(char)*sl+1);
-    // strncpy(bf, &NOTE[y][x], sl+1);
+    int i = PN.x;
+    int sl;
+    char* bf;
 
-    // while(NOTE[y][i] != 0){
-    //     NOTE[y][i] = 0;
-    //     i++;
-    // }
-    // strcpy(&NOTE[y][--x], bf);
-    // return bf;
-    return "";
+    if(NOTE[PN.y][i] == '\n' && i==0){
+        int y = PN.y;
+        NOTE[PN.y][i] = 0;
+        
+        while(NOTE[y+1][0]!=0){
+            sl = strlen(&NOTE[y+1][0]);
+            strncpy(&NOTE[y][0], &NOTE[y+1][0], sl+1);
+            
+            while(sl>0){
+                NOTE[y+1][sl--] = 0;
+            }
+            y++;
+        }
+        return 1;
+    }
+
+    sl = strlen(&NOTE[PN.y][PN.x]);
+    bf = (char*)malloc(sizeof(char)*sl+1);
+    strncpy(bf, &NOTE[PN.y][PN.x], sl+1);
+
+    while(NOTE[PN.y][i] != 0)
+    {
+        NOTE[PN.y][i] = 0;
+        i++;
+    }
+    strcpy(&NOTE[PN.y][PN.x-1], bf);
+    free(bf);
+    return 1;
 }
 
 char get_symbol(int x, int y)

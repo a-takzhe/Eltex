@@ -10,9 +10,9 @@ u_char isNote;
 
 
 int read_file(char *path, WINDOW* wnd);
-int nwrite(WINDOW* wnd);
-char* insert(int x, int y, char c);
-char* delete(int x, int y);
+int rewrite(WINDOW* wnd, int d);
+int insert(char c);
+int delete();
 char get_symbol(int x, int y);
 int end_ind(int y);
 void clear_trow();
