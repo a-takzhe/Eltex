@@ -61,6 +61,7 @@ void sig_winch(int signo)
             wdelta = size.ws_col;
         }  
     }
+    PN.x=PN.y=PW.x=PW.y=0;
     wrefresh(__HTOOLWND__);
     wrefresh(__TOOLSWND__);
     wrefresh(__MAINWND__);

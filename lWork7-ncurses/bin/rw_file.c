@@ -19,6 +19,15 @@ int read_file(char *path, WINDOW* wnd)
         return 1;
     }
 
+    fseek(f, 0L, SEEK_END);
+    if(ftell(f) > MAXCOL*MAXROW)
+    {
+        wend();
+        printf("file %s (%ldbt) is too large\n", path, ftell(f));
+        return -1;
+    }
+    fseek(f, 0L, SEEK_SET);
+
     wclear(wnd);
     wmove(wnd,0,0);
 
@@ -33,9 +42,11 @@ int read_file(char *path, WINDOW* wnd)
     }
     wmove(wnd,0,0);
     wrefresh(wnd);
-    LLN = ln-1;
+    LLN = ln-1<0?0:ln-1;
 
     fclose(f);
+    
+    return 1;
 }
 
 int nwrite(WINDOW* wnd)

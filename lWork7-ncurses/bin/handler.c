@@ -56,7 +56,8 @@ int main_handler()
         else{
             wclear(__HTOOLWND__);
             wmove(__HTOOLWND__, 0, 0);
-            wprintw(__HTOOLWND__, "%c", get_symbol(PN.x,PN.y));
+            wprintw(__HTOOLWND__, "%c (%d-%d) (%d-%d)", (get_symbol(PN.x,PN.y)=='\n'?'_':get_symbol(PN.x,PN.y)),
+                     PW.y, PW.x, PN.y, PN.x);
             wrefresh(__HTOOLWND__);    
         }
         
@@ -123,17 +124,19 @@ void inc_x()
     {
         if(PN.x < (MAXCOL-2) && (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
         {
-            if((PN.y)*(MAXCOL)+PN.x < __MAINWND__->_maxy*__MAINWND__->_maxx)
+            PN.x++;
+            point p = PW;
+            if(PW.x+1 > __MAINWND__->_maxx)
             {
-                PN.x++;
-                if(PW.x+1 > __MAINWND__->_maxx)
-                {
-                    PW.y++;
-                    PW.x=0;
-                }
-                else{
-                    PW.x++;
-                }
+                PW.y++;
+                PW.x=0;
+            }
+            else{
+                PW.x++;
+            }
+            if(PW.y > __MAINWND__->_maxy || PW.x > __MAINWND__->_maxx){
+                PW = p;
+                PN.x--;
             }
         }
     }
@@ -146,7 +149,8 @@ void dec_x()
         if(PN.x>0)
         {
             PN.x--;
-            if(PW.x!=0){
+            if(PW.x!=0)
+            {
                 PW.x--;
             }
             else{
@@ -163,46 +167,50 @@ void inc_y()
     {
         if(PN.y < LLN)
         {
-            if((PN.y)*(MAXCOL)+PN.x < __MAINWND__->_maxy*__MAINWND__->_maxx)
+            point p = PW;
+            int a = strlen(&NOTE[PN.y][PN.x]);
+            int d = 0;
+            
+            PN.y++;
+            if(get_symbol(PN.x, PN.y) == 0)
             {
-                int a = strlen(&NOTE[PN.y][PN.x]);
-                int d = 0;
-                PN.y++;
-                if(get_symbol(PN.x, PN.y) == 0)
-                {
-                    d = PN.x - (end_ind(PN.y)-1);
-                    PN.x -= d;
-                }
+                d = PN.x - (end_ind(PN.y)-1);
+                PN.x -= d;
+            }
 
-                int more1 = a > __MAINWND__->_maxx - PW.x;
-                int more2 = PN.x > __MAINWND__->_maxx;
+            int more1 = a > __MAINWND__->_maxx - PW.x;
+            int more2 = PN.x > __MAINWND__->_maxx;
 
-                if( more1 || more2)
+            if( more1 || more2)
+            {
+                if(more1)
                 {
-                    if(more1)
-                    {
-                        int c = a-(__MAINWND__->_maxx - PW.x);
-                        PW.y += c / __MAINWND__->_maxx + (c % __MAINWND__->_maxx > 0) + (!more2); 
-                    }
-                    if(more2)
-                    {
-                        PW.y += (PN.x-1) / (__MAINWND__->_maxx) + ((PN.x-1) % __MAINWND__->_maxx > 0) + (!more1);
-                    }
+                    int c = a-(__MAINWND__->_maxx - PW.x);
+                    PW.y += c / __MAINWND__->_maxx + (c % __MAINWND__->_maxx > 0) + (!more2); 
                 }
-                else
+                if(more2)
                 {
-                    PW.y++;
+                    PW.y += (PN.x) / (__MAINWND__->_maxx) + (PN.x % __MAINWND__->_maxx > 0 && PW.x != __MAINWND__->_maxx);
                 }
-
-                if(d != 0)
-                {
-                    if(d/__MAINWND__->_maxx>0){
-                        PW.x-=d % __MAINWND__->_maxx - 1;
-                    }
-                    else{
-                        PW.x-=d % __MAINWND__->_maxx;
-                    }
+            }
+            else
+            {
+                PW.y++;
+            }
+            if(d != 0)
+            {
+                if(PN.x > __MAINWND__->_maxx){
+                    PW.x-=d;
                 }
+                else{
+                    PW.x=strlen(NOTE[PN.y])-1;
+                }
+            }
+           
+            if(PW.y > __MAINWND__->_maxy || PW.x > __MAINWND__->_maxx){
+                PN.y--;
+                PN.x+=d;
+                PW = p;
             }
         }
     }
@@ -223,15 +231,22 @@ void dec_y()
                 PN.x -= d;
             }
 
-            int a = strlen(NOTE[PN.y]);
-            if(x > __MAINWND__->_maxx)
+            int a = strlen(&NOTE[PN.y][PN.x]);
+            int more1 = x > __MAINWND__->_maxx;
+            int more2 = a > __MAINWND__->_maxx - PW.x;
+
+            if(more1 || more2)
             {
-               PW.y-= x / (__MAINWND__->_maxx) + (x % __MAINWND__->_maxx > 0);
-            }
-            else if(a > __MAINWND__->_maxx)
-            {
-                PW.y-= a / (__MAINWND__->_maxx) + (a % __MAINWND__->_maxx > 0);
-            }
+                if(more1)
+                {
+                    PW.y-= x / (__MAINWND__->_maxx) + (x % __MAINWND__->_maxx > 0 && PW.x != __MAINWND__->_maxx);
+                }
+                if(more2)
+                {
+                    int c = a-(__MAINWND__->_maxx - PW.x);
+                    PW.y-= c / (__MAINWND__->_maxx) + (c % __MAINWND__->_maxx > 0)+(!more1);
+                }
+            } 
             else
             {
                 PW.y--;
@@ -239,11 +254,11 @@ void dec_y()
             
             if(d != 0)
             {
-                if(d/__MAINWND__->_maxx>0){
-                    PW.x-=d % __MAINWND__->_maxx - 1;
+                if(PN.x > __MAINWND__->_maxx){
+                    PW.x-=d;
                 }
                 else{
-                    PW.x-=d % __MAINWND__->_maxx;
+                    PW.x=strlen(NOTE[PN.y])-1;
                 }
             }
         }

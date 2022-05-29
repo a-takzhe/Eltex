@@ -10,7 +10,10 @@ int main(int argc, char ** argv)
     }
     if(argc >= 2)
     {
-        read_file(argv[1], __MAINWND__);
+        if(read_file(argv[1], __MAINWND__) == ERR)
+        {
+            exit(EXIT_FAILURE);
+        }
     }
     main_handler();
     wend();
