@@ -25,12 +25,17 @@ void init_color_pairs()
 
 int rewrite_mwnd(int r)
 {
-    wmove(__MAINWND__, 0, 0);
-    wclear(__MAINWND__);
+    wmove(__MAINWND__, r, 0);
+    wclrtobot(__MAINWND__);
+    char *bf;
     while(NOTE[r][0] != 0 && r < __MAINWND__->_maxy)
     {
-        wprintw(__MAINWND__, "%s", NOTE[r]);
+        bf = (char*)calloc(__MAINWND__->_maxx, sizeof(char));
+
+        strncpy(bf, NOTE[r], __MAINWND__->_maxx-1); 
+        wprintw(__MAINWND__, "%s", bf);
         r++;
+        free(bf);
     }
 }
 
@@ -43,13 +48,13 @@ void sig_winch(int signo)
 
     if(wgetch(stdscr) == KEY_RESIZE)
     {
-        wresize(__MAINWND__, size.ws_row-2, size.ws_col);
+        wresize(__MAINWND__, size.ws_row-2, MAXCOL);
         rewrite_mwnd(0);
 
-        wresize(__HTOOLWND__, 1, size.ws_col);
+        wresize(__HTOOLWND__, 1, size.ws_col > MAXCOL ? MAXCOL : size.ws_col);
         mvwin(__HTOOLWND__, size.ws_row-2, 0);
         
-        wresize(__TOOLSWND__, 1, size.ws_col);
+        wresize(__TOOLSWND__, 1, size.ws_col > MAXCOL ? MAXCOL : size.ws_col);
         mvwin(__TOOLSWND__, size.ws_row-1, 0);
 
         if(wdelta - size.ws_col <= -5)
@@ -100,7 +105,7 @@ int init_w()
 
     ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
     
-    __MAINWND__ = newwin(size.ws_row-2, size.ws_col, 0, 0);
+    __MAINWND__ = newwin(size.ws_row-2, MAXCOL, 0, 0);
     keypad(__MAINWND__, true);
     res = wbkgd(__MAINWND__, COLOR_PAIR(MAINWND_COLOR));
     

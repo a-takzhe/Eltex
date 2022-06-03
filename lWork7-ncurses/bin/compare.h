@@ -11,9 +11,9 @@
 
 
 #define HTOOL_MES "[Insert File Name]: "
-#define MAXCOL 256
+#define MAXCOL 128
 #define MAXCOL2 64
-#define MAXROW 128
+#define MAXROW 64
 
 typedef struct PNT
 {
