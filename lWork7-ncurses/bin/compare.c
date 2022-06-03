@@ -41,7 +41,7 @@ int rewrite_mwnd(int r)
 
 void sig_winch(int signo)
 {
-    struct winsize size;
+    //struct winsize size;
     ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
     resizeterm(size.ws_row, size.ws_col);
     refresh();
@@ -87,6 +87,7 @@ int init()
     init_color_pairs();
     signal(SIGWINCH, sig_winch);
     refresh();
+    ioctl(fileno(stdout), TIOCGWINSZ, (char *) &size);
     
     if(init_w() == ERR) return ERR;
     if(init_menu(&__MENU__) == ERR) return ERR;

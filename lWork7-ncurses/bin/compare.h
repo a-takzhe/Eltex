@@ -31,6 +31,7 @@ short wdelta;
 
 char NOTE[MAXROW][MAXCOL];
 char TROW[MAXCOL2];
+struct winsize size;
 point PN, PT, PW;
 
 enum COLOR_SHEMA

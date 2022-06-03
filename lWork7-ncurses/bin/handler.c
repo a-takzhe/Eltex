@@ -57,12 +57,12 @@ int main_handler()
             wclear(__HTOOLWND__);
             wmove(__HTOOLWND__, 0, 0);
             wprintw(__HTOOLWND__, "%c (%d-%d) (%d-%d)", (get_symbol(PN.x,PN.y)=='\n'?'_':get_symbol(PN.x,PN.y)),
-                     PW.y, PW.x, PN.y, PN.x);
+                     PW.y, size.ws_col, PN.y, PN.x);
             wrefresh(__HTOOLWND__);    
         }
         
 
-        wmove(curw, PW.y, PW.x);
+        wmove(curw, PN.y, PN.x);
         wrefresh(curw);
     }
 }
@@ -122,22 +122,10 @@ void inc_x()
 {
     if(isNote)
     {
-        if(PN.x < (MAXCOL-2) && (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
+        if(PN.x < (MAXCOL-2) && PN.x < size.ws_col -1 && 
+           (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
         {
             PN.x++;
-            point p = PW;
-            if(PW.x+1 > __MAINWND__->_maxx)
-            {
-                PW.y++;
-                PW.x=0;
-            }
-            else{
-                PW.x++;
-            }
-            if(PW.y > __MAINWND__->_maxy || PW.x > __MAINWND__->_maxx){
-                PW = p;
-                PN.x--;
-            }
         }
     }
 }
@@ -149,14 +137,6 @@ void dec_x()
         if(PN.x>0)
         {
             PN.x--;
-            if(PW.x!=0)
-            {
-                PW.x--;
-            }
-            else{
-                PW.y--;
-                PW.x = __MAINWND__->_maxx;
-            }
         }
     }
 }
@@ -165,52 +145,12 @@ void inc_y()
 {
     if(isNote)
     {
-        if(PN.y < LLN)
-        {
-            point p = PW;
-            int a = strlen(&NOTE[PN.y][PN.x]);
-            int d = 0;
-            
+        if(PN.y < num_lines)
+        {  
             PN.y++;
             if(get_symbol(PN.x, PN.y) == 0)
             {
-                d = PN.x - (end_ind(PN.y)-1);
-                PN.x -= d;
-            }
-
-            int more1 = a > __MAINWND__->_maxx - PW.x;
-            int more2 = PN.x > __MAINWND__->_maxx;
-
-            if( more1 || more2)
-            {
-                if(more1)
-                {
-                    int c = a-(__MAINWND__->_maxx - PW.x);
-                    PW.y += c / __MAINWND__->_maxx + (c % __MAINWND__->_maxx > 0) + (!more2); 
-                }
-                if(more2)
-                {
-                    PW.y += (PN.x) / (__MAINWND__->_maxx) + (PN.x % __MAINWND__->_maxx > 0 && PW.x != __MAINWND__->_maxx);
-                }
-            }
-            else
-            {
-                PW.y++;
-            }
-            if(d != 0)
-            {
-                if(PN.x > __MAINWND__->_maxx){
-                    PW.x-=d;
-                }
-                else{
-                    PW.x=strlen(NOTE[PN.y])-1;
-                }
-            }
-           
-            if(PW.y > __MAINWND__->_maxy || PW.x > __MAINWND__->_maxx){
-                PN.y--;
-                PN.x+=d;
-                PW = p;
+                PN.x = (end_ind(PN.y)-1);
             }
         }
     }
@@ -222,44 +162,10 @@ void dec_y()
     {
         if(PN.y > 0)
         {
-            int x=PN.x;
-            int d = 0;
             PN.y--;
             if(get_symbol(PN.x, PN.y) == 0)
             {
-                d = PN.x - (end_ind(PN.y)-1);
-                PN.x -= d;
-            }
-
-            int a = strlen(&NOTE[PN.y][PN.x]);
-            int more1 = x > __MAINWND__->_maxx;
-            int more2 = a > __MAINWND__->_maxx - PW.x;
-
-            if(more1 || more2)
-            {
-                if(more1)
-                {
-                    PW.y-= x / (__MAINWND__->_maxx) + (x % __MAINWND__->_maxx > 0 && PW.x != __MAINWND__->_maxx);
-                }
-                if(more2)
-                {
-                    int c = a-(__MAINWND__->_maxx - PW.x);
-                    PW.y-= c / (__MAINWND__->_maxx) + (c % __MAINWND__->_maxx > 0)+(!more1);
-                }
-            } 
-            else
-            {
-                PW.y--;
-            }
-            
-            if(d != 0)
-            {
-                if(PN.x > __MAINWND__->_maxx){
-                    PW.x-=d;
-                }
-                else{
-                    PW.x=strlen(NOTE[PN.y])-1;
-                }
+                PN.x = (end_ind(PN.y)-1);
             }
         }
     }
@@ -274,62 +180,6 @@ int back_click(WINDOW *wnd)
     wmove(wnd, PW.y, PW.x);
     rewrite(wnd, 0);
     wprintw(wnd, " ");
-}
-
-int change_x(point p, short v)
-{
-    // if(v<0)
-    // {
-    //     if(p->x > 0 && isNote == 1)
-    //     {
-    //         p->x--;
-    //     } 
-    //     else if(p->x - strlen(HTOOL_MES) > 0 && isNote == 0){
-    //         p->x--; 
-    //     }
-    // }
-    // else if(v>0)
-    // {
-    //     if(get_symbol(p->x+1,p->y) != 0 || get_symbol(p->x+2, p->y) != 0)
-    //     {
-    //         p->x++;
-    //     }
-    // }
-    // return 1;
-}
-
-int change_y(point p, short v)
-{
-    // if(isNote == 0) return 1;
-
-    // if(v<0){
-    //     if(p->y > 0){
-    //         p->y--;
-
-    //         if(get_symbol(p->x, p->y) == 0)
-    //         {
-    //             p->x = end_ind(p->y)-1;
-    //         }
-    //     }
-    // }
-    // else if(v>0)
-    // {
-    //     if(p->y < LLN)
-    //     {
-    //         p->y++;
-            
-    //         if(p->y > __MAINWND__->_maxy){
-    //             rewrite_mwnd(p->y - __MAINWND__->_maxy / 4);
-    //         }
-            
-    //         if(get_symbol(p->x, p->y) == 0)
-    //         {
-    //             p->x = end_ind(p->y)-1;
-    //         }
-    //     }
-    // }
-    
-    // return 1;
 }
 
 int can_x(short v)

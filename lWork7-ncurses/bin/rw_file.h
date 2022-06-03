@@ -5,7 +5,7 @@
 #include "compare.h"
 
 
-u_short LLN;
+u_short num_lines;
 u_char isNote; 
 
 

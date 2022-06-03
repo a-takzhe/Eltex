@@ -42,7 +42,7 @@ int read_file(char *path, WINDOW* wnd)
     }
     wmove(wnd,0,0);
     wrefresh(wnd);
-    LLN = ln-1<0?0:ln-1;
+    num_lines = ln-1<0?0:ln-1;
 
     fclose(f);
     
@@ -52,7 +52,7 @@ int read_file(char *path, WINDOW* wnd)
 int rewrite(WINDOW* wnd, int d)
 {
     int ln=PN.y, col = PN.x+d;
-    while(ln <= LLN)
+    while(ln <= num_lines)
     {
         if(ln < wnd->_maxy){
             wprintw(wnd, "%s", &NOTE[ln][col]);
