@@ -34,14 +34,18 @@ int main_handler()
                 inc_x();
                 break;
             case KEY_BACKSPACE:
-                if(can_x(-1) == 1) break;
+                if(can_x(-1) == 0) break;
                 back_click(curw);
+                break;
+            case '\n':
+                if(can_y(+1) == 0) break;
+                new_line();
                 break;
             default:
                 if(can_x(+1) == 0) break;
                 wprintw(curw, "%c", key);    
-                insert((char)key);
-                rewrite(curw, 1);
+                ins_c = insert((char)key);
+                wprintw(curw, "%s", ins_c);
                 inc_x();           
                 break;
         }
@@ -171,29 +175,53 @@ void dec_y()
     }
 }
 
-
+int delete_row()
+{
+    int r = PN.y;
+    int c = 0;
+    NOTE[PN.y][PN.x] = '\n';
+    while(strlen(NOTE[r+1]) != 0)
+    {
+        strcpy(NOTE[r], NOTE[r+1]);
+        r++;
+        c=0;
+        while (NOTE[r][c] != 0)
+        {
+            NOTE[r][c++] = 0;
+        }
+    }
+    num_lines--;
+}
 
 int back_click(WINDOW *wnd)
 {
-    delete();
-    dec_x();
-    wmove(wnd, PW.y, PW.x);
-    rewrite(wnd, 0);
-    wprintw(wnd, " ");
+    if(PN.x == 0 && NOTE[PN.y][PN.x] == '\n')
+    {
+        delete_row();
+        rewrite_mwnd(PN.y);
+        PN.y--; PN.x = end_ind(PN.y)-1;
+    }
+    else if (PN.x != 0)
+    {
+        char* s = delete();
+        dec_x();
+        wmove(wnd, PN.y, PN.x);
+        wprintw(wnd, "%s", s);
+    }
 }
 
 int can_x(short v)
 {
     if(v<0)
     {
-    //    if(isNote){
-    //        return (PN.x > 0);
-    //    }
+       if(isNote){
+           return (PN.x > 0) || (PN.y > 0);
+       }
     }
     else if(v>0)
     {
         if(isNote){
-           return (PN.x < MAXCOL-2  && strlen(&NOTE[PN.y][PN.x])+PN.x < MAXCOL-2);
+           return (PN.x < MAXCOL-2  && strlen(NOTE[PN.y])+1 <= MAXCOL-2);
        }
     }
     return 0;
