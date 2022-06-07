@@ -10,6 +10,8 @@ void dec_y();
 void inc_y();
 int change_y(point p, short v);
 int can_x(short v);
+int can_y(short v);
+int new_line();
 
 int main_handler();
 int menu_processing(int key, WINDOW **curw);

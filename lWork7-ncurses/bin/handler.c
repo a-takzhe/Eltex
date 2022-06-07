@@ -15,7 +15,7 @@ int main_handler()
         if(menu_processing(key, &curw) == 1){
             continue;            
         }
-        if(key >= CTRL('A') && key <= CTRL('z')){
+        if(key >= CTRL('A') && key <= CTRL('z') && key != 0012){
             continue;
         }
         
@@ -37,7 +37,7 @@ int main_handler()
                 if(can_x(-1) == 0) break;
                 back_click(curw);
                 break;
-            case '\n':
+            case 0012:
                 if(can_y(+1) == 0) break;
                 new_line();
                 break;
@@ -60,8 +60,8 @@ int main_handler()
         else{
             wclear(__HTOOLWND__);
             wmove(__HTOOLWND__, 0, 0);
-            wprintw(__HTOOLWND__, "%c (%d-%d) (%d-%d)", (get_symbol(PN.x,PN.y)=='\n'?'_':get_symbol(PN.x,PN.y)),
-                     PW.y, size.ws_col, PN.y, PN.x);
+            wprintw(__HTOOLWND__, "%c (%o-%d) (%d-%d)", (get_symbol(PN.x,PN.y)=='\n'?'_':get_symbol(PN.x,PN.y)),
+                     key, size.ws_col, PN.y, PN.x);
             wrefresh(__HTOOLWND__);    
         }
         
@@ -175,11 +175,18 @@ void dec_y()
     }
 }
 
+int clear_row(int r){
+    int c = 0;
+    while(NOTE[r][c] != 0){
+        NOTE[r][c++] = 0;
+    }
+}
+
 int delete_row()
 {
     int r = PN.y;
     int c = 0;
-    NOTE[PN.y][PN.x] = '\n';
+    clear_row(r);
     while(strlen(NOTE[r+1]) != 0)
     {
         strcpy(NOTE[r], NOTE[r+1]);
@@ -208,6 +215,17 @@ int back_click(WINDOW *wnd)
         wmove(wnd, PN.y, PN.x);
         wprintw(wnd, "%s", s);
     }
+    else
+    {
+        if(strlen(NOTE[PN.y-1]) + strlen(NOTE[PN.y]) < MAXCOL-2){
+            int x = end_ind(PN.y-1)-1;
+            strcpy(&NOTE[PN.y-1][x], NOTE[PN.y]);
+            delete_row();
+            PN.y--; PN.x = end_ind(PN.y)-1;
+            rewrite_mwnd(PN.y);
+        }
+    }
+    return 1;
 }
 
 int can_x(short v)
@@ -225,4 +243,44 @@ int can_x(short v)
        }
     }
     return 0;
+}
+
+int can_y(short v)
+{
+    if(v > 0){
+        return PN.y+1 < MAXROW;
+    }
+    else{
+        return PN.y-1 >= 0;
+    }
+}
+
+int new_line()
+{
+    int r = num_lines;
+    while(r >= PN.y)
+    {
+        int c = 0;
+
+        if(r != PN.y)
+        {
+            strcpy(NOTE[r+1], NOTE[r]);
+        }
+        else
+        {
+            strcpy(NOTE[r+1], &NOTE[r][PN.x]);
+            NOTE[r][PN.x] = '\n';
+            c = PN.x+1;
+        }
+        
+        while(NOTE[r][c] != 0)
+        {
+            NOTE[r][c++] = 0;
+        }
+        r--;
+    }
+    rewrite_mwnd(PN.y);
+    inc_y();
+    PN.x = 0;
+    num_lines++;
 }
