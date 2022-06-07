@@ -3,7 +3,6 @@
 int main_handler()
 {
     int key;
-    char *ins_c;
     WINDOW* curw = __MAINWND__;
     isNote = 1;
 
@@ -39,18 +38,13 @@ int main_handler()
                 break;
             case 0012:
                 if(can_y(+1) == 0) break;
-                new_line();
+                if(new_line() == 0) break;
                 break;
             default:
                 if(can_x(+1) == 0) break;
-                wprintw(curw, "%c", key);    
-                ins_c = insert((char)key);
-                wprintw(curw, "%s", ins_c);
-                inc_x();           
+                insert_symbol(key, curw);
                 break;
         }
-        //wmove(curw, p.y, p.x);
-        //chtype sym = winch(curw);
         
         if(curw == __HTOOLWND__){
             // wmove(__MAINWND__, __MAINWND__->_maxy, 0);
@@ -175,59 +169,6 @@ void dec_y()
     }
 }
 
-int clear_row(int r){
-    int c = 0;
-    while(NOTE[r][c] != 0){
-        NOTE[r][c++] = 0;
-    }
-}
-
-int delete_row()
-{
-    int r = PN.y;
-    int c = 0;
-    clear_row(r);
-    while(strlen(NOTE[r+1]) != 0)
-    {
-        strcpy(NOTE[r], NOTE[r+1]);
-        r++;
-        c=0;
-        while (NOTE[r][c] != 0)
-        {
-            NOTE[r][c++] = 0;
-        }
-    }
-    num_lines--;
-}
-
-int back_click(WINDOW *wnd)
-{
-    if(PN.x == 0 && NOTE[PN.y][PN.x] == '\n')
-    {
-        delete_row();
-        rewrite_mwnd(PN.y);
-        PN.y--; PN.x = end_ind(PN.y)-1;
-    }
-    else if (PN.x != 0)
-    {
-        char* s = delete();
-        dec_x();
-        wmove(wnd, PN.y, PN.x);
-        wprintw(wnd, "%s", s);
-    }
-    else
-    {
-        if(strlen(NOTE[PN.y-1]) + strlen(NOTE[PN.y]) < MAXCOL-2){
-            int x = end_ind(PN.y-1)-1;
-            strcpy(&NOTE[PN.y-1][x], NOTE[PN.y]);
-            delete_row();
-            PN.y--; PN.x = end_ind(PN.y)-1;
-            rewrite_mwnd(PN.y);
-        }
-    }
-    return 1;
-}
-
 int can_x(short v)
 {
     if(v<0)
@@ -255,32 +196,78 @@ int can_y(short v)
     }
 }
 
+
+void insert_symbol(int key, WINDOW* wnd)
+{
+    char* ss = insert((char)key);
+    wprintw(wnd, "%c%s", key, ss);
+    inc_x();           
+}
+
 int new_line()
 {
-    int r = num_lines;
-    while(r >= PN.y)
+    if(isNote)
     {
-        int c = 0;
+        if(mem_new_line() == 0)
+        {
+            return 0;
+        }
+        rewrite_mwnd(PN.y);
+        PN.x = 0;
+        inc_y();
 
-        if(r != PN.y)
-        {
-            strcpy(NOTE[r+1], NOTE[r]);
-        }
-        else
-        {
-            strcpy(NOTE[r+1], &NOTE[r][PN.x]);
-            NOTE[r][PN.x] = '\n';
-            c = PN.x+1;
-        }
-        
-        while(NOTE[r][c] != 0)
+        return 1;
+    }
+
+    return 0;
+}
+
+
+int delete_row()
+{
+    int r = PN.y;
+    int c = 0;
+    clear_nrow(r, 0);
+    while(strlen(NOTE[r+1]) != 0)
+    {
+        strcpy(NOTE[r], NOTE[r+1]);
+        r++;
+        c=0;
+        while (NOTE[r][c] != 0)
         {
             NOTE[r][c++] = 0;
         }
-        r--;
     }
-    rewrite_mwnd(PN.y);
-    inc_y();
-    PN.x = 0;
-    num_lines++;
+    num_lines--;
 }
+
+int back_click(WINDOW *wnd)
+{
+    if(PN.x == 0 && get_cur_symbol() == '\n')
+    {
+        delete_row();
+        rewrite_mwnd(PN.y);
+        dec_y();
+        PN.x = end_ind(PN.y)-1;
+    }
+    else if (PN.x != 0)
+    {
+        char* s = delete();
+        dec_x();
+        wmove(wnd, PN.y, PN.x);
+        wprintw(wnd, "%s", s);
+    }
+    else
+    {
+        if(strlen(NOTE[PN.y-1]) + strlen(NOTE[PN.y]) < MAXCOL-2)
+        {
+            int x = end_ind(PN.y-1)-1;
+            strcpy(&NOTE[PN.y-1][x], NOTE[PN.y]);
+            delete_row();
+            PN.y--; PN.x = x;
+            rewrite_mwnd(PN.y);
+        }
+    }
+    return 1;
+}
+

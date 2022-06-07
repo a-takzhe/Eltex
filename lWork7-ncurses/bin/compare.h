@@ -1,38 +1,26 @@
+#ifndef COMPARE_H__
+#define COMPARE_H__
+
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <curses.h>
 #include <signal.h>
 #include "read_config.h"
-
+#include "data.h"
 
 #define TEXT_COLOR 8
 #define MAIN_BACK_COLOR 9
 #define CONTROL_BACK_COLOR 10
-
-
-#define HTOOL_MES "[Insert File Name]: "
-#define MAXCOL 128
-#define MAXCOL2 64
-#define MAXROW 64
-
-typedef struct PNT
-{
-    unsigned short x;
-    unsigned short y;
-    unsigned short max_X, max_y;
-} point;
 
 WINDOW *__MAINWND__;
 WINDOW *__HTOOLWND__;
 WINDOW *__TOOLSWND__;
 MENU *__MENU__;
 MENU *CURMEN;
+
+struct winsize size;
 short wdelta;
 
-char NOTE[MAXROW][MAXCOL];
-char TROW[MAXCOL2];
-struct winsize size;
-point PN, PT, PW;
 
 enum COLOR_SHEMA
 {
@@ -47,4 +35,6 @@ int init();
 int fill_toolbar(MENU *menu);
 int wend();
 int rewrite_mwnd(int r);
+
+#endif
 
