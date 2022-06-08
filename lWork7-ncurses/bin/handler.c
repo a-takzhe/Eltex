@@ -34,7 +34,7 @@ int main_handler()
                 break;
             case KEY_BACKSPACE:
                 if(can_x(-1) == 0) break;
-                back_click(curw);
+                delete_symbol(curw);
                 break;
             case 0012:
                 if(can_y(+1) == 0) break;
@@ -199,7 +199,7 @@ int can_y(short v)
 
 void insert_symbol(int key, WINDOW* wnd)
 {
-    char* ss = insert((char)key);
+    char* ss = mem_ins_sym((char)key);
     wprintw(wnd, "%c%s", key, ss);
     inc_x();           
 }
@@ -223,34 +223,19 @@ int new_line()
 }
 
 
-int delete_row()
-{
-    int r = PN.y;
-    int c = 0;
-    clear_nrow(r, 0);
-    while(strlen(NOTE[r+1]) != 0)
-    {
-        strcpy(NOTE[r], NOTE[r+1]);
-        r++;
-        c=0;
-        while (NOTE[r][c] != 0)
-        {
-            NOTE[r][c++] = 0;
-        }
-    }
-    num_lines--;
-}
 
-int back_click(WINDOW *wnd)
+
+int delete_symbol(WINDOW *wnd)
 {
-    if(PN.x == 0 && get_cur_symbol() == '\n')
+
+    /*if(PN.x == 0 && get_cur_symbol() == '\n')
     {
         delete_row();
         rewrite_mwnd(PN.y);
         dec_y();
         PN.x = end_ind(PN.y)-1;
     }
-    else if (PN.x != 0)
+    else*/ if (PN.x != 0)
     {
         char* s = delete();
         dec_x();

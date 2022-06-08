@@ -14,10 +14,10 @@ int can_x(short v);
 int can_y(short v);
 
 void insert_symbol(int key, WINDOW* wnd);
+int delete_symbol(WINDOW *wnd);
 int new_line();
 int main_handler();
 int menu_processing(int key, WINDOW **curw);
-int back_click(WINDOW *wnd);
 void menu_back(WINDOW **curw);
 void to_menu(WINDOW **curw);
 #endif

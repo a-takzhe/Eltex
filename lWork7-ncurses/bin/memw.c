@@ -3,8 +3,11 @@
 char* insert_note(char c);
 char* insert_trow(int x, char c);
 
-char* delete_note();
+char* del_sym_note();
+int mem_del_row();
+int move_lines_up();
 char* delete_trow(int x);
+char* delete_note();
 
 
 
@@ -52,7 +55,7 @@ char get_cur_symbol()
 }
 
 
-char* insert(char c)
+char* mem_ins_sym(char c)
 {
     if (isNote)
     {
@@ -137,6 +140,45 @@ char* delete()
     }
 }
 
+// char* del_sym_note()
+// {
+
+// }
+
+int delete_row()
+{
+    int r = PN.y;
+    int c = 0;
+    clear_nrow(r, 0);
+    while(strlen(NOTE[r+1]) != 0)
+    {
+        strcpy(NOTE[r], NOTE[r+1]);
+        r++;
+        c=0;
+        while (NOTE[r][c] != 0)
+        {
+            NOTE[r][c++] = 0;
+        }
+    }
+    num_lines--;
+}
+
+char* delete_note()
+{
+    int i = PN.x;
+    int sl;
+    char* bf;
+
+    sl = strlen(&NOTE[PN.y][PN.x]);
+    bf = (char*)malloc(sizeof(char)*sl+1);
+
+    strncpy(bf, &NOTE[PN.y][PN.x], sl+1);
+    NOTE[PN.y][end_ind(PN.y)] = 0;
+    strcpy(&NOTE[PN.y][PN.x-1], bf);
+
+    return bf;
+}
+
 char* delete_trow(int x)
 {
     int i = x-strlen(HTOOL_MES)-1;
@@ -150,27 +192,6 @@ char* delete_trow(int x)
         i++;
     }
     strcpy(&TROW[--x], bf);
-    return bf;
-}
-
-char* delete_note()
-{
-    int i = PN.x;
-    int sl;
-    char* bf;
-
-    if(NOTE[PN.y][i] == '\n' && i==0)
-    {
-
-    }
-
-    sl = strlen(&NOTE[PN.y][PN.x]);
-    bf = (char*)malloc(sizeof(char)*sl+1);
-
-    strncpy(bf, &NOTE[PN.y][PN.x], sl+1);
-    NOTE[PN.y][end_ind(PN.y)] = 0;
-    strcpy(&NOTE[PN.y][PN.x-1], bf);
-
     return bf;
 }
 
