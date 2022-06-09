@@ -13,6 +13,10 @@ typedef struct PNT
     unsigned short max_X, max_y;
 } point;
 
+WINDOW *__MAINWND__;
+WINDOW *__HTOOLWND__;
+WINDOW *__TOOLSWND__;
+
 char NOTE[MAXROW][MAXCOL];
 char TROW[MAXCOL2];
 

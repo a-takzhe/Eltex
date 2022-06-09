@@ -28,7 +28,7 @@ int rewrite_mwnd(int r)
     wmove(__MAINWND__, r, 0);
     wclrtobot(__MAINWND__);
     char *bf;
-    while(NOTE[r][0] != 0 && r < __MAINWND__->_maxy)
+    while(NOTE[r][0] != 0 && r <= __MAINWND__->_maxy)
     {
         bf = (char*)calloc(__MAINWND__->_maxx, sizeof(char));
 

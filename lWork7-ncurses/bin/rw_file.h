@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "memw.h"
 
-int read_file(char *path, WINDOW* wnd);
+char F_NAME[MAXCOL2];
+int read_file(char *path);
+void write_fname(WINDOW* wnd);
 
 #endif
