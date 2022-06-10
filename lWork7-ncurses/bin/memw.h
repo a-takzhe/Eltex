@@ -7,6 +7,9 @@
 u_short num_lines;
 u_char isNote; 
 
+void init_emp_note();
+
+void clear_note();
 void clear_nrow(int r, int c);
 void clear_trow(int c);
 char get_symbol(int x, int y);

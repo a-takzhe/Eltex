@@ -15,6 +15,9 @@ int main(int argc, char ** argv)
             exit(EXIT_FAILURE);
         }
     }
+    else{
+        init_emp_note();
+    }
     main_handler();
     wend();
     

@@ -10,6 +10,11 @@ int main_handler()
 
     while (key = wgetch(curw))
     {
+        if(curw == __HTOOLWND__)
+        {
+           htool_err(0);
+        }
+
         if(key == KEY_F(3) || key == 0033){
             break;
         }
@@ -70,27 +75,30 @@ int main_handler()
 
 int menu_processing(int key, WINDOW **curw)
 {
-    if(key == CTRL('X')){
-        if(CURMEN != __MENU__){
+    if(CURMEN != __MENU__){
+        if(key == CTRL('X'))
+        {
             to_note(curw, 1);
             return 1;
         }
-        return 0;
-    }
-    else if(key == 0012)
-    {
-        if(strstr(CURMEN->func, "Open") && strlen(TROW) > 0)
+        else if(key == NEW_LINE)
         {
-            if(read_file(TROW) == 1)
+            if(strstr(CURMEN->func, "Open") && strlen(TROW) > 0)
             {
-                to_note(curw, 0);
-                return 1;
+                if(read_file(TROW) == 1)
+                {
+                    to_note(curw, 0);
+                    return 1;
+                }
+                htool_err(ERROR_COLOR);
             }
+            return 0;
+        }
+        else if(key == CTRL('S'))
+        {
+            return 1;
         }
         return 0;
-    }
-    else if(key == CTRL('S')){
-        return 1;
     }
 
     MENU* tmp = get_menu_by_key(key, __MENU__);   
@@ -138,7 +146,8 @@ void inc_x()
     if(isNote)
     {
         if(PN.x < (MAXCOL-2) && PN.x < size.ws_col -1 && 
-           (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
+           (get_symbol(PN.x, PN.y) != 0 && get_symbol(PN.x, PN.y) != NEW_LINE))
+        //    (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
         {
             PN.x++;
         }

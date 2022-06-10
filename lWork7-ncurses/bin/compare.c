@@ -21,12 +21,25 @@ void init_color_pairs()
     
     init_pair(MAINWND_COLOR, TEXT_COLOR, MAIN_BACK_COLOR);
     init_pair(TOOLSWND_COLOR, COLOR_WHITE, CONTROL_BACK_COLOR);
+    init_pair(ERROR_COLOR, COLOR_RED, TEXT_COLOR);
+}
+
+void htool_err(int shema)
+{
+    if(shema == ERROR_COLOR){
+        wbkgd(__HTOOLWND__, COLOR_PAIR(ERROR_COLOR));    
+    }
+    else{
+        wbkgd(__HTOOLWND__, COLOR_PAIR(MAINWND_COLOR) | A_REVERSE);
+    }
+    wrefresh(__HTOOLWND__);
 }
 
 int rewrite_mwnd(int r)
 {
     wmove(__MAINWND__, r, 0);
     wclrtobot(__MAINWND__);
+    
     char *bf;
     while(NOTE[r][0] != 0 && r <= __MAINWND__->_maxy)
     {
@@ -37,6 +50,7 @@ int rewrite_mwnd(int r)
         r++;
         free(bf);
     }
+    wrefresh(__MAINWND__);
 }
 
 void sig_winch(int signo)

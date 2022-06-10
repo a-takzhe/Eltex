@@ -8,6 +8,10 @@ char* del_trow_sym();
 int mem_del_row();
 int move_lines_up();
 
+void init_emp_note()
+{
+    NOTE[0][0] = '\n';
+}
 
 
 void clear_nrow(int r, int c)
@@ -15,6 +19,21 @@ void clear_nrow(int r, int c)
     while(NOTE[r][c] != 0)
     {
         NOTE[r][c++] = 0;
+    }
+}
+
+void clear_note()
+{
+    int i = 0, j = 0;
+    while (i < MAXROW)
+    {
+        j=0;
+        while (j<MAXCOL)
+        {
+            NOTE[i][j] = 0;
+            j++;
+        }
+        i++;
     }
 }
 

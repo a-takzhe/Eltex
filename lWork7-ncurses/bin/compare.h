@@ -24,7 +24,8 @@ enum COLOR_SHEMA
 {
     MAINWND_COLOR=1,
     TOOLSWND_COLOR=2,
-    TEST_COLOR = 3
+    TEST_COLOR = 3,
+    ERROR_COLOR = 4
 };
 
 
@@ -33,6 +34,7 @@ int init();
 int fill_toolbar(MENU *menu);
 int wend();
 int rewrite_mwnd(int r);
+void htool_err(int shema);
 
 #endif
 

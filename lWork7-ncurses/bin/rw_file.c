@@ -16,6 +16,13 @@ int check_file_size(FILE *f)
     return OK;
 }
 
+void clear_fname(){
+    int i = 0;
+    while(i < MAXCOL2){
+        F_NAME[i] = 0;
+    }
+}
+
 int read_file(char *path)
 {
     FILE* f;
@@ -37,9 +44,9 @@ int read_file(char *path)
     }
 
     num_lines = 0;
+    clear_note();
     while((fgets(buffer, MAXCOL, f)) != 0 && num_lines < MAXROW)
     {
-        clear_nrow(num_lines, 0);
         strncpy(NOTE[num_lines], buffer, MAXCOL);
         num_lines++;
     }
@@ -53,7 +60,7 @@ int read_file(char *path)
 
 void write_fname(WINDOW* wnd)
 {
-    if(strlen(F_NAME) > 0)
+    if(strlen(F_NAME) > 0 && strstr(CURMEN->func, "Save") != NULL)
     {
         wprintw(wnd, F_NAME);
         PN.x += strlen(F_NAME);
