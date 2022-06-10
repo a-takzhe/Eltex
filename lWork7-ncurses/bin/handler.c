@@ -75,8 +75,13 @@ int main_handler()
 
 int menu_processing(int key, WINDOW **curw)
 {
-    if(CURMEN != __MENU__){
-        if(key == CTRL('X'))
+    if(CURMEN != __MENU__)
+    {
+        if(key >= KEY_F0 && key <= KEY_F(12))
+        {
+            return 1;
+        }
+        else if(key == CTRL('X'))
         {
             to_note(curw, 1);
             return 1;

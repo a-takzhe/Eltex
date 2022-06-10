@@ -28,19 +28,19 @@ int read_file(char *path)
     FILE* f;
     char buffer[MAXCOL] = {0};
 
+    if((f = fopen(path, "r")) == NULL){
+        return ERR;
+    }
+    if(check_file_size(f) == ERR){
+        return ERR;
+    }
+    
     char* fname = rindex(path, '/');
     if(fname == NULL){
         strcpy(F_NAME, path);
     }
     else{
         strcpy(F_NAME, ++fname);
-    }
-
-    if((f = fopen(path, "r")) == NULL){
-        return ERR;
-    }
-    if(check_file_size(f) == ERR){
-        return ERR;
     }
 
     num_lines = 0;
