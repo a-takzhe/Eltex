@@ -88,20 +88,27 @@ int menu_processing(int key, WINDOW **curw)
         }
         else if(key == NEW_LINE)
         {
-            if(strstr(CURMEN->func, "Open") && strlen(TROW) > 0)
+            if(strlen(TROW) > 0)
             {
-                if(read_file(TROW) == 1)
+                if(strstr(CURMEN->func, "Open"))
                 {
-                    to_note(curw, 0);
-                    return 1;
+                    if(read_file(TROW) == 1)
+                    {
+                        to_note(curw, 0);
+                        return 1;
+                    }
                 }
-                htool_err(ERROR_COLOR);
+                else if(strstr(CURMEN->func, "Save"))
+                {
+                    if(wFile() == 1)
+                    {
+                        to_note(curw, 0);
+                        return 1; 
+                    }
+                }   
             }
+            htool_err(ERROR_COLOR);
             return 0;
-        }
-        else if(key == CTRL('S'))
-        {
-            return 1;
         }
         return 0;
     }

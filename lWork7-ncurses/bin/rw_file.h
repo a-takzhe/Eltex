@@ -7,7 +7,8 @@
 #include "memw.h"
 
 char F_NAME[MAXCOL2];
-int read_file(char *path);
-void write_fname(WINDOW* wnd);
 
+int read_file(char *path);
+int wFile();
+void write_fname(WINDOW* wnd);
 #endif

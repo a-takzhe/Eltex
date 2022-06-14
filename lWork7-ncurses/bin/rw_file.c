@@ -20,6 +20,7 @@ void clear_fname(){
     int i = 0;
     while(i < MAXCOL2){
         F_NAME[i] = 0;
+        i++;
     }
 }
 
@@ -34,7 +35,7 @@ int read_file(char *path)
     if(check_file_size(f) == ERR){
         return ERR;
     }
-    
+
     char* fname = rindex(path, '/');
     if(fname == NULL){
         strcpy(F_NAME, path);
@@ -68,3 +69,42 @@ void write_fname(WINDOW* wnd)
     }
 }
 
+char* get_fname()
+{
+    if(strlen(TROW) !=0){
+        return TROW;
+    }
+    else if(strlen(F_NAME) != 0){
+        return F_NAME;
+    }
+    else{
+        return "";
+    }
+}
+
+int wFile()
+{
+    char* fname = get_fname();
+    if(strlen(fname) == 0){
+        return ERR;
+    }
+    clear_fname();
+    strcpy(F_NAME, fname);
+
+    FILE* f;
+    char buffer[MAXCOL] = {0};
+
+    if((f = fopen(fname, "w+")) == NULL){
+        return ERR;
+    }
+
+    int ln = 0;
+    while(ln <= num_lines)
+    {
+        fputs(NOTE[ln], f);
+        ln++;
+    }    
+    fclose(f);
+
+    return 1;
+}
