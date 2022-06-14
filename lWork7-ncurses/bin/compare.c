@@ -93,6 +93,8 @@ int init()
         wend();
     }
 
+    setlocale(LC_ALL, "");
+    
     initscr();
     cbreak();
     noecho();

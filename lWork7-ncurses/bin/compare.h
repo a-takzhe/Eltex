@@ -2,6 +2,7 @@
 #define COMPARE_H__
 
 #include <termios.h>
+#include <locale.h>
 #include <sys/ioctl.h>
 #include <curses.h>
 #include <signal.h>

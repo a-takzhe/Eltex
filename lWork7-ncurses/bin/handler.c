@@ -53,17 +53,19 @@ int main_handler()
                 break;
         }
         
-        if(curw == __HTOOLWND__)
+        if(curw == __MAINWND__)
         {
-            // wmove(__MAINWND__, 10, 0);
-            // wprintw(__MAINWND__, "%c (%d-%d)", get_cur_symbol(), PN.y, PN.x);
-            // wrefresh(__MAINWND__);
-        }
-        else{
             wclear(__HTOOLWND__);
             wmove(__HTOOLWND__, 0, 0);
-            wprintw(__HTOOLWND__, "%c (%o-%d) (%d-%d)", (get_symbol(PN.x,PN.y)=='\n'?'_':get_symbol(PN.x,PN.y)),
-                     key, size.ws_col, PN.y, PN.x);
+            if(get_symbol(PN.x,PN.y)=='\n')
+            {
+                waddch(__HTOOLWND__, 107 | A_ALTCHARSET);
+            }
+            else
+            {
+                wprintw(__HTOOLWND__, "%c", get_symbol(PN.x,PN.y));
+            }
+            wprintw(__HTOOLWND__, " (%d-%d)", PN.y, PN.x);
             wrefresh(__HTOOLWND__);    
         }
         

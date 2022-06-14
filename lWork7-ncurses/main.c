@@ -3,7 +3,6 @@
 
 int main(int argc, char ** argv)
 {   
-
     if(init() == ERR)
     {
         exit(EXIT_FAILURE);

@@ -36,13 +36,8 @@ int read_file(char *path)
         return ERR;
     }
 
-    char* fname = rindex(path, '/');
-    if(fname == NULL){
-        strcpy(F_NAME, path);
-    }
-    else{
-        strcpy(F_NAME, ++fname);
-    }
+    clear_fname();
+    strcpy(F_NAME, path);
 
     num_lines = 0;
     clear_note();
