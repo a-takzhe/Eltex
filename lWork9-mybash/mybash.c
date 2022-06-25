@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
         if(isExit(str1)) break;
 
-        // str[strlen(str)-1]=0;
+        str[strlen(str)-1]=0;
 
         // printf("0>%c<\n", str[0]);
         // printf("1>%c<\n", str[1]);
