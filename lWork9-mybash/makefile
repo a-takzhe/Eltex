@@ -12,7 +12,7 @@ mybash.o: mybash.s
 	gcc mybash.s -c 
 
 mybash.s: mybash.i
-	gcc mybash.i -S -o -g -masm=intel
+	gcc mybash.i -S -O3 -g -masm=intel 
 
 mybash.i: mybash.c
 	gcc -E mybash.c -o mybash.i

@@ -1,12 +1,13 @@
 #include <stdio.h>
+#include <termios.h>
 #include "lib/execve.h"
-#include "lib/strok.h"
 
 int main(int argc, char** argv)
 {
     char* str = NULL;
-    char* str1 = NULL;
-    size_t* len;
+    size_t len;
+    ssize_t s_len;
+    short syn_fl = 0;
 
     while (1)
     {
@@ -17,27 +18,57 @@ int main(int argc, char** argv)
         printf("~print command >> ");
         printf("\033[0m");//reset
         
-        if(getline(&str1, len, stdin) == -1)
+        if((s_len=getline(&str, &len, stdin)) == -1)
         {
-            perror("getline my");
+            perror("getline");
+            free(str);
             exit(EXIT_FAILURE);
         }
 
-        if(isExit(str1)) break;
-
-        str[strlen(str)-1]=0;
-
-        // printf("0>%c<\n", str[0]);
-        // printf("1>%c<\n", str[1]);
-        // printf("S>%s<\n", str);
-        // printf("L>%s<\n", str+5);
-        // char* c = (str + 5);
-        // c = '\0';
-
-        // exec(&str);
-        // free(str);        
+        if(uEscape(str)) 
+        {
+            puts("can't use escape sequence");
+            continue;
+        }            
+        if(isExit(str)) break;
+        str[s_len-1]=0;
+        
+        exec(str);
     }
     
-    free(str1);
+    free(str);
     exit(EXIT_SUCCESS);    
 }
+
+
+
+//     struct termios old_term, new_term;
+//     char c;
+
+//   /* Get old terminal settings for further restoration */
+//   tcgetattr(fileno(stdin), &old_term);
+
+//   /* Copy the settings to the new value */
+//   new_term = old_term;
+
+//   /* Disable echo of the character and line buffering */
+//   new_term.c_lflag &= (~ICANON & ~ECHO);
+//   /* Set new settings to the terminal */
+//   tcsetattr(fileno(stdin), TCSANOW, &new_term);
+
+//   while ((c = getchar()) != 'q') {
+//     if(c==27)
+//     {
+//         syn_fl = 3;
+//     }
+//     if(syn_fl!=0)
+//     {
+//         syn_fl--;
+//         continue;
+//     }
+//     printf("You pressed: %c\n", c);
+//   }
+
+
+//   /* Restore old settings */
+//   tcsetattr(fileno(stdin), TCSANOW, &old_term);

@@ -3,6 +3,9 @@
 *.exe
 *.so
 *.o
+*.s
 *.a
+*.i
 main
 .vscode
+mybash
