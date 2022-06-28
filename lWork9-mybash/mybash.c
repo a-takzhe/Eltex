@@ -41,7 +41,6 @@ int main(int argc, char** argv)
 }
 
 
-
 //     struct termios old_term, new_term;
 //     char c;
 
