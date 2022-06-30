@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdatomic.h>
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
@@ -37,6 +38,14 @@ static void* do_sync(void* arg)
     }
 }
 
+static void* do_atomic(void* arg)
+{
+    for (size_t i = 0; i < NN; i++)
+    {
+        atomic_fetch_add(&A, 1);
+    }
+}
+
 void do_onethread()
 {
     for (size_t i = 0; i < N; i++)
@@ -53,7 +62,7 @@ void main(int argc, char* argv[])
     int opt, err, npthread;
     pthread_t thread_id[100];
 
-    while((opt = getopt(argc, argv, "lp:s:a:")) != -1)
+    while((opt = getopt(argc, argv, "lp:s:a:c:")) != -1)
     {
         switch (opt)
         {
@@ -95,6 +104,25 @@ void main(int argc, char* argv[])
                 {
                     err = pthread_create(&thread_id[i], NULL,
                             do_sync, &npthread);
+                    if (err != 0)
+                        handle_error_en(err, "pthread_create");
+                }
+                for (size_t i = 0; i < npthread; i++)
+                {
+                    err = pthread_join(thread_id[i], NULL);
+                    if (err != 0)
+                        handle_error_en(err, "pthread_join");
+                }
+                break;
+
+            case 'c':
+                puts("start atomic!!");
+                npthread = atoi(optarg);
+                NN = N/npthread;
+                for (size_t i = 0; i < npthread; i++)
+                {
+                    err = pthread_create(&thread_id[i], NULL,
+                            do_atomic, &npthread);
                     if (err != 0)
                         handle_error_en(err, "pthread_create");
                 }
