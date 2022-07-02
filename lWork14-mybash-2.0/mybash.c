@@ -2,6 +2,13 @@
 #include <termios.h>
 #include "lib/execve.h"
 
+#define handle_error_en(en, msg) \
+        do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
+
+#define handle_error(msg) \
+        do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+
 int main(int argc, char** argv)
 {
     char* str = NULL;
@@ -11,63 +18,27 @@ int main(int argc, char** argv)
 
     while (1)
     {
-        printf("\033[1m");//bold
-        printf("\033[1;36m");//cyan
+        printf("\033[1m");            //bold
+        printf("\033[1;36m");         //cyan
         printf("%s", argv[0]);
-        printf("\033[1;33m");//yellow
+        printf("\033[1;33m");         //yellow
         printf("~print command >> ");
-        printf("\033[0m");//reset
+        printf("\033[0m");            //reset
         
-        if((s_len=getline(&str, &len, stdin)) == -1)
-        {
-            perror("getline");
+        s_len = getline(&str, &len, stdin); 
+        
+        if(s_len == -1){
             free(str);
-            exit(EXIT_FAILURE);
+            handle_error("getline");
         }
-
-        if(uEscape(str)) 
-        {
-            puts("can't use escape sequence");
+        if(uEscape(str)){
+            puts("don't use escape sequences");
             continue;
         }            
-        if(isExit(str)) break;
-        str[s_len-1]=0;
-        
+        str[s_len-1] = 0;        
         exec(str);
     }
     
     free(str);
-    exit(EXIT_SUCCESS);    
+    exit(0);
 }
-
-
-//     struct termios old_term, new_term;
-//     char c;
-
-//   /* Get old terminal settings for further restoration */
-//   tcgetattr(fileno(stdin), &old_term);
-
-//   /* Copy the settings to the new value */
-//   new_term = old_term;
-
-//   /* Disable echo of the character and line buffering */
-//   new_term.c_lflag &= (~ICANON & ~ECHO);
-//   /* Set new settings to the terminal */
-//   tcsetattr(fileno(stdin), TCSANOW, &new_term);
-
-//   while ((c = getchar()) != 'q') {
-//     if(c==27)
-//     {
-//         syn_fl = 3;
-//     }
-//     if(syn_fl!=0)
-//     {
-//         syn_fl--;
-//         continue;
-//     }
-//     printf("You pressed: %c\n", c);
-//   }
-
-
-//   /* Restore old settings */
-//   tcsetattr(fileno(stdin), TCSANOW, &old_term);

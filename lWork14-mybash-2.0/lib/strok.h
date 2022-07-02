@@ -9,6 +9,7 @@ int isExit(char* str);
 int uEscape(char* str);
 int fillargv(char** argv, char* str);
 int get_nparam(char* str);
+int get_nfunc(char* str);
 
 
 #endif
