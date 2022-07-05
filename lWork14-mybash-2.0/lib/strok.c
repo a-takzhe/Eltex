@@ -14,10 +14,6 @@ int uEscape(char* str)
     return 0;
 }
 
-int get_nfunc(char* str)
-{
-    
-}
 
 int get_nparam(char* str)
 {

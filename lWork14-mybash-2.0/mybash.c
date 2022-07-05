@@ -2,12 +2,6 @@
 #include <termios.h>
 #include "lib/execve.h"
 
-#define handle_error_en(en, msg) \
-        do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
-
-#define handle_error(msg) \
-        do { perror(msg); exit(EXIT_FAILURE); } while (0)
-
 
 int main(int argc, char** argv)
 {
@@ -15,7 +9,8 @@ int main(int argc, char** argv)
     size_t len;
     ssize_t s_len;
     short syn_fl = 0;
-
+    
+    initdesc();
     while (1)
     {
         printf("\033[1m");            //bold

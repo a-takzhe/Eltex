@@ -8,7 +8,19 @@
 #include <sys/resource.h> 
 #include <unistd.h>
 
+#define handle_error_en(en, msg) \
+        do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
+
+#define handle_error(msg) \
+        do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+
+#define BUFSIZE 256  
+
+char* GLOB_BUFF[BUFSIZE];
+int mystdout, mystdin;
 
 int exec(char* str);
+void initdesc();
 
 #endif
