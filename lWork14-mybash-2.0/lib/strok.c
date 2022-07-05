@@ -14,7 +14,6 @@ int uEscape(char* str)
     return 0;
 }
 
-
 int get_nparam(char* str)
 {
     char* tmpstr = (char*)calloc(strlen(str), sizeof(char));
@@ -51,4 +50,16 @@ int fillargv(char** argv, char* str)
 
     free(tmpstr);
     return 1;
+}
+
+int get_nfunc(char* str)
+{
+    int f=0;
+
+    for (size_t i = 0; i < strlen(str); i++)
+    {
+        if(*(str+i) == '|') f++;
+    }
+    
+    return f+1;    
 }

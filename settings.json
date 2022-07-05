@@ -1,0 +1,85 @@
+{
+    "window.zoomLevel": -1,
+    "workbench.colorCustomizations": {
+        // "editor.background": "#282c34",
+        // "sideBar.background": "#1C2128"
+    },
+    "editor.tokenColorCustomizations": {
+        "[Default Dark+]": {
+            "textMateRules": [
+                {
+                    "scope":[ "comment"],
+                    "settings": { "foreground": "#9197a1"}
+                },
+                {
+                    "scope": ["variable"],
+                    "settings": {"foreground": "#abb2bf"}
+                },
+                {
+                    "scope":[
+                        "entity.name.function",
+                        "support.function",
+                    ],
+                    "settings": {"foreground": "#61afef"}
+                },
+                {
+                    "scope": [
+                        // "variable.parameter","variable.other.readwrite", "variable.other", "variable.name", "variable.language", "variable",
+                        // "support.variable", "support.type.property-name", "support.type", "support.other", "support.function", "support.constant", "support.class", "support",
+                        // "strong", 
+                        // "string.unquoted",
+                        // "storage", "storage.modifier", "storage.type",
+                        // "entity.name", "entity", "entity.name.class", "entity.name.function", "entity.name.method", "entity.name.section", "entity.name.selector", 
+                        //"entity.other", "entity.other.attribute-name", "entity.other.inherited-class","entity.name.namespace",
+                        // "emphasis",
+                        // "invalid", "invalid.deprecated", "invalid.illegal",
+                        // "keyword","keyword.control", "keyword.other",
+                        
+                        
+                        // "markup", "markup.bold", "markup.changed", "markup.deleted", "markup.heading", "markup.inline.raw", "markup.inserted", "markup.italic", "markup.list",
+                        // "markup.list.numbered", "markup.list.unnumbered", "markup.other", "markup.quote", "markup.raw", "markup.underline", "markup.underline.link",
+                        // "meta","meta.block","meta.cast","meta.class","meta.function-call","meta.preprocessor","meta.return-type","meta.selector","meta.tag","meta.type","meta.type.annotation",
+                        // "punctuation.definition.string.begin", "punctuation.definition.string.end", "punctuation.separator", "punctuation.separator.continuation", "punctuation.terminator",
+                        // "storage","storage.modifier","storage.type",
+                        // "comment", "comment.block", "comment.block.documentation", "comment.line",
+                        // "string","string.interpolated","string.other","string.quoted","string.quoted.double","string.quoted.other","string.quoted.single","string.quoted.triple",
+                        // "string.regexp", "string.unquoted",
+                        // "constant","constant.character","constant.character.escape","constant.numeric.float","constant.numeric", "constant.numeric.hex","constant.numeric.integer",
+                        // "constant.numeric.octal","constant.other","constant.regexp","constant.rgb-value",
+                        // "entity.name.function",
+                        // "string.interpolated"
+                        
+                    ],
+                    "settings": {
+                        "foreground": "#e079ee"
+                    }
+                },
+                {
+                    "scope":[ "keyword.operator.arithmetic","keyword.operator.assignment","keyword.operator.new", "keyword.operator.logical","keyword.operator"],
+                    "settings": { "foreground": "#b6d6f6"}
+                },
+                {
+                    "scope": [ "storage.type",],
+                    "settings": { "foreground": "#e5c07b" }
+                },
+                {
+                    "scope":["string"],
+                    "settings": {"foreground": "#9db877"}
+                }
+            ]
+        }
+    },
+    "editor.semanticTokenColorCustomizations": {
+        
+
+        "[Default Dark+]": {
+            "enabled": false,
+            "rules": {
+                "macro": "#53b5c0",
+            }
+        }
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+}

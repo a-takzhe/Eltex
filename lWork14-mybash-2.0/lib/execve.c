@@ -1,6 +1,7 @@
 #include "execve.h"
 
 int ran_proc(char* str);
+void pipeclear(int infd);
 
 void initdesc()
 {
@@ -11,10 +12,10 @@ void initdesc()
 static void deftopipe(int* pipefd)
 {
     if(dup2(pipefd[1], fileno(stdout)) == -1){
-        handle_error("dup2");
+        handle_error("dup2 stdout");
     }
     if(dup2(pipefd[0], fileno(stdin)) == -1){
-        handle_error("dup2");
+        handle_error("dup2 stdin");
     }
 }
 
@@ -24,6 +25,18 @@ static void setdefault()
     dup2(mystdin, fileno(stdin));
 }
 
+void pipeclear(int infd)
+{
+    int i=0;
+    while(read(infd, GLOB_BUFF, BUFSIZE) > 0){
+        if(i==0){
+            printf("\e[41m  Trash from pipe:\e[0m\n\e[0;33m");
+        }   
+        printf("%s ", GLOB_BUFF);
+        i++;
+    }
+    puts("\e[0m");
+}
 ///////////////////////////
 // stdout -> pipefd1[1] //
 // stdin  -> pipefd1[0] //
@@ -32,47 +45,46 @@ static void setdefault()
 int exec(char* str)
 {
     char* saveptr, *res;
-    int __fl = 0;
-    int ch = 1;
-    int pipefd[2];
+    int out_fl = 0;
+    int ch = 0;
 
-    if(strcmp(str, "|") != 0){
+    int pipefd[2];
+    char debug[100];
+    int fnum = get_nfunc(str);
+
+    if(fnum > 1){
         pipe(pipefd);
         deftopipe(pipefd);
+        out_fl = -1;
     }
 
     while((res=strtok_r(str, "|", &saveptr)) != NULL)
     {       
-        setdefault();
-        printf("comm: %s\n", res);
-        if(ch == 1){
-            if(dup2(pipefd[1], fileno(stdout)) == -1){
-                handle_error("dup2");
-            }
-        }
-        if(ch == 2){
+        snprintf(debug, 90, "\e[1;35mcommand: %s\e[0m\n", res);
+        write(mystdout, debug, strlen(debug));
+        
+        if(ch+1 == fnum && fnum > 1){
+            dup2(mystdout, fileno(stdout));
             close(pipefd[1]);
-            if(dup2(pipefd[0], fileno(stdin)) == -1){
-                handle_error("dup2");
-            }
+            out_fl = 0;
         }
 
-        if((__fl = ran_proc(res)) != 0){
-            puts("empty com");
+        if(ran_proc(res) != 0){
+            write(mystdout, "\e[41merror command!\e[0m\n", 24);
+            out_fl = -1;
             break;
         }
-        
-        ch++;
-        if(ch > 2){
-            __fl = -5;
-            break;
-        }
+        ch++;   
         str = NULL;
     }
-    setdefault();
-    if(__fl != 0){
-        printf("__fl: %d\n", __fl);
+
+    if(out_fl != 0 && fnum > 1){
+        dup2(mystdout, fileno(stdout));
+        close(pipefd[1]);
+        pipeclear(pipefd[0]);
     }
+    dup2(mystdin, fileno(stdin));
+    close(pipefd[0]);
 
     return 0;
 
@@ -113,5 +125,8 @@ int ran_proc(char* str)
     }
     free(newargv);
 
-    return WEXITSTATUS(status);
+    if(WIFEXITED(status) != 0)
+        return WEXITSTATUS(status);
+    else
+        return 0;
 }

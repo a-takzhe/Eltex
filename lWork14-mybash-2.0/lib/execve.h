@@ -15,9 +15,11 @@
         do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
 
+#ifndef BUFSIZE
 #define BUFSIZE 256  
+#endif
 
-char* GLOB_BUFF[BUFSIZE];
+char GLOB_BUFF[BUFSIZE];
 int mystdout, mystdin;
 
 int exec(char* str);
