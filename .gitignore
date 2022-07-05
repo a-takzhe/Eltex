@@ -9,4 +9,4 @@
 *.i
 main
 .vscode
-mybash
+mybash*
