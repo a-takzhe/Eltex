@@ -286,7 +286,8 @@ void insert_symbol(int key, WINDOW* wnd)
 {
     char* ss = mem_ins_sym((char)key);
     wprintw(wnd, "%c%s", key, ss);
-    inc_x();           
+    inc_x(); 
+    free(ss);          
 }
 
 void delete_symbol(WINDOW *wnd)
@@ -298,6 +299,7 @@ void delete_symbol(WINDOW *wnd)
         wmove(wnd, PN.y, PN.x);
         wprintw(wnd, "%s", s);
         if(!isNote){wprintw(wnd," ");}
+        free(s);
     }
     else
     {
