@@ -44,7 +44,7 @@ void pipeclear(int infd)
 
 int exec(char* str)
 {
-    char* saveptr, *res;
+    char* saveptr, *res; 
     int out_fl = 0;
     int ch = 0;
 
@@ -83,11 +83,12 @@ int exec(char* str)
         close(pipefd[1]);
         pipeclear(pipefd[0]);
     }
-    dup2(mystdin, fileno(stdin));
-    close(pipefd[0]);
+    if(fnum > 1){
+        dup2(mystdin, fileno(stdin));
+        close(pipefd[0]);
+    }
 
     return 0;
-
 }
 
 int ran_proc(char* str)
@@ -102,7 +103,6 @@ int ran_proc(char* str)
     if((nparam = get_nparam(str)) == 0){
         return 1;
     }
-
     newargv = (char**)malloc((nparam+2)*sizeof(char*));
     fillargv(newargv, str);
     

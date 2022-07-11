@@ -17,28 +17,30 @@ int uEscape(char* str)
 int get_nparam(char* str)
 {
     char* tmpstr = (char*)calloc(strlen(str), sizeof(char));
-    char* saveptr;
+    char* saveptr, *fptr;
     char* res;
     int i = 0;
 
     strcpy(tmpstr, str);
+    fptr = tmpstr;
     while((res = strtok_r(tmpstr, " ", &saveptr))!=NULL)
     {
         i++;
         tmpstr = NULL;
     } 
-    free(tmpstr);
+    free(fptr);
     return i;
 }
 
 int fillargv(char** argv, char* str)
 {
     char* tmpstr = (char*)calloc(strlen(str), sizeof(char));
-    char* saveptr;
+    char* saveptr, *fptr;
     char* res;
     int i = 0;
 
     strcpy(tmpstr, str);
+    fptr = tmpstr;
     while((res = strtok_r(tmpstr, " ", &saveptr))!=NULL)
     {
         argv[i] = (char*)malloc(strlen(res)+1*sizeof(char));
@@ -48,6 +50,6 @@ int fillargv(char** argv, char* str)
     } 
     argv[i] = NULL;
 
-    free(tmpstr);
+    free(fptr);
     return 1;
 }

@@ -12,7 +12,7 @@ mybash.o: mybash.s
 	gcc mybash.s -c 
 
 mybash.s: mybash.i
-	gcc mybash.i -S -O3 -g -masm=intel 
+	gcc mybash.i -S -O0 -g -masm=intel 
 
 mybash.i: mybash.c
 	gcc -E mybash.c -o mybash.i
@@ -24,7 +24,7 @@ $(lib_dir)/%.o: $(lib_dir)/%.c
 
 
 clean:
-	rm -rf *.o mybash $(lib_dir)/*.o  *.s
+	rm -rf *.o mybash $(lib_dir)/*.o  *.s *.i 
 
 delo:
 	rm -rf *.o $(lib_dir)/*.o

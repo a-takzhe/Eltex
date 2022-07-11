@@ -21,7 +21,7 @@ int main(int argc, char** argv)
         printf("\033[0m");            //reset
         
         s_len = getline(&str, &len, stdin); 
-        
+
         if(s_len == -1){
             free(str);
             handle_error("getline");
@@ -29,8 +29,12 @@ int main(int argc, char** argv)
         if(uEscape(str)){
             puts("don't use escape sequences");
             continue;
-        }            
-        str[s_len-1] = 0;        
+        }   
+        if(isExit(str)){
+            break;
+        }
+        str[s_len-1] = 0;
+
         exec(str);
     }
     
