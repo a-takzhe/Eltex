@@ -9,6 +9,10 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#define YELLOW do { printf("\033[1;33m");} while (0)
+#define RED    do { printf("\e[41m");} while (0)
+#define RESET  do { printf("\033[0m");} while (0) 
+
 #define handle_error(msg) \
         do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
@@ -28,7 +32,9 @@ int main (int argc, char* argv[])
     msgbuf buff;    
 
     if(argc < 2){
+        RED; 
         puts("write file name: ./systemV-1 ./[file]");
+        RESET;
         exit(EXIT_FAILURE);
     }
 
