@@ -1,4 +1,7 @@
 #!/bin/bash
+rm ./systemV-1
+rm ./systemV-2
+
 gcc ./systemV-1.c -o systemV-1
 gcc ./systemV-2.c -o systemV-2
 
