@@ -80,8 +80,10 @@ int main (int argc, char* argv[])
 
     STAT_MS(puts("Program is finished!\nPress any key to continue!"));
     while(getc(stdin)){
-        exit(0);
+        break;
     }
-
+    if(msgctl(q_id, IPC_RMID, &q_data)!=0){
+        ERROR_MS(handle_error("IPC_RMID error"));
+    }
     exit(0);
 }
