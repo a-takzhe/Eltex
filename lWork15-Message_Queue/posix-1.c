@@ -5,6 +5,7 @@
 #include <mqueue.h>
 #include <termios.h>
 #include <unistd.h>
+#include <string.h>
 
 
 #define handle_error(msg) \
@@ -40,7 +41,7 @@ void send_mes(struct mq_attr attr, uint prior, const char *buffer)
 
     STAT_MS(puts("Sending a message..."));
 
-    if(mq_send(mq_id, buffer, sizeof(buffer), prior) == -1){
+    if(mq_send(mq_id, buffer, strlen(buffer), prior) == -1){
         ERROR_MS(handle_error("mq_send error"));   
     }
 }
@@ -51,7 +52,7 @@ void recv_mes(struct mq_attr attr)
     uint prior;
     char buffer[MSG_SIZE];
 
-    mq_id = mq_open(RQUEUE_NAME, O_RDONLY, 0777, &attr);
+    mq_id = mq_open(RQUEUE_NAME, O_RDONLY | O_CREAT, 0777, &attr);
     if(mq_id == -1){
         ERROR_MS(handle_error("mq_open read error"));
     }
@@ -80,7 +81,7 @@ int main (int argc, char* argv[])
     set_attr(&attr);
 
     send_mes(attr, 1, "Hello from posix 1");
-    sleep(3);
+    STAT_MS(puts("start read"));
     recv_mes(attr);
     
     if(mq_unlink(WQUEUE_NAME) == -1){

@@ -19,7 +19,14 @@ int main()
         if(key == KEY_F(3) || key == 0033){
             break;
         }
-        wprintw(w, "%c",key);
+        if(key == KEY_F0) {
+            waddstr(w,"F0");
+            continue;
+        }
+        if(key >= CTRL('A') && key <= CTRL('z') && key != 0012){
+            continue;
+        }
+        wprintw(w, "%o-%c|",key, key);
     }
     wend();
 

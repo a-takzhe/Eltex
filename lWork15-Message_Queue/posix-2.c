@@ -4,6 +4,9 @@
 #include <sys/stat.h>        /* For mode constants */
 #include <mqueue.h>
 #include <termios.h>
+#include <unistd.h>
+#include <string.h>
+
 
 
 #define handle_error(msg) \
@@ -31,7 +34,7 @@ void send_mes(struct mq_attr attr, uint prior, const char *buffer)
 {
     mqd_t mq_id;
 
-    mq_id = mq_open(WQUEUE_NAME, O_WRONLY | O_CREAT, 0777, &attr);
+    mq_id = mq_open(WQUEUE_NAME, O_WRONLY , 0777, &attr);
     if(mq_id == -1){
         ERROR_MS(handle_error("mq_open write error"));
     }
@@ -39,7 +42,7 @@ void send_mes(struct mq_attr attr, uint prior, const char *buffer)
 
     STAT_MS(puts("Sending a message..."));
 
-    if(mq_send(mq_id, buffer, sizeof(buffer), prior) == -1){
+    if(mq_send(mq_id, buffer, strlen(buffer), prior) == -1){
         ERROR_MS(handle_error("mq_send error"));   
     }
 }
@@ -79,6 +82,7 @@ int main (int argc, char* argv[])
     set_attr(&attr);
 
     recv_mes(attr);
+    // sleep(20);
     send_mes(attr, 1, "HI from posix 2");
     
     

@@ -45,8 +45,8 @@ void allert_baner(struct winsize size)
     wprintw(CHAT_AREA, ERR_SCREEN_SIZE2);
     wbkgd(CHAT_AREA, COLOR_PAIR(ERROR_COLOR));
     wrefresh(CHAT_AREA);
+    wclear(CHAT_AREA);
     wbkgd(CHAT_AREA, COLOR_PAIR(CHAT_COLOR));
-    refresh();
 }
 
 void sig_winch(int signo)
@@ -56,7 +56,7 @@ void sig_winch(int signo)
     resizeterm(size.ws_row, size.ws_col);
     refresh();
 
-    if(size.ws_row < 30 ||  size.ws_col < 100){
+    if((size.ws_row < 20 ||  size.ws_col < 80)&&wgetch(stdscr) == KEY_RESIZE){
         allert_baner(size);
         return;
     }
@@ -125,7 +125,7 @@ int init_w()
     INPUT_AREA = newwin(3, size.ws_col, size.ws_row-3, a);
     keypad(INPUT_AREA, true);
     res = wbkgd(INPUT_AREA, COLOR_PAIR(INPUT_COLOR));
-    mvwprintw(INPUT_AREA,1,0,">>>");
+    mvwprintw(INPUT_AREA, 1, 0, ">>>");
 
     res = wrefresh(USERS_AREA);
     res = wrefresh(CHAT_AREA);
@@ -144,7 +144,7 @@ int wend()
 
 void set_ucolor(int pair){
     init_color(14, rand()%1000, rand()%1000, rand()%1000);
-    init_pair
+    init_pair (pair, TEXT_1, 14);
 }
 
 int input_user(char** users, int N)
