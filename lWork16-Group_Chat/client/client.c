@@ -3,19 +3,23 @@
 
 int main()
 {
+    srand ( time(NULL) ); 
     setlocale(LC_ALL, "");
     init();
     
     int key;
-    wmove(CHAT_AREA, 0, 0);
-    wrefresh(CHAT_AREA);
+    WINDOW* w = INPUT_AREA;
+    char *u[] = {"alex","tomas","luke"}; 
+    input_user(u,3);
+    
+    wmove(w, 1, P(0));
 
-    while (key = wgetch(CHAT_AREA))
+    while (key = wgetch(w))
     {
         if(key == KEY_F(3) || key == 0033){
             break;
         }
-        wprintw(CHAT_AREA, "%c",key);
+        wprintw(w, "%c",key);
     }
     wend();
 

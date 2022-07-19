@@ -6,6 +6,7 @@
 void init_color_pairs();
 void sig_winch(int signo);
 int init_w();
+void allert_baner(struct winsize size);
 
 
 //-------------------------
@@ -19,11 +20,33 @@ void init_color_pairs()
     init_color(BACK_3, 1000, 800, 1000);
 
     init_color(TEXT_1, 300, 300, 300);
+    init_color(TEXT_2, 600, 600, 600);
     
     init_pair(CHAT_COLOR , TEXT_1, BACK_1);
     init_pair(USERS_COLOR, TEXT_1, BACK_2);
     init_pair(INPUT_COLOR, TEXT_1, BACK_3);
-    init_pair(ERROR_COLOR, COLOR_RED, TEXT_1);
+    init_pair(ERROR_COLOR, COLOR_RED, TEXT_2);
+}
+
+void allert_baner(struct winsize size)
+{
+    wclear(CHAT_AREA);
+
+    if(wresize(CHAT_AREA, size.ws_row, size.ws_col) == -1){
+        handle_error("CHAT_AREA resize");
+    }
+    if(mvwin(CHAT_AREA, 0, 0) == -1){
+        handle_error("CHAT_AREA move");
+    }
+
+    wmove(CHAT_AREA, size.ws_row/2, size.ws_col/2 - strlen(ERR_SCREEN_SIZE1)/2);
+    wprintw(CHAT_AREA, ERR_SCREEN_SIZE1);
+    wmove(CHAT_AREA, size.ws_row/2+1, size.ws_col/2-strlen(ERR_SCREEN_SIZE2)/2);
+    wprintw(CHAT_AREA, ERR_SCREEN_SIZE2);
+    wbkgd(CHAT_AREA, COLOR_PAIR(ERROR_COLOR));
+    wrefresh(CHAT_AREA);
+    wbkgd(CHAT_AREA, COLOR_PAIR(CHAT_COLOR));
+    refresh();
 }
 
 void sig_winch(int signo)
@@ -33,46 +56,37 @@ void sig_winch(int signo)
     resizeterm(size.ws_row, size.ws_col);
     refresh();
 
+    if(size.ws_row < 30 ||  size.ws_col < 100){
+        allert_baner(size);
+        return;
+    }
+
     if(wgetch(stdscr) == KEY_RESIZE)
     {
-        // int a = floor((double)size.ws_col / 4.0);
+        int a = size.ws_col / 4.0;
 
-        if(wresize(USERS_AREA, size.ws_row-2, 10) == -1){
-            wend();
+        wclear(USERS_AREA);
+        if(wresize(USERS_AREA, size.ws_row, a) == -1){
             handle_error("USERS_AREA resize");
         }
-        if(mvwin(USERS_AREA, 0, 0) == -1){
-            wend();
-            handle_error("USERS_AREA mowe");
-        }
-
         
-        if(wresize(CHAT_AREA, size.ws_row-2, 10)==-1){
-            wend();
-            perror("wresize");
-            exit(0);
+        if(wresize(CHAT_AREA, size.ws_row-3, size.ws_col-a) == -1){
+            handle_error("CHAT_AREA resize");
         }
-        if(mvwin(CHAT_AREA, 0, 15)==-1){
-            wend();
-            perror("mvwin");
-            exit(0);
+        if(mvwin(CHAT_AREA, 0, a) == -1){
+            handle_error("CHAT_AREA move");
         }
 
-        // wresize(__TOOLSWND__, 1, size.ws_col > MAXCOL ? MAXCOL : size.ws_col);
-        // mvwin(__TOOLSWND__, size.ws_row-1, 0);
-
-        // if(wdelta - size.ws_col <= -5)
-        // {
-        //     fill_toolbar(CURMEN);
-        //     wdelta = size.ws_col;
-        // }     
-        // else if(wdelta - size.ws_col >= 0){
-        //     wdelta = size.ws_col;
-        // }  
+        if(wresize(INPUT_AREA, 3, size.ws_col-a) == -1){
+            handle_error("CHAT_AREA resize");
+        }
+        if(mvwin(INPUT_AREA, size.ws_row-3, a) == -1){
+            handle_error("CHAT_AREA move");
+        }  
     }
-    wrefresh(USERS_AREA);
     wrefresh(CHAT_AREA);
-    // wrefresh(__MAINWND__);
+    wrefresh(USERS_AREA);
+    wrefresh(INPUT_AREA);
 }
 
 int init()
@@ -102,21 +116,20 @@ int init_w()
 
     int a = floor((double)size.ws_col / 4.0);
     
-    USERS_AREA = newwin(size.ws_row, 10, 0, 0);
+    USERS_AREA = newwin(size.ws_row, a, 0, 0);
     res = wbkgd(USERS_AREA, COLOR_PAIR(USERS_COLOR));
     
-    CHAT_AREA = newwin(size.ws_row, 10, 0, 15);
-    keypad(CHAT_AREA, true);
+    CHAT_AREA = newwin(size.ws_row-3, size.ws_col-a, 0, a);
     res = wbkgd(CHAT_AREA, COLOR_PAIR(CHAT_COLOR));
 
-    // __TOOLSWND__ = newwin(1, size.ws_col, size.ws_row-1, 0);
-    // res = wbkgd(__TOOLSWND__, COLOR_PAIR(TOOLSWND_COLOR));
-    // wdelta = size.ws_col;
+    INPUT_AREA = newwin(3, size.ws_col, size.ws_row-3, a);
+    keypad(INPUT_AREA, true);
+    res = wbkgd(INPUT_AREA, COLOR_PAIR(INPUT_COLOR));
+    mvwprintw(INPUT_AREA,1,0,">>>");
 
     res = wrefresh(USERS_AREA);
     res = wrefresh(CHAT_AREA);
-
-    // res = wrefresh(__TOOLSWND__);
+    res = wrefresh(INPUT_AREA);
 
     return res;
 }
@@ -128,3 +141,23 @@ int wend()
     delwin(INPUT_AREA);
     endwin();
 }
+
+void set_ucolor(int pair){
+    init_color(14, rand()%1000, rand()%1000, rand()%1000);
+    init_pair
+}
+
+int input_user(char** users, int N)
+{
+    wclear(USERS_AREA);
+    for (size_t i = 0; i < N; i++)
+    {
+        WINDOW* wnd = derwin(USERS_AREA, 1, USERS_AREA->_maxx, i*2, 0);
+        mvwprintw(wnd,0,0,"US > %s", users[i]);
+    }
+    wrefresh(USERS_AREA);
+}
+
+
+
+
