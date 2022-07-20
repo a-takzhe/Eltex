@@ -19,8 +19,8 @@
 #define ERROR_MS(prt) do { RED; prt; RESET;} while (0)  
 
 #define MSG_SIZE 100
-#define WQUEUE_NAME "/posix2"
-#define RQUEUE_NAME "/posix1"
+#define QUEUE_1 "/posix1"
+#define QUEUE_2 "/posix2"
 
 void set_attr(struct mq_attr* attr)
 {
@@ -30,66 +30,66 @@ void set_attr(struct mq_attr* attr)
     attr->mq_flags   = 0;
 }
 
-void send_mes(struct mq_attr attr, uint prior, const char *buffer)
+void send_mes(mqd_t mq_id, uint prior, const char *buffer)
 {
-    mqd_t mq_id;
-
-    mq_id = mq_open(WQUEUE_NAME, O_WRONLY , 0777, &attr);
-    if(mq_id == -1){
-        ERROR_MS(handle_error("mq_open write error"));
-    }
-    printf("Write Queue id: %d\n", mq_id);
-
-    STAT_MS(puts("Sending a message..."));
-
-    if(mq_send(mq_id, buffer, strlen(buffer), prior) == -1){
+    STAT_MS(printf("Sending a message to queue (%d)\n", mq_id));
+    if(mq_send(mq_id, buffer, strlen(buffer), prior) == -1)
+    {
         ERROR_MS(handle_error("mq_send error"));   
     }
+    STAT_MS(puts("Message is send"));
 }
 
-void recv_mes(struct mq_attr attr)
+void recv_mes(mqd_t mq_id)
 {
-    mqd_t mq_id;
     uint prior;
+    int len;
     char buffer[MSG_SIZE];
 
-    mq_id = mq_open(RQUEUE_NAME, O_RDONLY, 0777, &attr);
-    if(mq_id == -1){
-        ERROR_MS(handle_error("mq_open read error"));
-    }
-    printf("Read Queue id: %d\n", mq_id);
-
     STAT_MS(puts("Waiting for a message from another process 'posix 1'..."));
-    if(mq_receive(mq_id, buffer, sizeof(buffer), &prior) == -1)
+    if((len = mq_receive(mq_id, buffer, sizeof(buffer), &prior)) == -1)
     {
         ERROR_MS(handle_error("mq_receive error"));
     }
-    printf("Message received: %s\n", buffer);
-
-    mq_close(mq_id);
-    if(mq_id == -1){
-        ERROR_MS(handle_error("mq_unlink error"));
-    }
-    STAT_MS(puts("Close read queue!"));
+    buffer[len]=0;
+    printf("Message with prior(%d) received: %s\n", prior, buffer);
 }
 
 int main (int argc, char* argv[])
 {
     struct mq_attr attr;
-
-    // setvbuf(stdout, NULL, _IONBF, 0);
+    mqd_t mq_id_1, mq_id_2;
+    
+    setvbuf(stdout, NULL, _IONBF, 0);
     STAT_MS(puts("Attr init"));
     set_attr(&attr);
 
-    recv_mes(attr);
-    // sleep(20);
-    send_mes(attr, 1, "HI from posix 2");
+    STAT_MS(puts("Attach to queue.."));
+    mq_id_1 = mq_open(QUEUE_1, O_RDONLY, 0777, &attr);
+    if(mq_id_1 == -1){
+        ERROR_MS(handle_error("mq_id_1 read error"));
+    }
+    mq_id_2 = mq_open(QUEUE_2, O_WRONLY, 0777, &attr);
+    if(mq_id_2 == -1){
+        ERROR_MS(handle_error("mq_id_2 read error"));
+    }
+    printf("Queue ID for write: %d\n", mq_id_2);
+    printf("Queue ID for read: %d\n", mq_id_1);
+
+    recv_mes(mq_id_1);
+    send_mes(mq_id_2, 2, "Hi hi hi form posix 2");
     
     
-    if(mq_unlink(WQUEUE_NAME) == -1){
+    
+    if(mq_close(mq_id_1) == -1){
         ERROR_MS(handle_error("mq_unlink error"));
     }
-    puts("Queue is deleted!");
+    printf("Close read queue (%d)!\n", mq_id_1);
+
+    if(mq_close(mq_id_2) == -1){
+        ERROR_MS(handle_error("mq_unlink error"));
+    }
+    printf("Close write queue (%d)!\n", mq_id_2);
 
     STAT_MS(puts("Program is finished!\nPress enter to continue!"));
     while(getc(stdin)){
