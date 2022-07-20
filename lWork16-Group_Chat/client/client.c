@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "./lib/gui.h"
+#include "./lib/handler.h"
 
 int main()
 {
@@ -7,27 +7,31 @@ int main()
     setlocale(LC_ALL, "");
     init();
     
-    int key;
-    WINDOW* w = INPUT_AREA;
-    char *u[] = {"alex","tomas","luke"}; 
-    input_user(u,3);
     
-    wmove(w, 1, P(0));
+    users[0].name = "alex"; 
+    users[1].name = "tomas"; 
+    users[2].name = "luke";
+    users[0].active = 1; 
+    users[1].active = 1; 
+    users[2].active = 1;  
+    update_user_area();
 
-    while (key = wgetch(w))
-    {
-        if(key == KEY_F(3) || key == 0033){
-            break;
-        }
-        if(key == KEY_F0) {
-            waddstr(w,"F0");
-            continue;
-        }
-        if(key >= CTRL('A') && key <= CTRL('z') && key != 0012){
-            continue;
-        }
-        wprintw(w, "%o-%c|",key, key);
-    }
+    messages[0].text = "Hello friends";
+    messages[1].text = "Hi";
+    messages[2].text = "Hello alex";
+    messages[0].u_id = 0;
+    messages[1].u_id = 1;
+    messages[2].u_id = 2;
+    messages[3].text = "Fuck you";
+    messages[3].u_id = -1;
+    messages[4].text = "Fuck you too";
+    messages[4].u_id = 0;
+
+    ID_LAST_MSG = 4;
+    update_msg_area();
+    
+    h_main();
+    
     wend();
 
     puts("hello from client");

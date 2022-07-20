@@ -15,9 +15,10 @@ void allert_baner(struct winsize size);
 void init_color_pairs()
 {
     start_color();
-    init_color(BACK_1, 1000, 1000, 700);
-    init_color(BACK_2, 700, 1000, 1000);
-    init_color(BACK_3, 1000, 800, 1000);
+    init_color(BACK_1, 1000, 1000, 900);
+    init_color(BACK_2, 1000, 1000, 1000);
+    init_color(BACK_3, 1000, 1000, 950);
+    init_color(BACK_4, 650, 700, 950);
 
     init_color(TEXT_1, 300, 300, 300);
     init_color(TEXT_2, 600, 600, 600);
@@ -26,6 +27,7 @@ void init_color_pairs()
     init_pair(USERS_COLOR, TEXT_1, BACK_2);
     init_pair(INPUT_COLOR, TEXT_1, BACK_3);
     init_pair(ERROR_COLOR, COLOR_RED, TEXT_2);
+    init_pair(USER_LABEL_COLOR, TEXT_1, BACK_4);
 }
 
 void allert_baner(struct winsize size)
@@ -56,7 +58,7 @@ void sig_winch(int signo)
     resizeterm(size.ws_row, size.ws_col);
     refresh();
 
-    if((size.ws_row < 20 ||  size.ws_col < 80)&&wgetch(stdscr) == KEY_RESIZE){
+    if((size.ws_row < H_MIN ||  size.ws_col < W_MIN) && wgetch(stdscr) == KEY_RESIZE){
         allert_baner(size);
         return;
     }
@@ -69,6 +71,7 @@ void sig_winch(int signo)
         if(wresize(USERS_AREA, size.ws_row, a) == -1){
             handle_error("USERS_AREA resize");
         }
+        update_user_area();
         
         if(wresize(CHAT_AREA, size.ws_row-3, size.ws_col-a) == -1){
             handle_error("CHAT_AREA resize");
@@ -76,13 +79,17 @@ void sig_winch(int signo)
         if(mvwin(CHAT_AREA, 0, a) == -1){
             handle_error("CHAT_AREA move");
         }
+        update_msg_area();
 
         if(wresize(INPUT_AREA, 3, size.ws_col-a) == -1){
             handle_error("CHAT_AREA resize");
         }
         if(mvwin(INPUT_AREA, size.ws_row-3, a) == -1){
             handle_error("CHAT_AREA move");
-        }  
+        }
+        wclear(INPUT_AREA); 
+        wmove(INPUT_AREA,1,P(0)); 
+        box(INPUT_AREA, '>', '-');
     }
     wrefresh(CHAT_AREA);
     wrefresh(USERS_AREA);
@@ -122,10 +129,10 @@ int init_w()
     CHAT_AREA = newwin(size.ws_row-3, size.ws_col-a, 0, a);
     res = wbkgd(CHAT_AREA, COLOR_PAIR(CHAT_COLOR));
 
-    INPUT_AREA = newwin(3, size.ws_col, size.ws_row-3, a);
+    INPUT_AREA = newwin(3, size.ws_col-a, size.ws_row-3, a);
     keypad(INPUT_AREA, true);
     res = wbkgd(INPUT_AREA, COLOR_PAIR(INPUT_COLOR));
-    mvwprintw(INPUT_AREA, 1, 0, ">>>");
+    box(INPUT_AREA, '>', '-');
 
     res = wrefresh(USERS_AREA);
     res = wrefresh(CHAT_AREA);
@@ -142,22 +149,54 @@ int wend()
     endwin();
 }
 
-void set_ucolor(int pair){
-    init_color(14, rand()%1000, rand()%1000, rand()%1000);
-    init_pair (pair, TEXT_1, 14);
+void set_ucolor(int pair, int color_num)
+{
+    init_color(color_num, rand()%200+800, rand()%400+600, rand()%600+400);
+    init_pair (pair, TEXT_1, color_num);
 }
 
-int input_user(char** users, int N)
+int update_user_area()
 {
     wclear(USERS_AREA);
-    for (size_t i = 0; i < N; i++)
-    {
+    for (size_t i = 0; i < MAX_USER; i++)
+    {   
+        if(users[i].active == 0){
+            break;
+        }
         WINDOW* wnd = derwin(USERS_AREA, 1, USERS_AREA->_maxx, i*2, 0);
-        mvwprintw(wnd,0,0,"US > %s", users[i]);
+        mvwprintw(wnd,0,0,"US > %s", users[i].name);
+        wbkgd(wnd, COLOR_PAIR(USER_LABEL_COLOR));
     }
     wrefresh(USERS_AREA);
 }
 
+void print_mmes(const char* text, int line)
+{
+    int x = CHAT_AREA->_maxx-strlen(text)-5;
+    mvwprintw(CHAT_AREA, line*2, x, "%s <(me)", text);
+}
+void print_mes(int uid, const char* text, int line)
+{
+    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", users[uid].name, text);
+}
 
+int update_msg_area()
+{
+    int cnt_msg = floor(CHAT_AREA->_maxy / 2.0);
+    cnt_msg = cnt_msg > ID_LAST_MSG ? ID_LAST_MSG : cnt_msg;
+    int line = 0;
+    wclear(CHAT_AREA);
+    for (int i = cnt_msg; i >= 0; i--)
+    {
+        if(messages[ID_LAST_MSG-i].u_id == -1){
+            print_mmes(messages[ID_LAST_MSG-i].text, line);
+        }
+        else{
+            print_mes(messages[ID_LAST_MSG-i].u_id, messages[ID_LAST_MSG-i].text, line);
+        }
+        line++;
+    }
+    wrefresh(CHAT_AREA);   
+}
 
 
