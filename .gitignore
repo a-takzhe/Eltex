@@ -1,6 +1,7 @@
 #for ignore compiled files
 *.txt
 *.out
+*.aut
 *.exe
 *.so
 *.o
