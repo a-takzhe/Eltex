@@ -1,6 +1,6 @@
 #include "gui.h"
 
-#define KEY_ENTER 0012
+#define KEY_ENTR 0012
 #define P(i) (i+1)
 
 
