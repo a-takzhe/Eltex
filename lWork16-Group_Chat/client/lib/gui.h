@@ -6,6 +6,7 @@
 #include <sys/ioctl.h>
 #include <signal.h>
 #include <time.h>
+#include "common.h"
 #include <math.h>
 #include <string.h>
 
@@ -29,11 +30,6 @@ WINDOW *INPUT_AREA;
 #define H_MIN 20
 #define W_MIN 80
 
-
-#define MAX_USER 10
-#define MAX_MSG_SIZE 64
-#define MAX_MSG 64
-
 enum COLOR_SHEMA
 {
     CHAT_COLOR  = 101,
@@ -44,25 +40,8 @@ enum COLOR_SHEMA
     USER_LABEL_COLOR = 106
 };
 
-struct GUI_USER_T{
-    char* name;
-    int active;
-} typedef gui_user;
-gui_user users[MAX_USER]; 
-
-
-char input_str[MAX_MSG_SIZE];
-int X;
-struct MESSAGE_LIST_T{
-    char* text;
-    int u_id;
-} typedef message_list;
-message_list messages[MAX_MSG];
-int ID_LAST_MSG;
-
-
-
 int init();
 int wend();
-int update_user_area();
+int update_usr_area();
 int update_msg_area();
+int update_inp_area();

@@ -71,7 +71,7 @@ void sig_winch(int signo)
         if(wresize(USERS_AREA, size.ws_row, a) == -1){
             handle_error("USERS_AREA resize");
         }
-        update_user_area();
+        update_usr_area();
         
         if(wresize(CHAT_AREA, size.ws_row-3, size.ws_col-a) == -1){
             handle_error("CHAT_AREA resize");
@@ -87,9 +87,7 @@ void sig_winch(int signo)
         if(mvwin(INPUT_AREA, size.ws_row-3, a) == -1){
             handle_error("CHAT_AREA move");
         }
-        wclear(INPUT_AREA); 
-        wmove(INPUT_AREA,1,P(0)); 
-        box(INPUT_AREA, '>', '-');
+        update_inp_area();
     }
     wrefresh(CHAT_AREA);
     wrefresh(USERS_AREA);
@@ -155,7 +153,7 @@ void set_ucolor(int pair, int color_num)
     init_pair (pair, TEXT_1, color_num);
 }
 
-int update_user_area()
+int update_usr_area()
 {
     wclear(USERS_AREA);
     for (size_t i = 0; i < MAX_USER; i++)
@@ -197,6 +195,15 @@ int update_msg_area()
         line++;
     }
     wrefresh(CHAT_AREA);   
+}
+
+int update_inp_area()
+{
+    wclear(INPUT_AREA); 
+    box(INPUT_AREA, '>', '-');
+    // wmove(INPUT_AREA,1,P(0));
+    mvwprintw(INPUT_AREA, 1, P(0), "%s", input_str);
+    wrefresh(INPUT_AREA); 
 }
 
 

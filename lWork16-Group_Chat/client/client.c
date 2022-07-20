@@ -14,7 +14,7 @@ int main()
     users[0].active = 1; 
     users[1].active = 1; 
     users[2].active = 1;  
-    update_user_area();
+    update_usr_area();
 
     messages[0].text = "Hello friends";
     messages[1].text = "Hi";

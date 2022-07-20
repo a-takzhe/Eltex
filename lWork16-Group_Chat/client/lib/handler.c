@@ -27,7 +27,7 @@ int h_main()
             case KEY_RIGHT:
                 // inc_x();
                 break;
-            case KEY_ENTER:
+            case KEY_ENTR:
                 //do something
                 break;
             case KEY_BACKSPACE:
@@ -35,12 +35,11 @@ int h_main()
                 //delete_symbol(curw);
                 break;
             default:
+                wprintw(w, "%c", key);
                 // if(can_x(+1) == 0) break;
                 //insert_symbol(key, curw);
                 break;
         }
-
-        wprintw(w, "%c", key);
     }
     return 0;
 }
