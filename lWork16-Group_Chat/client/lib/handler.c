@@ -22,91 +22,97 @@ int h_main()
         switch (key)
         {
             case KEY_LEFT:
-                // dec_x();
+                dec_x();
                 break;
             case KEY_RIGHT:
-                // inc_x();
+                inc_x();
                 break;
             case KEY_ENTR:
                 //do something
                 break;
             case KEY_BACKSPACE:
-                // if(can_x(-1) == 0) break;
-                //delete_symbol(curw);
+                if(can_x(-1) == 0) break;
+                delete_symbol(w);
                 break;
             default:
-                wprintw(w, "%c", key);
-                // if(can_x(+1) == 0) break;
-                //insert_symbol(key, curw);
+                if(can_x(1))
+                {
+                    wprintw(w, "%c", key);
+                    input_str[X]=key;
+                    inc_x();
+                }
                 break;
         }
+        wmove(CHAT_AREA,17,0);
+        wclrtobot(CHAT_AREA);
+        wprintw(CHAT_AREA,"%c-%d", input_str[X], X);
+        wrefresh(CHAT_AREA);
+
+        wmove(INPUT_AREA, 1, P(X));
+
     }
     return 0;
 }
 
-// void inc_x()
-// {
-//     if(isNote)
-//     {
-//         if(PN.x < (MAXCOL-2) && PN.x < size.ws_col -1 && 
-//            (get_symbol(PN.x, PN.y) != 0 && get_symbol(PN.x, PN.y) != NEW_LINE))
-//         //    (get_symbol(PN.x+1, PN.y) != 0 || get_symbol(PN.x+2, PN.y) != 0))
-//         {
-//             PN.x++;
-//         }
-//     }
-//     else
-//     {
-//         if(get_symbol(PN.x, PN.y) != 0 && (PN.x-strlen(HTOOL_MES) < MAXCOL2-2))
-//         {
-//             PN.x++;
-//         }
-//     }
-// }
+void inc_x()
+{
+    
+    if(input_str[X] != 0 && X < INPUT_AREA->_maxx-2)
+    {
+        X++;
+        wmove(INPUT_AREA, 1, P(X));
+        wrefresh(INPUT_AREA);
+    }
+}
 
-// void dec_x()
-// {
-//     if(isNote)
-//     {
-//         if(PN.x>0)
-//         {
-//             PN.x--;
-//         }
-//     }
-//     else
-//     {
-//         if(PN.x - strlen(HTOOL_MES) > 0)
-//         {
-//             PN.x--;
-//         }
-//     }
-// }
+void dec_x()
+{
+    if(X > 0)
+    {
+        X--;
+        wmove(INPUT_AREA, 1, P(X));
+        wrefresh(INPUT_AREA);
+    }
+}
 
-// int can_x(short v)
-// {
-//     if(v<0)
-//     {
-//        if(isNote){
-//            return (PN.x > 0) || (PN.y > 0);
-//        }
-//        else{
-//            return PN.x > strlen(HTOOL_MES);
-//        }
-//     }
-//     else if(v>0)
-//     {
-//         if(isNote){
-//            return (PN.x < MAXCOL-2  && strlen(NOTE[PN.y])+1 <= MAXCOL-2);
-//         }
-//         else{
-//             return (strlen(TROW)+1 <= MAXCOL2-2);
-//         }
-//
-//     }
-//     return 0;
-// }
+int can_x(int v)
+{
+    // return (strlen(input_str) < MAX_MSG_SIZE) && (X < INPUT_AREA->_maxx-2);
+    if(v>0){
+        return (X < MAX_MSG_SIZE) && (X < INPUT_AREA->_maxx-2);
+    }
+    else{
+        return X > 0;
+    }
+}
 
+int end_ind()
+{
+    int i = 0;
+    while (input_str[i] != 0)
+    {
+        i++;
+    } 
+    return --i;
+}
 
+char* mem_del_sym()
+{
+    int sl = strlen(&input_str[X]);
+    char* bf = (char*)calloc(sl+1, sizeof(char));
+    
+    strncpy(bf, &input_str[X], sl+1);
+    input_str[strlen(input_str)-1] = 0;
+    strcpy(&input_str[X-1], bf);
+    return bf;
+}
 
+void delete_symbol(WINDOW *wnd)
+{
+    char* s = mem_del_sym();
+    dec_x();
+    mvwprintw(wnd, 1, P(X), "%s ", s);
+    free(s);
+}
 
 

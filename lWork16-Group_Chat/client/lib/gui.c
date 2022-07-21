@@ -201,7 +201,6 @@ int update_inp_area()
 {
     wclear(INPUT_AREA); 
     box(INPUT_AREA, '>', '-');
-    // wmove(INPUT_AREA,1,P(0));
     mvwprintw(INPUT_AREA, 1, P(0), "%s", input_str);
     wrefresh(INPUT_AREA); 
 }
