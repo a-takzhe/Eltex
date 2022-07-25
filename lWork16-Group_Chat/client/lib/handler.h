@@ -1,5 +1,8 @@
+#ifndef _HANDLER_H_
+#define _HANDLER_H_
+
 #include "gui.h"
-#include "common.h"
+#include "store.h"
 
 #define KEY_ENTR 0012
 
@@ -10,3 +13,5 @@ void dec_x();
 int can_x(int v);
 void delete_symbol(WINDOW *wnd);
 
+
+#endif

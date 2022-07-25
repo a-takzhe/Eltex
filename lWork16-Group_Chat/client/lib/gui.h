@@ -1,17 +1,7 @@
-#include <curses.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <locale.h>
-#include <sys/ioctl.h>
-#include <signal.h>
-#include <time.h>
-#include "common.h"
-#include <math.h>
-#include <string.h>
+#ifndef _GUI_H_
+#define _GUI_H_
 
-#define handle_error(msg) \
-        do { perror(msg); exit(EXIT_FAILURE); } while (0)
+#include "../../common.h"
 
 WINDOW *CHAT_AREA;
 WINDOW *USERS_AREA;
@@ -36,7 +26,7 @@ enum COLOR_SHEMA
     USERS_COLOR = 102,
     INPUT_COLOR = 103,
     ERROR_COLOR = 104,
-    USER_COLOR = 105,
+    USER_COLOR  = 105,
     USER_LABEL_COLOR = 106
 };
 
@@ -45,3 +35,7 @@ int wend();
 int update_usr_area();
 int update_msg_area();
 int update_inp_area();
+
+
+
+#endif

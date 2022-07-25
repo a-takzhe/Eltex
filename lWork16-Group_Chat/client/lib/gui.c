@@ -158,11 +158,11 @@ int update_usr_area()
     wclear(USERS_AREA);
     for (size_t i = 0; i < MAX_USER; i++)
     {   
-        if(users[i].active == 0){
+        if(USERS[i].active == 0){
             break;
         }
         WINDOW* wnd = derwin(USERS_AREA, 1, USERS_AREA->_maxx, i*2, 0);
-        mvwprintw(wnd,0,0,"US > %s", users[i].name);
+        mvwprintw(wnd,0,0,"(%d) > %s", USERS[i].name, USERS[i].q_id);
         wbkgd(wnd, COLOR_PAIR(USER_LABEL_COLOR));
     }
     wrefresh(USERS_AREA);
@@ -175,7 +175,7 @@ void print_mmes(const char* text, int line)
 }
 void print_mes(int uid, const char* text, int line)
 {
-    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", users[uid].name, text);
+    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", USERS[uid].name, text);
 }
 
 int update_msg_area()

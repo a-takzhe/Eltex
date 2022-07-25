@@ -1,39 +1,63 @@
 #include <stdio.h>
 #include "./lib/handler.h"
 
-int main()
+void set_attr(struct mq_attr* attr)
+{
+    attr->mq_maxmsg  = MAX_MSG;
+    attr->mq_msgsize = MAX_MSG_SIZE;
+    attr->mq_curmsgs = 0;
+    attr->mq_flags   = 0;
+}
+
+int main(int argc, char* argv[])
 {
     srand ( time(NULL) ); 
     setlocale(LC_ALL, "");
-    init();
-    
-    
-    users[0].name = "alex"; 
-    users[1].name = "tomas"; 
-    users[2].name = "luke";
-    users[0].active = 1; 
-    users[1].active = 1; 
-    users[2].active = 1;  
-    update_usr_area();
 
-    messages[0].text = "Hello friends";
-    messages[1].text = "Hi";
-    messages[2].text = "Hello alex";
-    messages[0].u_id = 0;
-    messages[1].u_id = 1;
-    messages[2].u_id = 2;
-    messages[3].text = "Fuck you";
-    messages[3].u_id = -1;
-    messages[4].text = "Fuck you too";
-    messages[4].u_id = 0;
-
-    ID_LAST_MSG = 4;
-    update_msg_area();
+    mqd_t server_mq;
+    struct mq_attr attr;
+    uint prior;
+    char *bufer = (char*)malloc(sizeof(package));
+    puts("dasd1");
     
-    h_main();
-    
-    wend();
+    package *pack = (package*)malloc(sizeof(package));
+    pack->q_id = 4;
+    strcpy(pack->message, "ernesto");
+    puts("dasd");
+    bufer = (char*)pack;
+    printf("::%s\n", bufer);
 
-    puts("hello from client");
+    
+
+    server_mq = mq_open("/lala", O_WRONLY, 0777, &attr);
+    if(server_mq == -1){
+        ERROR_MS(handle_error("server_mq read error"));
+    }
+    printf("Server queue id = %d\n", server_mq);
+
+    STAT_MS(printf("Sending a message to queue (%d)\n", server_mq));
+    if(mq_send(server_mq, bufer, strlen(bufer), 2) == -1)
+    {
+        ERROR_MS(handle_error("mq_send error"));   
+    }
+    STAT_MS(puts("Message is send"));
+    mq_close(server_mq);
+
+    // init();
+    
+    // add_usr("alex", -1);
+    // add_usr("tomas",-1);
+    // add_usr("luke", -1);
+    // update_usr_area();
+
+    // add_msg("Hello friends", 0);
+    // add_msg("Hi", 1);
+    // add_msg("Hello alex", 2);
+    // add_msg("Fuck you", -1);
+    // add_msg("Fuck you too", 0);
+    // update_msg_area();
+
+    // h_main();
+    // wend();
     return 0;
 }

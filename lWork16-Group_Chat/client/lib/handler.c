@@ -28,6 +28,8 @@ int h_main()
                 inc_x();
                 break;
             case KEY_ENTR:
+                add_msg(input_str, -1);
+                update_msg_area();
                 //do something
                 break;
             case KEY_BACKSPACE:
@@ -35,18 +37,16 @@ int h_main()
                 delete_symbol(w);
                 break;
             default:
-                if(can_x(1))
-                {
-                    wprintw(w, "%c", key);
-                    input_str[X]=key;
-                    inc_x();
-                }
+                if(can_x(1) == 0) break;
+                wprintw(w, "%c", key);
+                input_str[X]=key;
+                inc_x();
                 break;
         }
-        wmove(CHAT_AREA,17,0);
-        wclrtobot(CHAT_AREA);
-        wprintw(CHAT_AREA,"%c-%d", input_str[X], X);
-        wrefresh(CHAT_AREA);
+        // wmove(CHAT_AREA,17,0);
+        // wclrtobot(CHAT_AREA);
+        // wprintw(CHAT_AREA,"%c-%d", input_str[X], X);
+        // wrefresh(CHAT_AREA);
 
         wmove(INPUT_AREA, 1, P(X));
 
@@ -77,7 +77,6 @@ void dec_x()
 
 int can_x(int v)
 {
-    // return (strlen(input_str) < MAX_MSG_SIZE) && (X < INPUT_AREA->_maxx-2);
     if(v>0){
         return (X < MAX_MSG_SIZE) && (X < INPUT_AREA->_maxx-2);
     }
