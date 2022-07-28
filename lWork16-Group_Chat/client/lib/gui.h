@@ -1,7 +1,7 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
-#include "../../common.h"
+#include "data.h"
 
 WINDOW *CHAT_AREA;
 WINDOW *USERS_AREA;

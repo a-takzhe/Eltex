@@ -1,8 +1,7 @@
 #ifndef _HANDLER_H_
 #define _HANDLER_H_
 
-#include "gui.h"
-#include "store.h"
+#include "queue.h"
 
 #define KEY_ENTR 0012
 

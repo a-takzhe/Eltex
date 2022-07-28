@@ -2,13 +2,16 @@
 
 int h_main()
 {
-    int key;
+    int key, err;
     WINDOW* w = INPUT_AREA;
     wmove(w, 1, P(0));
 
     while (key = wgetch(w))
     {
         if(key == KEY_F(3) || key == 0033){
+            err = pthread_cancel(pth_listener);
+            if(err != 0)
+                handle_error_en(err, "pthread_cancel");
             break;
         }
         if(key == KEY_F0) {
@@ -28,9 +31,10 @@ int h_main()
                 inc_x();
                 break;
             case KEY_ENTR:
-                add_msg(input_str, -1);
-                update_msg_area();
-                //do something
+                sync_add_msg(INPUT_STR, -1);
+                send_msg(INPUT_STR);
+                clear_input();
+                update_inp_area();
                 break;
             case KEY_BACKSPACE:
                 if(can_x(-1) == 0) break;
@@ -39,13 +43,13 @@ int h_main()
             default:
                 if(can_x(1) == 0) break;
                 wprintw(w, "%c", key);
-                input_str[X]=key;
+                INPUT_STR[X]=key;
                 inc_x();
                 break;
         }
         // wmove(CHAT_AREA,17,0);
         // wclrtobot(CHAT_AREA);
-        // wprintw(CHAT_AREA,"%c-%d", input_str[X], X);
+        // wprintw(CHAT_AREA,"%c-%d", INPUT_STR[X], X);
         // wrefresh(CHAT_AREA);
 
         wmove(INPUT_AREA, 1, P(X));
@@ -57,7 +61,7 @@ int h_main()
 void inc_x()
 {
     
-    if(input_str[X] != 0 && X < INPUT_AREA->_maxx-2)
+    if(INPUT_STR[X] != 0 && X < INPUT_AREA->_maxx-2)
     {
         X++;
         wmove(INPUT_AREA, 1, P(X));
@@ -88,7 +92,7 @@ int can_x(int v)
 int end_ind()
 {
     int i = 0;
-    while (input_str[i] != 0)
+    while (INPUT_STR[i] != 0)
     {
         i++;
     } 
@@ -97,12 +101,12 @@ int end_ind()
 
 char* mem_del_sym()
 {
-    int sl = strlen(&input_str[X]);
+    int sl = strlen(&INPUT_STR[X]);
     char* bf = (char*)calloc(sl+1, sizeof(char));
     
-    strncpy(bf, &input_str[X], sl+1);
-    input_str[strlen(input_str)-1] = 0;
-    strcpy(&input_str[X-1], bf);
+    strncpy(bf, &INPUT_STR[X], sl+1);
+    INPUT_STR[strlen(INPUT_STR)-1] = 0;
+    strcpy(&INPUT_STR[X-1], bf);
     return bf;
 }
 

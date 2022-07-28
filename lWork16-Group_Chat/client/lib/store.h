@@ -1,9 +1,10 @@
 #ifndef _STORE_H_
 #define _STORE_H_
 
-#include "../../common.h"
+#include "data.h"
 
-int add_msg(char* text, int u_id);
-int add_usr(char* name, int u_id);
+int add_msg(char* text, int uid);
+int add_usr(char* name, int uid);
+void clear_input();
 
 #endif

@@ -158,11 +158,11 @@ int update_usr_area()
     wclear(USERS_AREA);
     for (size_t i = 0; i < MAX_USER; i++)
     {   
-        if(USERS[i].active == 0){
+        if(USERS[i].q_id == 0){
             break;
         }
         WINDOW* wnd = derwin(USERS_AREA, 1, USERS_AREA->_maxx, i*2, 0);
-        mvwprintw(wnd,0,0,"(%d) > %s", USERS[i].name, USERS[i].q_id);
+        mvwprintw(wnd, 0, 0, "(%d) > %s", USERS[i].uid, USERS[i].name);
         wbkgd(wnd, COLOR_PAIR(USER_LABEL_COLOR));
     }
     wrefresh(USERS_AREA);
@@ -175,7 +175,15 @@ void print_mmes(const char* text, int line)
 }
 void print_mes(int uid, const char* text, int line)
 {
-    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", USERS[uid].name, text);
+    int i;
+    for (i = 0; i < MAX_USER; i++)
+    {
+        if(USERS[i].uid == uid){
+            break;
+        }
+    }
+    
+    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", USERS[i].name, text);
 }
 
 int update_msg_area()
@@ -186,11 +194,11 @@ int update_msg_area()
     wclear(CHAT_AREA);
     for (int i = cnt_msg; i >= 0; i--)
     {
-        if(messages[ID_LAST_MSG-i].u_id == -1){
-            print_mmes(messages[ID_LAST_MSG-i].text, line);
+        if(MESSAGES[ID_LAST_MSG-i].u_id == -1){
+            print_mmes(MESSAGES[ID_LAST_MSG-i].text, line);
         }
         else{
-            print_mes(messages[ID_LAST_MSG-i].u_id, messages[ID_LAST_MSG-i].text, line);
+            print_mes(MESSAGES[ID_LAST_MSG-i].u_id, MESSAGES[ID_LAST_MSG-i].text, line);
         }
         line++;
     }
@@ -201,7 +209,7 @@ int update_inp_area()
 {
     wclear(INPUT_AREA); 
     box(INPUT_AREA, '>', '-');
-    mvwprintw(INPUT_AREA, 1, P(0), "%s", input_str);
+    mvwprintw(INPUT_AREA, 1, P(0), "%s", INPUT_STR);
     wrefresh(INPUT_AREA); 
 }
 

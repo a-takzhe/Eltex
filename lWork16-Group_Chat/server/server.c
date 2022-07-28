@@ -1,23 +1,41 @@
 
-#include "../common.h"
+#include "module/reciever.h"
 
-char SERV_NAME[64];
-static int USER_ID;
-
-void set_attr(struct mq_attr* attr)
+void unlinc_all()
 {
-    attr->mq_maxmsg  = MAX_MSG;
-    attr->mq_msgsize = MAX_MSG_SIZE+sizeof(int);
-    attr->mq_curmsgs = 0;
-    attr->mq_flags   = 0;
+    if(mq_unlink("/alex") == -1){
+        ERROR_MS(handle_error("mq_unlink alex error"));
+    }
+    if(mq_unlink("/anton") == -1){
+        ERROR_MS(handle_error("mq_unlink anton error"));
+    }
+    if(mq_unlink("/mark") == -1){
+        ERROR_MS(handle_error("mq_unlink mark error"));
+    }
 }
+
+int isExit(char* str)
+{
+    return (strcmp(str, "exit") == 0 || strstr(str, "exit") != NULL);
+}
+
+int uEscape(char* str)
+{
+    for (size_t i = 0; i < strlen(str); i++)
+    {
+        if(str[i]==27 || str[i]==1) return 1;
+    }
+    return 0;
+}
+
 
 int main(int argc, char* argv[])
 {
-    int opt;
-    mqd_t server_mq;
-    uint prior;
-    struct mq_attr attr;
+    int opt, err;
+    char* str = NULL;
+    size_t len;
+    ssize_t s_len;
+    pthread_t pth;
     
     while ((opt = getopt(argc, argv, "n:")) != -1)
     {
@@ -34,48 +52,35 @@ int main(int argc, char* argv[])
         strncpy(SERV_NAME+1, "test-setrve", 64);
     }
     SERV_NAME[0] = '/';
+
     printf("statrt init %s Server...\n",SERV_NAME);
-    STAT_MS(puts("Attr init..."));
-    set_attr(&attr);  
+    serv_mq_open(SERV_NAME, &Q_SERV_ID);   
 
-    STAT_MS(puts("Create queue.."));
+    err = pthread_create(&pth, NULL, my_recv, NULL);
+    if (err != 0)
+        handle_error_en(err, "pthread_create");
 
-    
-    server_mq = mq_open(SERV_NAME, O_RDONLY | O_CREAT, 0777, &attr);
-    if(server_mq == -1){
-        ERROR_MS(handle_error("server_mq read error"));
-    }
-    printf("Server queue id = %d\n", server_mq);
+    while (1)
+    {   
+        s_len = getline(&str, &len, stdin); 
 
-
-    while(1)
-    { 
-        package* pack;
-        char buffer[attr.mq_msgsize];
-        int len;
-
-        STAT_MS(puts("Waiting for a message..."));
-        if((len = mq_receive(server_mq, buffer, sizeof(buffer), &prior)) == -1)
-        {
-            ERROR_MS(handle_error("mq_receive error"));
+        if(s_len == -1){
+            free(str);
+            handle_error("getline");
         }
-        else
-        {
-            pack = (package*)buffer;
-            if(prior == 2){
-                printf("user %s attach to server\n", pack->message);
-            }
-            else if(prior == 1){
-                printf("user %s attach to server\n", pack->message);
-            }
+        if(uEscape(str)){
+            puts("don't use escape sequences");
+            continue;
+        }   
+        if(isExit(str)){
+            err = pthread_cancel(pth);
+            if(err != 0)
+                handle_error_en(err, "pthread_cancel");
+            break;
         }
-    }    
-
-
-    if(mq_unlink(SERV_NAME) == -1){
-        ERROR_MS(handle_error("mq_unlink error"));
     }
-    printf("Queue (%d) is deleted!\n", server_mq);
 
+    serv_mq_unlinq(SERV_NAME, Q_SERV_ID);
+    unlinc_all();
     exit(EXIT_SUCCESS);
 }
