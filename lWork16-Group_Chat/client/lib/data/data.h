@@ -1,13 +1,13 @@
 #ifndef _DATA_CLI_H
 #define _DATA_CLI_H
 
-#include "../../common.h"
+#include "../../../common.h"
 #include <math.h>
 #include <curses.h>
 #include <termios.h>
 
-
 #define P(i) (i+1)
+
 char SERV_NAME[64];
 char LOGIN[64];
 mqd_t Q_USR_ID;

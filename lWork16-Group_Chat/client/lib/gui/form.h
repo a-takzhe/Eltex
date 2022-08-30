@@ -1,11 +1,9 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
-#include "data.h"
-
-WINDOW *CHAT_AREA;
-WINDOW *USERS_AREA;
-WINDOW *INPUT_AREA;
+#include "input_area.h" 
+#include "chat_area.h" 
+#include "user_area.h" 
 
 #define BACK_1 8
 #define BACK_2 9
@@ -26,16 +24,15 @@ enum COLOR_SHEMA
     USERS_COLOR = 102,
     INPUT_COLOR = 103,
     ERROR_COLOR = 104,
-    USER_COLOR  = 105,
-    USER_LABEL_COLOR = 106
+    USER_COLOR  = 105
 };
+
+int init_w();
+void allert_baner(struct winsize size);
+void init_color_pairs();
+void sig_winch(int signo);
 
 int init();
 int wend();
-int update_usr_area();
-int update_msg_area();
-int update_inp_area();
-
-
 
 #endif

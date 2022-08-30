@@ -1,4 +1,4 @@
-#include "./lib/handler.h"
+#include "./lib/gui/handler.h"
 
 int main(int argc, char* argv[])
 {

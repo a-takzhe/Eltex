@@ -42,14 +42,14 @@ int main(int argc, char* argv[])
         switch (opt)
         {
             case 'n':
-                strncpy(SERV_NAME+1, optarg, 64);
+                strncpy(SERV_NAME+1, optarg, 63);
                 break;
             default:
                 break;
         }
     }
     if(SERV_NAME[1] == 0){
-        strncpy(SERV_NAME+1, "test-setrve", 64);
+        strncpy(SERV_NAME+1, "test-server", 63);
     }
     SERV_NAME[0] = '/';
 

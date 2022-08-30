@@ -47,10 +47,6 @@ int h_main()
                 inc_x();
                 break;
         }
-        // wmove(CHAT_AREA,17,0);
-        // wclrtobot(CHAT_AREA);
-        // wprintw(CHAT_AREA,"%c-%d", INPUT_STR[X], X);
-        // wrefresh(CHAT_AREA);
 
         wmove(INPUT_AREA, 1, P(X));
 

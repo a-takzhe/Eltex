@@ -1,8 +1,8 @@
 #ifndef _SYNC_LAYER_H
 #define _SYNC_LAYER_H
 
-#include "store.h"
-#include "gui.h"
+#include "../data/store.h"
+#include "../gui/form.h"
 
 pthread_mutex_t usr_mutex;
 pthread_mutex_t msg_mutex;

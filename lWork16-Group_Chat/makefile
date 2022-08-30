@@ -4,34 +4,53 @@ S_DIR := ./server
 C_LIB_DIR := $(C_DIR)/lib
 S_LIB_DIR := $(S_DIR)/module
 
-SRC_LIB_FILES := $(wildcard $(C_LIB_DIR)/*.c)
-OBJ_LIB_FILES := $(patsubst $(C_LIB_DIR)/%.c, $(C_LIB_DIR)/%.o, $(SRC_LIB_FILES))
+SRC_CLIENT_LIB_F := $(wildcard $(C_LIB_DIR)/*/*.c)
+OBJ_CLIENT_LIB_F := $(SRC_CLIENT_LIB_F:.c=.o)
 
-SRC_LIB_FILES_S := $(wildcard $(S_LIB_DIR)/*.c)
-OBJ_LIB_FILES_S := $(patsubst $(S_LIB_DIR)/%.c, $(S_LIB_DIR)/%.o, $(SRC_LIB_FILES_S))
+SRC_SERVER_LIB_F := $(wildcard $(S_LIB_DIR)/*.c)
+OBJ_SERVER_LIB_F := $(SRC_SERVER_LIB_F:.c=.o)
+
+PARAMS := -lncurses -lrt -pthread -lm
 
 all: client server
 
-client: $(OBJ_LIB_FILES) client.o 
-	gcc $(C_DIR)/client.o $(OBJ_LIB_FILES) -o client.aut -lncurses -lm -O1 -lrt -pthread
-
-server: $(OBJ_LIB_FILES_S) $(S_DIR)/server.c
-	gcc $(S_DIR)/server.c $(OBJ_LIB_FILES_S) -o server.aut -lrt -pthread
+#------------------CLIENT------------------
+client: $(OBJ_CLIENT_LIB_F) client.o 
+	gcc $(C_DIR)/client.o $(OBJ_CLIENT_LIB_F) -o client.aut $(PARAMS)
 
 client.o: $(C_DIR)/client.c
-	gcc $(C_DIR)/client.c -c -g -o $(C_DIR)/client.o -O1
+	gcc $(C_DIR)/client.c -c -g -o $(C_DIR)/client.o -O1 
 
-# # compare.o: compare.c
-# # 	gcc compare.c -c -g
+$(C_LIB_DIR)/*/%.o: $(C_LIB_DIR)/*/%.c
+	gcc -c -o $@ $< -O1 -g3 
+#------------------------------------------
 
-$(C_LIB_DIR)/%.o: $(C_LIB_DIR)/%.c
-	gcc -c -o $@ $< -O1 -g3
 
-$(S_LIB_DIR)/%.o: $(S_LIB_DIR)/%.c
-	gcc -c -o $@ $< -O1 -g3
+#------------------SERVER------------------
+server: $(OBJ_SERVER_LIB_F) server.o 
+	gcc $(S_DIR)/server.o $(OBJ_SERVER_LIB_F) -o server.aut $(PARAMS)
+
+server.o: $(S_DIR)/server.c
+	gcc $(S_DIR)/server.c -c -o $(S_DIR)/server.o -O1 -g3
+
+$(S_LIB_DIR)/*/%.o: $(S_LIB_DIR)/*/%.c
+	gcc $@ -c -o $< -O1 -g3 
+#------------------------------------------
+
 
 clean:
-	rm -rf *.o main $(C_LIB_DIR)/*.o $(C_DIR)/*.o $(S_LIB_DIR)/*.o $(S_DIR)/*.o 
+	rm -rf ./*/*.o $(OBJ_CLIENT_LIB_F) $(OBJ_SERVER_LIB_F) *.aut
 
-delo:
-	rm -rf *.o $(bin_dir)/*.o
+
+
+
+
+
+message:
+	$(info $(SRC_CLIENT_LIB_F))
+	$(info $(OBJ_CLIENT_LIB_F))
+	$(info $(SUBDIR_C))
+	$(info $(SUBDIR_O))
+	$(info *****************************************)
+	$(info *****************************************)
+
