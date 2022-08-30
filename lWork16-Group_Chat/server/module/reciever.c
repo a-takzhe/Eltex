@@ -1,17 +1,17 @@
 #include "reciever.h"
 
 
-void serv_mq_open(const char* s_name, mqd_t* mq_id)
+void serv_mq_open(const char* s_name)
 {
     puts("Create server queue...");
     struct mq_attr attr;
     set_attr(&attr);
 
-    *mq_id = mq_open(s_name, O_RDONLY | O_CREAT, 0777, &attr);
-    if(*mq_id == -1){
-        ERROR_MS(handle_error("Q_SERV_ID read error"));
+    Q_SERV_ID = mq_open(s_name, O_RDONLY | O_CREAT, 0777, &attr);
+    if(Q_SERV_ID == -1){
+        ERROR_MS(handle_error("mq_open error"));
     }
-    printf("Server queue id = %d\n", *mq_id);
+    printf("Server queue id = %d\n", Q_SERV_ID);
 }
 
 void serv_mq_unlinq(const char* s_name, mqd_t mq_id)
@@ -22,7 +22,8 @@ void serv_mq_unlinq(const char* s_name, mqd_t mq_id)
     printf("Queue (%d) is deleted!\n", mq_id);
 }
 
-
+// FUNCTION READ MESSAGE FROM CONNECTING USERS AND
+// SEND MESSAGE OTHER CONNECTING USERS
 void* my_recv()
 {
     uint prior;

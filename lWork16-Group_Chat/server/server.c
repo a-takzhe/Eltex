@@ -19,16 +19,6 @@ int isExit(char* str)
     return (strcmp(str, "exit") == 0 || strstr(str, "exit") != NULL);
 }
 
-int uEscape(char* str)
-{
-    for (size_t i = 0; i < strlen(str); i++)
-    {
-        if(str[i]==27 || str[i]==1) return 1;
-    }
-    return 0;
-}
-
-
 int main(int argc, char* argv[])
 {
     int opt, err;
@@ -45,37 +35,43 @@ int main(int argc, char* argv[])
                 strncpy(SERV_NAME+1, optarg, 63);
                 break;
             default:
+                exit(EXIT_FAILURE);
                 break;
         }
     }
     if(SERV_NAME[1] == 0){
         strncpy(SERV_NAME+1, "test-server", 63);
+        // puts("please, use option '-l' for set server name");
+        // exit(EXIT_FAILURE);
     }
     SERV_NAME[0] = '/';
 
-    printf("statrt init %s Server...\n",SERV_NAME);
-    serv_mq_open(SERV_NAME, &Q_SERV_ID);   
+    //initialization message queue 
+    STAT_MS(printf("Statrt init Server (%s)...\n",SERV_NAME));
+    serv_mq_open(SERV_NAME);   
 
+    //thread for communication betwin users  
     err = pthread_create(&pth, NULL, my_recv, NULL);
     if (err != 0)
         handle_error_en(err, "pthread_create");
 
+    //main thread for correct finalization server 
     while (1)
     {   
         s_len = getline(&str, &len, stdin); 
 
-        if(s_len == -1){
+        if(s_len == -1)
+        {
             free(str);
             handle_error("getline");
         }
-        if(uEscape(str)){
-            puts("don't use escape sequences");
-            continue;
-        }   
-        if(isExit(str)){
+        if(isExit(str))
+        {
             err = pthread_cancel(pth);
-            if(err != 0)
-                handle_error_en(err, "pthread_cancel");
+            if(err != 0){
+                handle_error_en(err, "pthread_cancel");   
+            }
+            ERROR_MS(printf("Server(%s) stopped!", SERV_NAME));
             break;
         }
     }
