@@ -111,3 +111,26 @@ int send_msg(package* pack)
     return 1;
 }
 
+int disconnect_user(package* pack)
+{
+    char* bufer = (char*)pack;
+    for (int i = 0; i < MAX_USER; i++)
+    {
+        if(USERS[i].q_id != 0 && i != pack->u_id)
+        {
+            printf("sennd to %s that (%s) disconnected\n",USERS[i].name, pack->message);
+            if(mq_send(USERS[i].q_id, bufer, sizeof(package), 4) == -1)
+            {
+                handle_error("mq_send error!");   
+            }
+        }
+    }
+
+    //clear USERS
+    USERS[pack->u_id].q_id = 0;
+    USERS[pack->u_id].uid  = 0;
+    USERS[pack->u_id].name[0] = '\0';
+    
+    return 1;
+}
+

@@ -9,7 +9,7 @@ void serv_mq_open(const char* s_name)
 
     Q_SERV_ID = mq_open(s_name, O_RDONLY | O_CREAT, 0777, &attr);
     if(Q_SERV_ID == -1){
-        ERROR_MS(handle_error("mq_open error"));
+        handle_error("mq_open error");
     }
     printf("Server queue id = %d\n", Q_SERV_ID);
 }
@@ -17,7 +17,7 @@ void serv_mq_open(const char* s_name)
 void serv_mq_unlinq(const char* s_name, mqd_t mq_id)
 {
     if(mq_unlink(s_name) == -1){
-        ERROR_MS(handle_error("mq_unlink Q_SERV_ID error"));
+        handle_error("Q_SERV_ID mq_unlink error");
     }
     printf("Queue (%d) is deleted!\n", mq_id);
 }
@@ -60,6 +60,7 @@ void* my_recv()
         else if(prior == 3)
         {
             STAT_MS(printf("user %s disconnected!\n"));
+            disconnect_user(pack);
         }
         else
         {
