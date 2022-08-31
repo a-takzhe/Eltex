@@ -35,13 +35,17 @@ void* my_recv()
         int len, uid;
 
         // STAT_MS(puts("Waiting for a message..."));
-        if((len = mq_receive(Q_SERV_ID, buffer, sizeof(buffer), &prior)) == -1)
-        {
-            ERROR_MS(handle_error("mq_receive error"));
+        if((len = mq_receive(Q_SERV_ID, buffer, sizeof(buffer), &prior)) == -1){
+            handle_error("mq_receive error");
         }
 
         pack = (package*)buffer;
-        if(prior == 2)
+        if(prior == 1)
+        {
+            printf("user %s send msg: %s\n", USERS[pack->u_id].name, pack->message);
+            send_msg(pack);
+        }
+        else if(prior == 2)
         {
             STAT_MS(printf("user:%s try attach to server\n", pack->message));
             
@@ -49,14 +53,17 @@ void* my_recv()
                 ERROR_MS(puts("MAX count of user"));
             }
             snd_new_to_old(pack, uid);
-            snd_old_to_new(pack, uid);                        
+            snd_old_to_new(uid);                        
             
             STAT_MS(printf("user:%s attach to server with (%d)mq_id and (%d)uid\n", USERS[uid].name, USERS[uid].q_id, uid));
         }
-        else if(prior == 1)
+        else if(prior == 3)
         {
-            printf("user %d send msg: %s\n", pack->u_id, pack->message);
-            send_msg(pack);
+            STAT_MS(printf("user %s disconnected!\n"));
+        }
+        else
+        {
+            ERROR_MS(puts("Unrecognize message!!"));
         }
     } 
 }

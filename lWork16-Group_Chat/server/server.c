@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
             if(err != 0){
                 handle_error_en(err, "pthread_cancel");   
             }
-            ERROR_MS(printf("Server(%s) stopped!", SERV_NAME));
+            ERROR_MS(printf("Server(%s) stopped!\n", SERV_NAME));
             break;
         }
     }

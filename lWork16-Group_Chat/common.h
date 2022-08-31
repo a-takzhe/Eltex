@@ -35,7 +35,8 @@
 #define MAX_MSG 64
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// (3)priority - user deattach
+// (3)priority - user deattach(for SERVER)
+// (3)priority - get id form server (for CLIENT)
 // (2)priority - user attach
 // (1)priority - user send message
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -50,7 +51,7 @@ struct USER_T
 {
     mqd_t q_id;
     int   uid;
-    char name[MAX_USER_NAME];
+    char  name[MAX_USER_NAME];
     int   active;
 } 
 typedef user;
