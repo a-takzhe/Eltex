@@ -24,7 +24,7 @@
 
 
 #define YELLOW        do { printf("\033[1;33m");} while (0)
-#define RED           do { printf("\033[41m");} while (0)
+#define RED           do { printf("\033[1;31m");} while (0)
 #define RESET         do { printf("\033[0m");} while (0) 
 #define STAT_MS(prt)  do { YELLOW; prt; RESET;} while (0)
 #define ERROR_MS(prt) do { RED; prt; RESET;} while (0)  
@@ -37,6 +37,7 @@
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (3)priority - user deattach(for SERVER)
 // (3)priority - get id form server (for CLIENT)
+// (4)priority - user disconnected (for CLIENT)
 // (2)priority - user attach
 // (1)priority - user send message
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -59,7 +59,7 @@ void* my_recv()
         }
         else if(prior == 3)
         {
-            STAT_MS(printf("user %s disconnected!\n"));
+            STAT_MS(printf("user %s disconnected!\n", pack->message));
             disconnect_user(pack);
         }
         else

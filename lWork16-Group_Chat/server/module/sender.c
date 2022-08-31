@@ -130,7 +130,20 @@ int disconnect_user(package* pack)
     USERS[pack->u_id].q_id = 0;
     USERS[pack->u_id].uid  = 0;
     USERS[pack->u_id].name[0] = '\0';
-    
+
     return 1;
+}
+
+void unlinc_all()
+{
+    for (int i = 0; i < MAX_USER; i++)
+    {
+        if(USERS[i].q_id != 0)
+        {
+            if(mq_unlink(USERS[i].name) == -1){
+                printf("mq_unlink %s error\n", USERS[i].name);
+            }
+        }
+    }
 }
 

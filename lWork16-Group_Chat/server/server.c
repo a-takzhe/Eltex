@@ -1,19 +1,6 @@
 
 #include "module/reciever.h"
 
-void unlinc_all()
-{
-    if(mq_unlink("/alex") == -1){
-        ERROR_MS(handle_error("mq_unlink alex error"));
-    }
-    if(mq_unlink("/anton") == -1){
-        ERROR_MS(handle_error("mq_unlink anton error"));
-    }
-    if(mq_unlink("/mark") == -1){
-        ERROR_MS(handle_error("mq_unlink mark error"));
-    }
-}
-
 int isExit(char* str)
 {
     return (strcmp(str, "exit") == 0 || strstr(str, "exit") != NULL);
@@ -40,9 +27,9 @@ int main(int argc, char* argv[])
         }
     }
     if(SERV_NAME[1] == 0){
-        strncpy(SERV_NAME+1, "test-server", 63);
-        // puts("please, use option '-l' for set server name");
-        // exit(EXIT_FAILURE);
+        //strncpy(SERV_NAME+1, "test-server", 63);
+        puts("please, use option '-l' for set server name");
+        exit(EXIT_FAILURE);
     }
     SERV_NAME[0] = '/';
 
