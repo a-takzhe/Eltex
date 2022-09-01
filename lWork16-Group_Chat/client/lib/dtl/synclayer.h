@@ -10,5 +10,6 @@ pthread_mutex_t msg_mutex;
 void mutex_init();
 int sync_add_msg(char* text, int uid);
 int sync_add_usr(char* name, int uid);
+int sync_user_disconnect(int uid);
 
 #endif

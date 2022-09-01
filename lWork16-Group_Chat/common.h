@@ -30,13 +30,14 @@
 #define ERROR_MS(prt) do { RED; prt; RESET;} while (0)  
 
 #define MAX_USER 10
-#define MAX_USER_NAME 32
+#define MAX_USER_NAME 64
 #define MAX_MSG_SIZE 64
 #define MAX_MSG 64
+#define MAX_MQ_MSG 10
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (3)priority - user deattach(for SERVER)
-// (3)priority - get id form server (for CLIENT)
+// (3)priority - get id and confirm connection form server (for CLIENT)
 // (4)priority - user disconnected (for CLIENT)
 // (2)priority - user attach
 // (1)priority - user send message

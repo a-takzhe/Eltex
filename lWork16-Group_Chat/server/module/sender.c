@@ -2,7 +2,7 @@
 
 void set_attr(struct mq_attr* attr)
 {
-    attr->mq_maxmsg  = MAX_MSG;
+    attr->mq_maxmsg  = MAX_MQ_MSG;
     attr->mq_msgsize = sizeof(package);
     attr->mq_curmsgs = 0;
     attr->mq_flags   = 0;
@@ -11,11 +11,12 @@ void set_attr(struct mq_attr* attr)
 // Возвращает ИД пользователя в списке пользователей иначе -1
 int add_user(package pack)
 {
-    char msg[50];
+    char msg[124];
     struct mq_attr attr;
     char* bufer;
     set_attr(&attr);
     package *npack = (package*)calloc(sizeof(package),1);
+    npack->u_id = -1;
 
     for (int i = 0; i < MAX_USER; i++)
     {
@@ -43,6 +44,9 @@ int add_user(package pack)
             }
             return i;
         }
+    }
+    if(npack->u_id == -1){
+        //msg for cant attach;
     }
     free(npack);
     return -1;    
@@ -75,7 +79,7 @@ int snd_old_to_new(int uid)
 //send nickname and user id in the list to already connected users
 int snd_new_to_old(package* pack, int uid)
 {
-    char msg[50];
+    char msg[124];
     pack->u_id = uid;
     char* bufer = (char*)pack;
 
@@ -127,6 +131,12 @@ int disconnect_user(package* pack)
     }
 
     //clear USERS
+     if(mq_close(USERS[pack->u_id].q_id) == -1){
+        printf("mq_close %s error\n", USERS[pack->u_id].name);
+    }
+    else{
+        printf("client %s leave server\n", USERS[pack->u_id].name);
+    }
     USERS[pack->u_id].q_id = 0;
     USERS[pack->u_id].uid  = 0;
     USERS[pack->u_id].name[0] = '\0';
@@ -140,8 +150,11 @@ void unlinc_all()
     {
         if(USERS[i].q_id != 0)
         {
-            if(mq_unlink(USERS[i].name) == -1){
-                printf("mq_unlink %s error\n", USERS[i].name);
+            if(mq_close(USERS[i].q_id) == -1){
+                printf("mq_close %s error\n", USERS[i].name);
+            }
+            else{
+                printf("client %s deattach from server\n", USERS[i].name);
             }
         }
     }

@@ -6,17 +6,17 @@ void print_mmes(const char* text, int line)
     mvwprintw(CHAT_AREA, line*2, x, "%s <(me)", text);
 }
 
-void print_mes(int uid, const char* text, int line)
+void print_mes(char* name, const char* text, int line)
 {
-    int i;
-    for (i = 0; i < MAX_USER; i++)
-    {
-        if(USERS[i].uid == uid){
-            break;
-        }
-    }
+    // int i;
+    // for (i = 0; i < MAX_USER; i++)
+    // {
+    //     if(USERS[i].uid == uid){
+    //         break;
+    //     }
+    // }
     
-    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", USERS[i].name, text);
+    mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", name, text);
 }
 
 int update_msg_area()
@@ -34,7 +34,7 @@ int update_msg_area()
         }
         else
         {
-            print_mes(MESSAGES[ID_LAST_MSG-i].u_id, MESSAGES[ID_LAST_MSG-i].text, line);
+            print_mes(MESSAGES[ID_LAST_MSG-i].name, MESSAGES[ID_LAST_MSG-i].text, line);
         }
         line++;
     }

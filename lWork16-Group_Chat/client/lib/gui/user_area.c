@@ -5,7 +5,7 @@ int update_usr_area()
     wclear(USERS_AREA);
     for (size_t i = 0; i < MAX_USER; i++)
     {   
-        if(USERS[i].q_id == 0)
+        if(USERS[i].q_id == 0 || USERS[i].active == -1)
             continue;
         
         WINDOW* wnd = derwin(USERS_AREA, 1, USERS_AREA->_maxx, i*2, 0);

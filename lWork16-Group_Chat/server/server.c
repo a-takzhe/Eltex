@@ -22,13 +22,14 @@ int main(int argc, char* argv[])
                 strncpy(SERV_NAME+1, optarg, 63);
                 break;
             default:
+                printf("unknown key %c!\n", opt);
                 exit(EXIT_FAILURE);
                 break;
         }
     }
     if(SERV_NAME[1] == 0){
         //strncpy(SERV_NAME+1, "test-server", 63);
-        puts("please, use option '-l' for set server name");
+        puts("please, use option '-n' for set server name");
         exit(EXIT_FAILURE);
     }
     SERV_NAME[0] = '/';
@@ -39,8 +40,9 @@ int main(int argc, char* argv[])
 
     //thread for communication betwin users  
     err = pthread_create(&pth, NULL, my_recv, NULL);
-    if (err != 0)
+    if (err != 0){
         handle_error_en(err, "pthread_create");
+    }
 
     //main thread for correct finalization server 
     while (1)

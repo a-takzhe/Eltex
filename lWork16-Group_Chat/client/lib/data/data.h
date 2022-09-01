@@ -9,7 +9,7 @@
 #define P(i) (i+1)
 
 char SERV_NAME[64];
-char LOGIN[64];
+char LOGIN[MAX_USER_NAME];
 mqd_t Q_USR_ID;
 mqd_t Q_SERV_ID;
 int   MY_UID;
@@ -22,6 +22,7 @@ int X;
 
 struct MESSAGE_LIST_T{
     char text[MAX_MSG_SIZE];
+    char name[MAX_USER_NAME];
     int  u_id;
 }typedef message_list;
 
