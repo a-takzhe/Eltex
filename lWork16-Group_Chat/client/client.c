@@ -27,14 +27,14 @@ int main(int argc, char* argv[])
         }
     }
     if(SERV_NAME[1] == 0){
-        strncpy(SERV_NAME+1, "test-setrve", 63);
-        // puts("please, use option '-s' for set server name");
-        // exit(EXIT_FAILURE);
+        // strncpy(SERV_NAME+1, "test-setrve", 63);
+        puts("please, use option '-s' for set server name");
+        exit(EXIT_FAILURE);
     }
     if(LOGIN[1] == 0){
-        strncpy(LOGIN+1, "alex", MAX_USER_NAME-1);
-        // puts("please, use option '-l' for set login");
-        // exit(EXIT_FAILURE);
+        // strncpy(LOGIN+1, "alex", MAX_USER_NAME-1);
+        puts("please, use option '-l' for set login");
+        exit(EXIT_FAILURE);
     }
     LOGIN[0]='/';
     SERV_NAME[0]='/';
