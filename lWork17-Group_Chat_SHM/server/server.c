@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
         switch (opt)
         {
             case 'n':
-                strncpy(SERV_NAME+1, optarg, 63);
+                strncpy(SERV_NAME, optarg, 63);
                 break;
             default:
                 printf("unknown key %c!\n", opt);
@@ -27,12 +27,11 @@ int main(int argc, char* argv[])
                 break;
         }
     }
-    if(SERV_NAME[1] == 0){
+    if(SERV_NAME[0] == 0){
         //strncpy(SERV_NAME+1, "test-server", 63);
         puts("please, use option '-n' for set server name");
         exit(EXIT_FAILURE);
     }
-    SERV_NAME[0] = '/';
 
     //initialization message queue 
     STAT_MS(printf("Statrt init Server (%s)...\n",SERV_NAME));

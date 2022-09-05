@@ -29,11 +29,11 @@
 #define STAT_MS(prt)  do { YELLOW; prt; RESET;} while (0)
 #define ERROR_MS(prt) do { RED; prt; RESET;} while (0)  
 
-#define MAX_USER 10
-#define MAX_USER_NAME 64
-#define MAX_MSG_SIZE 64
-#define MAX_MSG 64
-#define MAX_MQ_MSG 10
+#define MAX_USER       10
+#define MAX_USER_NAME  64
+#define MAX_MSG_SIZE   64
+#define MAX_MSG        64
+#define MAX_MQ_MSG     10
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (3)priority - user deattach(for SERVER)
@@ -43,8 +43,11 @@
 // (1)priority - user send message
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+const int PAGE_SIZE = 4096;
+
 struct PACK_T{
     char  message[MAX_MSG_SIZE];
+    int status;
     mqd_t u_id;
 }
 typedef package;
