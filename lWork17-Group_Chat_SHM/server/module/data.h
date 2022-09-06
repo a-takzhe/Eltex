@@ -3,8 +3,8 @@
 
 #include "../../common.h"
 
-char SERV_NAME[64];
+char  SERVER_NAME[64];
 mqd_t Q_SERV_ID;
-user USERS[MAX_USER]; 
+user  USERS[MAX_USERS]; 
 
 #endif

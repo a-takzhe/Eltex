@@ -29,7 +29,7 @@
 #define STAT_MS(prt)  do { YELLOW; prt; RESET;} while (0)
 #define ERROR_MS(prt) do { RED; prt; RESET;} while (0)  
 
-#define MAX_USER       10
+#define MAX_USERS      10
 #define MAX_USER_NAME  64
 #define MAX_MSG_SIZE   64
 #define MAX_MSG        64
@@ -47,17 +47,17 @@ const int PAGE_SIZE = 4096;
 
 struct PACK_T{
     char  message[MAX_MSG_SIZE];
-    int status;
-    mqd_t u_id;
+    int   status;
+    int   uid;
 }
 typedef package;
 
 struct USER_T
 {
-    mqd_t q_id;
     int   uid;
-    char  name[MAX_USER_NAME];
     int   active;
+    char  name[MAX_USER_NAME];
+    void* ptr;
 } 
 typedef user;
 

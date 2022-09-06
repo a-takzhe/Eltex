@@ -39,7 +39,47 @@ void *attach_client_shm(const char* name)
     return sh_ptr;
 }
 
-int write_to_shm(const char* mes, int prioryty, const void* ptr)
+int write_to_shm(const char* mes, int status, int uid, const void* ptr)
 {
+    package* pack = ptr;
+    
+    if(USERS[uid].active != 1)
+    {
+        printf("User with uid(%d) not exists!\n");
+        return -1;
+    }
 
+    strncpy(pack->message, mes, MAX_MSG_SIZE);
+    pack->status = status;
+    pack->uid = uid;
+
+    return 1;
 }
+
+package* read_from_shm(const void* ptr)
+{
+    package* pack = (package*)ptr;
+    if(pack->status == -1){
+        return NULL;
+    }
+    //dodelat'
+}
+
+void close_all_shm()
+{
+    for(int i = 0; i < MAX_USERS; i++)
+    {
+        if(USERS[i].active == 1){
+            if(munmap(USERS[i].ptr, sizeof(package))==-1){
+                printf("Server can't munmap from %s shm\n");
+            }
+            else{
+                printf("Server munmap from %s shm\n");
+            }
+        }
+    }
+}
+
+
+
+
