@@ -3,8 +3,12 @@
 
 #include "../../common.h"
 
+#define PROJ_ID  1
+#define SEM_PATH "./semaphores/sem-"
+
+int   SEM_ID;
+void* SHM_PTR;
 char  SERVER_NAME[64];
-mqd_t Q_SERV_ID;
 user  USERS[MAX_USERS]; 
 
 #endif

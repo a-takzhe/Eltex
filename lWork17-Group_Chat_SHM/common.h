@@ -25,7 +25,7 @@
 
 #define YELLOW        do { printf("\033[1;33m");} while (0)
 #define RED           do { printf("\033[1;31m");} while (0)
-#define RESET         do { printf("\033[0m");} while (0) 
+#define RESET         do { printf("\033[0m\n");} while (0) 
 #define STAT_MS(prt)  do { YELLOW; prt; RESET;} while (0)
 #define ERROR_MS(prt) do { RED; prt; RESET;} while (0)  
 
@@ -35,6 +35,8 @@
 #define MAX_MSG        64
 #define MAX_MQ_MSG     10
 
+#define PAGE_SIZE  4096
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (3)priority - user deattach(for SERVER)
 // (3)priority - get id and confirm connection form server (for CLIENT)
@@ -43,7 +45,7 @@
 // (1)priority - user send message
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-const int PAGE_SIZE = 4096;
+
 
 struct PACK_T{
     char  message[MAX_MSG_SIZE];
@@ -58,6 +60,7 @@ struct USER_T
     int   active;
     char  name[MAX_USER_NAME];
     void* ptr;
+    int   sem_id;
 } 
 typedef user;
 

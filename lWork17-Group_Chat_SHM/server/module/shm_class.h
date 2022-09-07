@@ -11,7 +11,7 @@ void *attach_client_shm(const char* name);
 int write_to_shm(const char* mes, int status, int uid, const void* ptr);
 package* read_from_shm(const void* ptr);
 void close_all_shm();
-int close_shm();
-int delete_shm();
+void close_shm(int uid);
+void delete_shm(const char* name);
 
 #endif

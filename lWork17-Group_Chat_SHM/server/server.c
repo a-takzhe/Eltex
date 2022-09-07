@@ -1,5 +1,7 @@
 
-#include "module/reciever.h"
+// #include "module/reciever.h"
+#include "module/sem_class.h"
+#include "module/shm_class.h"
 
 int isExit(char* str)
 {
@@ -35,14 +37,18 @@ int main(int argc, char* argv[])
     SERVER_NAME[0] = '/';
 
     //initialization message queue 
-    STAT_MS(printf("Statrt init Server (%s)...\n",SERVER_NAME));
-    serv_mq_open(SERVER_NAME);   
+    STAT_MS(printf("Statrt init Server (%s)...",SERVER_NAME));
+    SHM_PTR = create_server_shm(SERVER_NAME);
+    STAT_MS(puts("Server shm created!\nCreate server semophore..."));
+    SEM_ID = create_server_sem(SERVER_NAME);
+    STAT_MS(puts("Server semophore created"));
 
-    //thread for communication betwin users  
-    err = pthread_create(&pth, NULL, my_recv, NULL);
-    if (err != 0){
-        handle_error_en(err, "pthread_create");
-    }
+
+    // //thread for communication betwin users  
+    // err = pthread_create(&pth, NULL, my_recv, NULL);
+    // if (err != 0){
+    //     handle_error_en(err, "pthread_create");
+    // }
 
     //main thread for correct finalization server 
     while (1)
@@ -56,16 +62,17 @@ int main(int argc, char* argv[])
         }
         if(isExit(str))
         {
-            err = pthread_cancel(pth);
-            if(err != 0){
-                handle_error_en(err, "pthread_cancel");   
-            }
+            // err = pthread_cancel(pth);
+            // if(err != 0){
+            //     handle_error_en(err, "pthread_cancel");   
+            // }
             ERROR_MS(printf("Server(%s) stopped!\n", SERVER_NAME));
             break;
         }
     }
 
-    serv_mq_unlinq(SERVER_NAME, Q_SERV_ID);
-    unlinc_all();
+    // serv_mq_unlinq(SERVER_NAME, Q_SERV_ID);
+    delete_shm(SERVER_NAME);
+    sem_del(SEM_ID);
     exit(EXIT_SUCCESS);
 }
