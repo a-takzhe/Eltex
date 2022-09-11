@@ -1,7 +1,7 @@
 #ifndef _DATA_SERV_H
 #define _DATA_SERV_H
 
-#include "../../common.h"
+#include "../../common/common.h"
 
 #define PROJ_ID  1
 #define SEM_PATH "./semaphores/sem-"

@@ -1,7 +1,7 @@
 
 // #include "module/reciever.h"
-#include "module/sem_class.h"
-#include "module/shm_class.h"
+#include "../common/sem_class.h"
+#include "../common/shm_class.h"
 #include "module/transport_thread.h"
 
 int isExit(char* str)
@@ -38,14 +38,14 @@ int main(int argc, char* argv[])
 
     //initialization message queue 
     STAT_MS(printf("Statrt init Server (%s)...",SERVER_NAME));
-    SHM_PTR = create_server_shm(SERVER_NAME);
-    STAT_MS(printf("Server shm created!\nCreate server semophore..."));
-    SEM_ID = create_server_sem(SERVER_NAME);
-    STAT_MS(printf("Server semophore created"));
+    SHM_PTR = create_shm(SERVER_NAME, FOR_READ);
+    // STAT_MS(printf("Server shm created!\nCreate server semophore..."));
+    // SEM_ID = create_server_sem(SERVER_NAME);
+    // STAT_MS(printf("Server semophore created"));
 
 
-    //thread for communication betwin users  
-    start_transport_thread(&pth_transport);
+    // //thread for communication betwin users  
+    // start_transport_thread(&pth_transport);
     
 
     //main thread for correct finalization server 
@@ -60,13 +60,13 @@ int main(int argc, char* argv[])
         }
         if(isExit(str))
         {
-            cancel_transport_thread(pth_transport);
+            //cancel_transport_thread(pth_transport);
             ERROR_MS(printf("Server(%s) stopped!\n", SERVER_NAME));
             break;
         }
     }
 
     delete_shm(SERVER_NAME);
-    sem_del(SEM_ID, SERVER_NAME);
+    //sem_del(SEM_ID, SERVER_NAME);
     exit(EXIT_SUCCESS);
 }

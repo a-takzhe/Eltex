@@ -2,8 +2,8 @@
 #define TRANS_TH_H
 
 #include "data.h"
-#include "shm_class.h"
-#include "sem_class.h"
+#include "../../common/sem_class.h"
+#include "../../common/shm_class.h"
 
 void start_transport_thread(pthread_t* pth);
 void cancel_transport_thread(pthread_t pth);

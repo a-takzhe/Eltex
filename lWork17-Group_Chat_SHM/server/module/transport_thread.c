@@ -26,9 +26,15 @@ void* main_transport_func()
         package* pack = read_from_shm(SHM_PTR);
         if(pack != NULL)
         {
-            if(pack->status == 1){}
-            else if(pack->status == 2){}
-            else if(pack->status == 3){}
+            if(pack->status == 1){
+                
+            }
+            else if(pack->status == 2){
+
+            }
+            else if(pack->status == 3){
+
+            }
             else{ERROR_MS(puts("Unrecognize message!!"));}
             free(pack);
         }
