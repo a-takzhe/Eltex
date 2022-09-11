@@ -3,6 +3,15 @@
 
 #include "data.h"
     
+//***********Writer sembuf**********************//
+const struct sembuf wlock[3] = {{0,-2,0},{0,0,0},{0,1,0}}; //
+const struct sembuf wunlock[1] = {0,-1,0};                 //
+//**********************************************//
+
+//***********Reader sembuf**********************//
+struct sembuf rlock[2] = {{0,0,0},{0,1,0}};          //
+struct sembuf runlock[1] = {0,1,0};                  //
+//**********************************************//
 
 int create_server_sem(const char* name);
 int create_client_sem(const char* name);
