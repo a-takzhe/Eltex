@@ -2,9 +2,6 @@
 #define SHM_CLASS_H
 
 #include "data.h"
-#include <sys/mman.h>
-#include <sys/stat.h> 
-#include <fcntl.h>        
 
 void *create_server_shm(const char* name);
 void *attach_client_shm(const char* name);

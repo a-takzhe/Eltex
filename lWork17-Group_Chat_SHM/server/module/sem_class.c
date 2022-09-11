@@ -7,8 +7,6 @@ int create_server_sem(const char* name)
     char sem_file[128] = SEM_PATH;
 
     strcat(strcat(sem_file, name+1), ".sem");
-    printf("file path = %s\n",sem_file);
-
     open(sem_file, O_RDWR | O_CREAT, 776);
 
     key = ftok(sem_file, PROJ_ID);
@@ -45,14 +43,14 @@ int create_client_sem(const char* name)
 int sem_lock(int sem_id)
 {
     struct sembuf lock[2] = {{0,0,0},{0,1,0}};
-    int ret = semop(sem_id, &lock, 2);
+    int ret = semop(sem_id, rlock, 2);
     return ret;
 }
 
 int sem_unlock(int sem_id)
 {
     struct sembuf unlock[1] = {0,-1,0};
-    int ret = semop(sem_id, &unlock, 1);
+    int ret = semop(sem_id, unlock, 1);
     return ret;
 }
 
@@ -82,10 +80,21 @@ int sem_unlock_client(int uid)
     return 1;
 }
 
-int sem_del(int sem_id)
+int sem_del(int sem_id, const char* name)
 {
-    if(semctl(sem_id, 0, IPC_RMID) != -1){
+    if(semctl(sem_id, 0, IPC_RMID) != -1)
+    {
         printf("Server sem is deleted!\n");
     }
+    if(strlen(name) > 0)
+    {
+        char sem_file[128] = SEM_PATH;
+        strcat(strcat(sem_file, name+1), ".sem");
+        if(remove(sem_file) != -1)
+        {
+            printf("file %s is deleted\n", sem_file);
+        }
+    }
 }
+
 

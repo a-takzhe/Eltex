@@ -2,6 +2,7 @@
 // #include "module/reciever.h"
 #include "module/sem_class.h"
 #include "module/shm_class.h"
+#include "module/transport_thread.h"
 
 int isExit(char* str)
 {
@@ -14,7 +15,7 @@ int main(int argc, char* argv[])
     char* str = NULL;
     size_t len;
     ssize_t s_len;
-    pthread_t pth;
+    pthread_t pth_transport;
     
     while ((opt = getopt(argc, argv, "n:")) != -1)
     {
@@ -30,7 +31,6 @@ int main(int argc, char* argv[])
         }
     }
     if(SERVER_NAME[1] == 0){
-        //strncpy(SERV_NAME+1, "test-server", 63);
         puts("please, use option '-n' for set server name");
         exit(EXIT_FAILURE);
     }
@@ -39,16 +39,14 @@ int main(int argc, char* argv[])
     //initialization message queue 
     STAT_MS(printf("Statrt init Server (%s)...",SERVER_NAME));
     SHM_PTR = create_server_shm(SERVER_NAME);
-    STAT_MS(puts("Server shm created!\nCreate server semophore..."));
+    STAT_MS(printf("Server shm created!\nCreate server semophore..."));
     SEM_ID = create_server_sem(SERVER_NAME);
-    STAT_MS(puts("Server semophore created"));
+    STAT_MS(printf("Server semophore created"));
 
 
-    // //thread for communication betwin users  
-    // err = pthread_create(&pth, NULL, my_recv, NULL);
-    // if (err != 0){
-    //     handle_error_en(err, "pthread_create");
-    // }
+    //thread for communication betwin users  
+    start_transport_thread(&pth_transport);
+    
 
     //main thread for correct finalization server 
     while (1)
@@ -62,17 +60,13 @@ int main(int argc, char* argv[])
         }
         if(isExit(str))
         {
-            // err = pthread_cancel(pth);
-            // if(err != 0){
-            //     handle_error_en(err, "pthread_cancel");   
-            // }
+            cancel_transport_thread(pth_transport);
             ERROR_MS(printf("Server(%s) stopped!\n", SERVER_NAME));
             break;
         }
     }
 
-    // serv_mq_unlinq(SERVER_NAME, Q_SERV_ID);
     delete_shm(SERVER_NAME);
-    sem_del(SEM_ID);
+    sem_del(SEM_ID, SERVER_NAME);
     exit(EXIT_SUCCESS);
 }

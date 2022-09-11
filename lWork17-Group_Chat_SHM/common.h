@@ -8,7 +8,10 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>           /* For O_* constants */
 #include <sys/stat.h>        /* For mode constants */
-#include <mqueue.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/mman.h>
+#include <sys/sem.h>
 #include <unistd.h>
 #include <signal.h>
 #include <time.h>
@@ -45,7 +48,17 @@
 // (1)priority - user send message
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+             ///SEMAPHORES///
 
+//***********Writer sembuf**********************//
+// sembuf lock[3] = {{0,-2,0},{0,0,0},{0,1,0}}; //
+// sembuf unlock[1] = {0,-1,0};                 //
+//**********************************************//
+
+//***********Reader sembuf**********************//
+// sembuf lock[2] = {{0,0,0},{0,1,0}};          //
+// sembuf unlock[1] = {0,1,0};                  //
+//**********************************************//
 
 struct PACK_T{
     char  message[MAX_MSG_SIZE];

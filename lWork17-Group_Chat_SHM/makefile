@@ -10,13 +10,17 @@ OBJ_CLIENT_LIB_F := $(SRC_CLIENT_LIB_F:.c=.o)
 SRC_SERVER_LIB_F := $(wildcard $(S_LIB_DIR)/*.c)
 OBJ_SERVER_LIB_F := $(SRC_SERVER_LIB_F:.c=.o)
 
-PARAMS := -lncurses -lrt -pthread -lm
+CC_FLAGS    := -Wall -g3
+LD_FLAGS 	:= -lncurses -lrt -lpthread -lm
+#PARAMS := -lncurses -lrt -lpthread -lm
 
-all: client server
+all: client server semdir
+	@mkdir -p ./semaphores
+
 
 #------------------CLIENT------------------
 client: $(OBJ_CLIENT_LIB_F) client.o 
-	gcc $(C_DIR)/client.o $(OBJ_CLIENT_LIB_F) -o client.out $(PARAMS)
+	gcc $(C_DIR)/client.o $(OBJ_CLIENT_LIB_F) -o client.out $(CC_FLAGS) $(LD_FLAGS)
 
 client.o: $(C_DIR)/client.c
 	gcc $(C_DIR)/client.c -c -g -o $(C_DIR)/client.o -O1 
@@ -28,21 +32,18 @@ $(C_LIB_DIR)/*/%.o: $(C_LIB_DIR)/*/%.c
 
 #------------------SERVER------------------
 server: $(OBJ_SERVER_LIB_F) server.o 
-	gcc $(S_DIR)/server.o $(OBJ_SERVER_LIB_F) -o server.out $(PARAMS)
+	gcc $(S_DIR)/server.o $(OBJ_SERVER_LIB_F) -o server.out $(CC_FLAGS) $(LD_FLAGS) 
+	@mkdir -p ./semaphores
 
 server.o: $(S_DIR)/server.c
 	gcc $(S_DIR)/server.c -c -o $(S_DIR)/server.o -O1 -g3
 
-$(S_LIB_DIR)/*/%.o: $(S_LIB_DIR)/*/%.c
-	gcc $@ -c -o $< -O1 -g3 
-#------------------------------------------
-
+$(S_LIB_DIR)/%.o: $(S_LIB_DIR)/%.c
+		gcc -c -o $@ $< -g3 
+# ------------------------------------------
 
 clean:
-	rm -rf ./*/*.o $(OBJ_CLIENT_LIB_F) $(OBJ_SERVER_LIB_F) *.out
-
-
-
+	rm -rf ./*/*.o $(OBJ_CLIENT_LIB_F) $(OBJ_SERVER_LIB_F) *.out ./semaphores
 
 
 
