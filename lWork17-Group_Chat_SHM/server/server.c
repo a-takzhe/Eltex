@@ -1,7 +1,3 @@
-
-// #include "module/reciever.h"
-#include "../common/sem_class.h"
-#include "../common/shm_class.h"
 #include "module/transport_thread.h"
 
 int isExit(char* str)

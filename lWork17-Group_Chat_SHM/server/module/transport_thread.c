@@ -26,31 +26,30 @@ void* main_transport_func()
     {
         if(sem_lock(SEM_ID, FOR_READER) == -1){
             puts("Error! Server can`t lock semaphore!\nListener STOPPED!");
-            return;
+            return NULL;
         }
 
         package* pack = read_from_shm(SHM_PTR);
 
         if(sem_unlock(SEM_ID, FOR_READER) == -1){
             puts("Error! Server can`t unlock semaphore!\nListener STOPPED!");
-            return;
+            return NULL;
         }
         
         if(pack != NULL)
         {
             if(pack->status == 1){
-                
+                send_to_other_clients(pack->uid, pack->message, 1);
             }
             else if(pack->status == 2){
-
+                client_attach(*pack);
             }
             else if(pack->status == 3){
-
+                client_deattach(*pack);
             }
             else{ERROR_MS(puts("Unrecognize message!!"));}
             free(pack);
         }
-        usleep(50*1000);
     }
-    
+    return NULL;
 }

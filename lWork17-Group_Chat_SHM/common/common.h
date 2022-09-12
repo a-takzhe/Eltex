@@ -47,6 +47,7 @@
 // (3)priority - user deattach(for SERVER)
 // (3)priority - get id and confirm connection form server (for CLIENT)
 // (4)priority - user disconnected (for CLIENT)
+// (5)priority - server stopped (for CLIENT)
 // (2)priority - user attach
 // (1)priority - user send message
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

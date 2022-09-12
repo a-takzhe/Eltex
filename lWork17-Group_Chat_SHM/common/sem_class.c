@@ -44,11 +44,11 @@ int create_sem(const char* name, int proj_id, int mode)
     }
     else
     {
-        return NULL;
+        return -1;
     }
 }
 
-int create_reader_sem(const char* name, int proj_id)
+int create_reader_sem(char* name, int proj_id)
 {
     key_t key;
     int sem_id;    
@@ -70,7 +70,7 @@ int create_reader_sem(const char* name, int proj_id)
     return sem_id;
 }
 
-int create_writer_sem(const char* name, int proj_id)
+int create_writer_sem(char* name, int proj_id)
 {
     key_t key;
     int sem_id;
@@ -126,32 +126,6 @@ int sem_unlock(int sem_id, int mode)
     //return ret;
 }
 
-// int sem_lock_client(int uid)
-// {
-//     if(USERS[uid].active == -1){
-//         printf("User with uid(%d) not exists!\n", uid);
-//         return -1;
-//     }
-//     if(sem_lock(USERS[uid].sem_id) == -1){
-//         printf("Server can't locked user sem (%s)!\n", USERS[uid].name);
-//         return -1;
-//     }
-//     return 1;
-// }
-
-// int sem_unlock_client(int uid)
-// {
-//      if(USERS[uid].active == -1){
-//         printf("User with uid(%d) not exists!\n", uid);
-//         return -1;
-//     }
-//     if(sem_unlock(USERS[uid].sem_id) == -1){
-//         printf("Server can't unlocked user sem (%s)!\n", USERS[uid].name);
-//         return -1;
-//     }
-//     return 1;
-// }
-
 int sem_del(int sem_id, const char* name)
 {
     if(semctl(sem_id, 0, IPC_RMID) != -1)
@@ -170,5 +144,3 @@ int sem_del(int sem_id, const char* name)
     }
 }
 
-
- 
