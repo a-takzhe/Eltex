@@ -8,6 +8,7 @@
 *.s
 *.a
 *.i
+*.sem
 main
 .vscode
 mybash*

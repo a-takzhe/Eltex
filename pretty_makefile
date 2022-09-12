@@ -1,0 +1,80 @@
+#---------------------------------------------------------------------
+# Input dirs, names, files
+#---------------------------------------------------------------------
+OUTPUT_ROOT := output/
+
+TITLE_NAME := TestProj 
+
+ifdef DEBUG 
+    TITLE_NAME += _DEBUG
+else
+ifdef RELEASE
+    TITLE_NAME += _RELEASE
+endif
+endif
+
+
+# Include all the source files here with the directory tree
+SOURCES := \
+        source/TestFile.cpp \
+
+#---------------------------------------------------------------------
+# configs
+#---------------------------------------------------------------------
+ifdef DEBUG
+OUT_DIR     := $(OUTPUT_ROOT)debug
+CC_FLAGS    := -c -Wall
+else
+ifdef RELEASE
+OUT_DIR     := $(OUTPUT_ROOT)release
+CC_FLAGS    := -c -Wall
+else
+$(error no build type defined)
+endif
+endif
+
+# Put objects in the output directory.
+OUT_O_DIR   := $(OUT_DIR)/objs
+
+#---------------------------------------------------------------------
+# settings
+#---------------------------------------------------------------------
+OBJS = $(SOURCES:.cpp=.o)
+DIRS = $(subst /,/,$(sort $(dir $(OBJS))))
+DIR_TARGET = $(OUT_DIR)
+
+OUTPUT_TARGET = $(OUT_DIR)/$(TITLE_NAME)
+
+CC_FLAGS +=   
+
+LCF_FLAGS := 
+
+LD_FLAGS := 
+
+#---------------------------------------------------------------------
+# executables
+#---------------------------------------------------------------------
+MD := mkdir
+RM := rm
+CC := g++
+
+#---------------------------------------------------------------------
+# rules
+#---------------------------------------------------------------------
+.PHONY: all clean title 
+
+all: title 
+
+clean:
+    $(RM) -rf $(OUT_DIR)
+
+$(DIR_TARGET):
+    $(MD) -p $(DIRS)
+
+.cpp.o: 
+    @$(CC) -c $< -o $@
+
+$(OBJS): $(OUT_O_DIR)/%.o: %.cpp
+    @$(CC) -c $< -o $@
+
+title: $(DIR_TARGET) $(OBJS)
