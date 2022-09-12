@@ -21,9 +21,21 @@ void cancel_transport_thread(pthread_t pth)
 
 void* main_transport_func()
 {
+    int i = 0;
     while (1)
     {
+        if(sem_lock(SEM_ID, FOR_READER) == -1){
+            puts("Error! Server can`t lock semaphore!\nListener STOPPED!");
+            return;
+        }
+
         package* pack = read_from_shm(SHM_PTR);
+
+        if(sem_unlock(SEM_ID, FOR_READER) == -1){
+            puts("Error! Server can`t unlock semaphore!\nListener STOPPED!");
+            return;
+        }
+        
         if(pack != NULL)
         {
             if(pack->status == 1){

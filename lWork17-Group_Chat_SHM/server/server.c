@@ -44,8 +44,8 @@ int main(int argc, char* argv[])
     STAT_MS(printf("Server semophore is created"));
 
 
-    // //thread for communication betwin users  
-    // start_transport_thread(&pth_transport);
+    //thread for communication between users  
+    start_transport_thread(&pth_transport);
     
 
     //main thread for correct finalization server 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
         }
         if(isExit(str))
         {
-            //cancel_transport_thread(pth_transport);
+            cancel_transport_thread(pth_transport);
             ERROR_MS(printf("Server(%s) stopped!\n", SERVER_NAME));
             break;
         }

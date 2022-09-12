@@ -1,5 +1,19 @@
 #include "sem_class.h"
 
+//***********Writer sembuf***************************//
+struct sembuf init[1] = {{0,2,0}};                   //
+//***************************************************//
+
+//***********Writer sembuf***************************//
+struct sembuf wlock[3] = {{0,-2,0},{0,0,0},{0,1,0}}; //
+struct sembuf wunlock[1] = {0,-1,0};                 //
+//***************************************************//
+
+//***********Reader sembuf**********************//
+struct sembuf rlock[2] = {{0,0,0},{0,1,0}};     //
+struct sembuf runlock[1] = {0,1,0};             //
+//**********************************************//
+
 char* compere_sem_file(const char* name, int cr)
 {
     char* sem_file = (char*)calloc(128,sizeof(char));
@@ -8,7 +22,7 @@ char* compere_sem_file(const char* name, int cr)
     
     if(cr == 1)
     {
-        if(open(sem_file, O_RDWR | O_CREAT, 776) == -1)
+        if(open(sem_file, O_RDWR | O_CREAT, 777) == -1)
         {
             printf("Can't open file %s", sem_file);
             return NULL;
@@ -44,9 +58,13 @@ int create_reader_sem(const char* name, int proj_id)
         handle_error("Can't get sem key!\n");
     }
 
-    sem_id = semget(key, 1, IPC_CREAT | IPC_EXCL);
+    sem_id = semget(key, 1, IPC_CREAT | IPC_EXCL | 0777);
     if(sem_id == -1){
         handle_error("Can't get sem id!\n");
+    }
+
+    if(semop(sem_id, init, 1) == -1){
+        handle_error("Can't first initialize sem!\n");
     }
     free(name);
     return sem_id;
@@ -63,7 +81,7 @@ int create_writer_sem(const char* name, int proj_id)
         return -1;
     }
 
-    sem_id = semget(key, 1, IPC_CREAT);
+    sem_id = semget(key, 1, IPC_CREAT | 0777);
     if(sem_id == -1){
         printf("Can't get sem id for %s!\n", name);
         return -1;
@@ -72,19 +90,41 @@ int create_writer_sem(const char* name, int proj_id)
     return sem_id;
 }
 
-// int sem_lock(int sem_id)
-// {
-//     struct sembuf lock[2] = {{0,0,0},{0,1,0}};
-//     int ret = semop(sem_id, rlock, 2);
-//     return ret;
-// }
+int sem_lock(int sem_id, int mode)
+{
+    // int ret;
+    if(mode == FOR_READER)
+    {
+        return semop(sem_id, rlock, 2);
+    }
+    else if(mode == FOR_WRITER)
+    {
+        return semop(sem_id, wlock, 3);
+    }
+    else
+    {
+        return -1;
+    }
+    //return ret;
+}
 
-// int sem_unlock(int sem_id)
-// {
-//     struct sembuf unlock[1] = {0,-1,0};
-//     int ret = semop(sem_id, unlock, 1);
-//     return ret;
-// }
+int sem_unlock(int sem_id, int mode)
+{
+    // int ret;
+    if(mode == FOR_READER)
+    {
+        return semop(sem_id, runlock, 1);
+    }
+    else if(mode == FOR_WRITER)
+    {
+        return semop(sem_id, wunlock, 1);
+    }
+    else
+    {
+        return -1;
+    }
+    //return ret;
+}
 
 // int sem_lock_client(int uid)
 // {
