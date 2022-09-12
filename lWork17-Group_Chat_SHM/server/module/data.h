@@ -4,7 +4,6 @@
 #include "../../common/common.h"
 
 #define PROJ_ID  1
-#define SEM_PATH "./semaphores/sem-"
 
 int   SEM_ID;
 void* SHM_PTR;

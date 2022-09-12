@@ -38,7 +38,10 @@
 #define MAX_MSG        64
 #define MAX_MQ_MSG     10
 
-#define PAGE_SIZE  4096
+
+#define PAGE_SIZE      4096
+#define FOR_READER     1
+#define FOR_WRITER     2 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (3)priority - user deattach(for SERVER)

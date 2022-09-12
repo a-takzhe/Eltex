@@ -2,11 +2,11 @@
 
 void *create_shm(const char* name, int mode)
 {
-    if(mode == FOR_READ)
+    if(mode == FOR_READER)
     {
         return create_reader_shm(name);
     }
-    else if(mode == FOR_WRITE)
+    else if(mode == FOR_WRITER)
     {
         return create_writer_shm(name);
     }
@@ -21,7 +21,7 @@ void *create_reader_shm(const char* name)
     int shm_fd;
     void *sh_ptr;
     
-    shm_fd = shm_open(name, O_CREAT | O_RDONLY, S_IRWXU | S_IRWXG | S_IROTH);
+    shm_fd = shm_open(name, O_CREAT | O_RDWR, S_IRWXU | S_IRWXG | S_IROTH);
     if(shm_fd == -1){
         handle_error("Can't open fd shared memmory!\n");
     }
@@ -42,7 +42,7 @@ void *create_writer_shm(const char* name)
     int shm_fd;
     void *sh_ptr;
 
-    shm_fd = shm_open(name, O_WRONLY, S_IRWXU | S_IRWXG | S_IROTH);
+    shm_fd = shm_open(name, O_RDWR, S_IRWXU | S_IRWXG | S_IROTH);
     if(shm_fd == -1){
         printf("Can't open fd shared memmory for %s!\n", name);
         return NULL;
@@ -57,22 +57,22 @@ void *create_writer_shm(const char* name)
 }
 
 
-// int write_to_shm(const char* mes, int status, int uid, const void* ptr)
-// {
-//     package* pack = (package*)ptr;
+int write_to_shm(const char* mes, int status, int uid, const void* ptr)
+{
+    package* pack = (package*)ptr;
     
-//     if(USERS[uid].active != 1 && uid != -1)
-//     {
-//         printf("User with uid(%d) not exists!\n", uid);
-//         return -1;
-//     }
+    // if(USERS[uid].active != 1 && uid != -1)
+    // {
+    //     printf("User with uid(%d) not exists!\n", uid);
+    //     return -1;
+    // }
 
-//     strncpy(pack->message, mes, MAX_MSG_SIZE);
-//     pack->status = status;
-//     pack->uid = uid;
+    strncpy(pack->message, mes, MAX_MSG_SIZE);
+    pack->status = status;
+    pack->uid = uid;
 
-//     return 1;
-// }
+    return 1;
+}
 
 package* read_from_shm(const void* ptr)
 {
@@ -98,16 +98,16 @@ package* read_from_shm(const void* ptr)
 //     }
 // }
 
-// void close_shm(int uid)
-// {
-//     if(munmap(USERS[uid].ptr, sizeof(package))==-1)
-//     {
-//         printf("Server can't munmap from %s shm\n", USERS[uid].name);
-//     }
-//     else{
-//         printf("Server munmap from %s shm\n", USERS[uid].name);
-//     }
-// }
+void close_shm(const void* ptr, const char* name)
+{
+    if(munmap(ptr, sizeof(package))==-1)
+    {
+        printf("Can't munmap from %s shm\n",name);
+    }
+    else{
+        printf("munmap from %s shm success\n",name);
+    }
+}
 
 void delete_shm(const char* name)
 {
