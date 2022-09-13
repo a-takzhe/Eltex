@@ -23,7 +23,7 @@ int can_add_user()
 int add_user(const char* name, int sem_id, void* ptr)
 {
     int ret = -1;
-    for(int i = 0; i<MAX_USERS; i++)
+    for(int i = 0; i < MAX_USERS; i++)
     {
         if(USERS[i].active == -1)
         {
@@ -31,6 +31,7 @@ int add_user(const char* name, int sem_id, void* ptr)
             strncpy(USERS[i].name, name, MAX_USER_NAME);
             USERS[i].ptr = ptr;
             USERS[i].sem_id = sem_id;
+            return i;
         }
     }
     return ret;

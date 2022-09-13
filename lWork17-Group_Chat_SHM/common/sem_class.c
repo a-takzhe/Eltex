@@ -1,7 +1,7 @@
 #include "sem_class.h"
 
 //***********Writer sembuf***************************//
-struct sembuf init[1] = {{0,2,0}};                   //
+struct sembuf sbinit[1] = {{0,2,0}};                   //
 //***************************************************//
 
 //***********Writer sembuf***************************//
@@ -14,6 +14,13 @@ struct sembuf rlock[2] = {{0,0,0},{0,1,0}};     //
 struct sembuf runlock[1] = {0,1,0};             //
 //**********************************************//
 
+int get_proj_id()
+{
+    static int pid = 0;
+    pid++;
+    return pid;
+}
+
 char* compere_sem_file(const char* name, int cr)
 {
     char* sem_file = (char*)calloc(128,sizeof(char));
@@ -24,7 +31,7 @@ char* compere_sem_file(const char* name, int cr)
     {
         if(open(sem_file, O_RDWR | O_CREAT, 777) == -1)
         {
-            printf("Can't open file %s", sem_file);
+            printf("Can't open file %s\n", sem_file);
             return NULL;
         }
     }
@@ -33,19 +40,20 @@ char* compere_sem_file(const char* name, int cr)
 
 int create_sem(const char* name, int proj_id, int mode)
 {
-    char* nname = compere_sem_file(name, 1);
+    char* nname;
+    int ret = -1;
+
     if(mode == FOR_READER)
     {
-        return create_reader_sem(nname, proj_id);
+        if((nname = compere_sem_file(name, 1)) == NULL) return -1;
+        ret = create_reader_sem(nname, proj_id);
     }
     else if(mode == FOR_WRITER)
     {
-        return create_writer_sem(nname, proj_id);
+        if((nname = compere_sem_file(name, 0)) == NULL) return -1;
+        ret = create_writer_sem(nname, proj_id);
     }
-    else
-    {
-        return -1;
-    }
+    return ret;
 }
 
 int create_reader_sem(char* name, int proj_id)
@@ -63,7 +71,7 @@ int create_reader_sem(char* name, int proj_id)
         handle_error("Can't get sem id!\n");
     }
 
-    if(semop(sem_id, init, 1) == -1){
+    if(semop(sem_id, sbinit, 1) == -1){
         handle_error("Can't first initialize sem!\n");
     }
     free(name);

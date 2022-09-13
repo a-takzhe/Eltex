@@ -5,6 +5,8 @@
 
 #define SEM_PATH  "./semaphores/sem-"
 
+int get_proj_id();
+
 char* compere_sem_file(const char* name, int cr);
 int create_sem(const char* name, int proj_id, int mode);
 int create_reader_sem(char* name, int proj_id);

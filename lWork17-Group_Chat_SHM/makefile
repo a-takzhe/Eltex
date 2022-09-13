@@ -58,7 +58,7 @@ $(S_LIB_DIR)/%.o: $(S_LIB_DIR)/%.c
 
 clean:
 	rm -rf ./*/*.o $(OBJ_CLIENT_LIB_F) $(OBJ_SERVER_LIB_F) *.out ./semaphores ./*.a
-	bash ./kill_ipcssem.sh
+	bash ./kill_ipc.sh
 
 
 

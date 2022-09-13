@@ -1,4 +1,6 @@
 #include "./lib/gui/handler.h"
+#include "./lib/dtl/connection.h"
+
 
 int main(int argc, char* argv[])
 {
@@ -38,9 +40,14 @@ int main(int argc, char* argv[])
     }
     LOGIN[0]='/';
     SERV_NAME[0]='/';
+    
+    create_my_ipc(LOGIN);
+    if(attach_to_server(SERV_NAME) == -1)
+    {
+        close_server_ipc();
+        delete_my_ipc();
+    }
 
-    usr_mq_open();
-    attach_to_server();
     init();
 
     int err = pthread_create(&pth_listener, NULL, listen_server, NULL);
@@ -48,7 +55,8 @@ int main(int argc, char* argv[])
 
     h_main();
     wend();
-    usr_mq_unlinq();
-
+    close_server_ipc();
+    delete_my_ipc();
+    
     return 0;
 }

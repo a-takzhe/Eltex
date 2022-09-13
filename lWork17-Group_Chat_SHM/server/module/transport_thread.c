@@ -41,8 +41,11 @@ void* main_transport_func()
             if(pack->status == 1){
                 send_to_other_clients(pack->uid, pack->message, 1);
             }
-            else if(pack->status == 2){
+            else if(pack->status == 2)
+            {
+                STAT_MS(printf("Attach user (%s)", pack->message));
                 client_attach(*pack);
+                STAT_MS(printf("User(%s) attached!", pack->message));
             }
             else if(pack->status == 3){
                 client_deattach(*pack);

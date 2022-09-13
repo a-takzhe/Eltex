@@ -1,7 +1,7 @@
 #ifndef _HANDLER_H_
 #define _HANDLER_H_
 
-#include "../dtl/queue.h"
+#include "../dtl/connection.h"
 
 #define KEY_ENTR 0012
 

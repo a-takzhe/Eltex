@@ -30,7 +30,7 @@ void *create_reader_shm(const char* name)
         handle_error("Can't ftruncate shared memory!\n");
     }
     
-    sh_ptr = mmap(0, sizeof(package), PROT_READ, MAP_SHARED, shm_fd, 0);
+    sh_ptr = mmap(0, sizeof(package), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
     if(*((int*)sh_ptr) == -1){
         handle_error("Can't mmap shared memmory!\n");
     }
@@ -78,7 +78,8 @@ package* read_from_shm(const void* ptr)
 {
     package* new_pack = (package*)calloc(1, sizeof(package));
     package* pack = (package*)ptr;
-    if(pack->status == -1){
+    if(pack->status == -1)
+    {
         return NULL;
     }
     new_pack->status = pack->status;

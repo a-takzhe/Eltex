@@ -35,11 +35,14 @@ int main(int argc, char* argv[])
     //initialization message queue 
     STAT_MS(printf("Statrt init Server (%s)...",SERVER_NAME));
     SHM_PTR = create_shm(SERVER_NAME, FOR_READER);
-    STAT_MS(printf("Server shm created!\nCreate server semophore..."));
+    puts("Server shm created!");
+
+    PROJ_ID = get_proj_id();
     SEM_ID = create_sem(SERVER_NAME, PROJ_ID, FOR_READER);
-    STAT_MS(printf("Server semophore is created"));
+    puts("Server semophore is created");
+    
 
-
+    init_user_arr();
     //thread for communication between users  
     start_transport_thread(&pth_transport);
     

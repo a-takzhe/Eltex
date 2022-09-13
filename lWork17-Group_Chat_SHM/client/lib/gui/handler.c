@@ -35,7 +35,7 @@ int h_main()
                 break;
             case KEY_ENTR:
                 sync_add_msg(INPUT_STR, -1);
-                send_msg(INPUT_STR);
+                write_message(INPUT_STR, 1);
                 clear_input();
                 update_inp_area();
                 break;

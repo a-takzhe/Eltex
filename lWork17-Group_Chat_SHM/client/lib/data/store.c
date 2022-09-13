@@ -6,7 +6,7 @@ int add_msg(char* text, int uid)
     strncpy(MESSAGES[ID_LAST_MSG].text, text, MAX_MSG_SIZE);
     
     int i;
-    for (i = 0; i < MAX_USER; i++)
+    for (i = 0; i < MAX_USERS; i++)
     {
         if(USERS[i].uid == uid){
             break;
@@ -27,15 +27,22 @@ int add_msg(char* text, int uid)
     return 1;
 }
 
+void init_user_arr()
+{
+    for(int i = 0; i<MAX_USERS; i++)
+    {
+        USERS[i].active = -1;
+    }
+}
+
 int add_usr(char* name, int uid)
 {
-    for (int i = 0; i < MAX_USER; i++)
+    for (int i = 0; i < MAX_USERS; i++)
     {
-        if(USERS[i].q_id == 0)
+        if(USERS[i].active != -1)
         {
             USERS[i].active = 1;    
             USERS[i].uid = uid;
-            USERS[i].q_id = 5;
             strncpy(USERS[i].name, name, MAX_USER_NAME);
             return i;   
         }
@@ -45,13 +52,12 @@ int add_usr(char* name, int uid)
 
 void user_disconnect(int uid)
 {
-    for (size_t i = 0; i < MAX_USER; i++)
+    for (size_t i = 0; i < MAX_USERS; i++)
     {
         if(USERS[i].uid == uid)
         {
             USERS[i].active = -1;    
             USERS[i].uid = -1;
-            USERS[i].q_id = 0;
         }
     }
 }

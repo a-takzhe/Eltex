@@ -8,4 +8,4 @@ for id in $IPCS_S; do
   ipcrm -s $id;
 done
 
-
+sudo rm -rf /dev/shm/*
