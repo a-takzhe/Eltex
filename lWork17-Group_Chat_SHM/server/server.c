@@ -60,6 +60,7 @@ int main(int argc, char* argv[])
         if(isExit(str))
         {
             cancel_transport_thread(pth_transport);
+            send_to_other_clients(-1, "", 5);
             ERROR_MS(printf("Server(%s) stopped!\n", SERVER_NAME));
             break;
         }
