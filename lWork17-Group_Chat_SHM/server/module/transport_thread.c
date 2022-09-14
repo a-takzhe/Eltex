@@ -21,7 +21,6 @@ void cancel_transport_thread(pthread_t pth)
 
 void* main_transport_func()
 {
-    int i = 0;
     while (1)
     {
         if(sem_lock(SEM_ID, FOR_READER) == -1){

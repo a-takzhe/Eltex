@@ -4,6 +4,6 @@
 #include "../data/data.h"
 WINDOW *CHAT_AREA;
 
-int update_msg_area();
+void update_msg_area();
 
 #endif

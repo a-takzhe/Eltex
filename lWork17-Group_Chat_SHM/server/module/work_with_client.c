@@ -13,6 +13,7 @@ int send_message(int uid_to, int uid_from, const char* mes, int status)
         printf("Error! Server can`t unlock semaphore for %s!\n", USERS[uid_to].name);
         return -1;
     }
+    return 1;
 }
 
 int send_to_other_clients(int uid, const char* mes, int status)
@@ -41,7 +42,7 @@ int client_attach(package pack)
 {
     void* ptr;
     int sem_id;
-    int uid;
+    int uid = -1;
 
     if((ptr = create_shm(pack.message, FOR_WRITER)) == NULL){
         printf("Can't create shm for client %s\n", pack.message);
@@ -68,12 +69,15 @@ int client_attach(package pack)
     send_message(uid, uid, "Attach successe!", 3);
     send_to_other_clients(uid, pack.message, 2);
     send_old_to_new_clients(uid, pack.message, 2);
+
+    return 1;
 }
 
 int client_deattach(package pack)
 {
     close_shm(USERS[pack.uid].ptr, USERS[pack.uid].name);
     send_to_other_clients(pack.uid, pack.message, 4);
+    return 1;
 }
 
 int all_client_deattach()

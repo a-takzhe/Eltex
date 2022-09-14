@@ -19,7 +19,7 @@ void print_mes(char* name, const char* text, int line)
     mvwprintw(CHAT_AREA, line*2, 0, "(%s)> %s", name, text);
 }
 
-int update_msg_area()
+void update_msg_area()
 {
     int line = 0;
     int cnt_msg = floor(CHAT_AREA->_maxy / 2.0);

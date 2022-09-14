@@ -99,7 +99,7 @@ package* read_from_shm(const void* ptr)
 //     }
 // }
 
-void close_shm(const void* ptr, const char* name)
+void close_shm(void* ptr, const char* name)
 {
     if(munmap(ptr, sizeof(package))==-1)
     {

@@ -7,7 +7,7 @@ int isExit(char* str)
 
 int main(int argc, char* argv[])
 {
-    int opt, err;
+    int opt;
     char* str = NULL;
     size_t len;
     ssize_t s_len;

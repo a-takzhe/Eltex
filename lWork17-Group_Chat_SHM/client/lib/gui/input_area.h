@@ -6,7 +6,7 @@
 WINDOW *INPUT_AREA;
 
 
-int update_inp_area();
-int inp_init();
+void update_inp_area();
+void inp_init();
 
 #endif

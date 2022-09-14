@@ -1,12 +1,12 @@
 #include "input_area.h"
 
-int inp_init()
+void inp_init()
 {
     keypad(INPUT_AREA, true);
     box(INPUT_AREA, '>', '-');
 }
 
-int update_inp_area()
+void update_inp_area()
 {
     wclear(INPUT_AREA); 
     box(INPUT_AREA, '>', '-');

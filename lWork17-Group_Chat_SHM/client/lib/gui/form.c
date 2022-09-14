@@ -132,5 +132,6 @@ int wend()
     delwin(USERS_AREA);
     delwin(INPUT_AREA);
     endwin();
+    return 1;
 }
 

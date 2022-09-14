@@ -19,6 +19,7 @@ int read_message(package** pack)
         return -1;
     }
     printf("finish read from server (mes: %s)\n", (*pack)->message);
+    return 1;
 }
 
 int write_message(const char* mes, int status)
@@ -36,4 +37,5 @@ int write_message(const char* mes, int status)
         return -1;
     }
     puts("finish write to server");
+    return 1;
 }

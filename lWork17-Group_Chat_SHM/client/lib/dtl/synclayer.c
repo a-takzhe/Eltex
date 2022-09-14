@@ -8,7 +8,8 @@ void mutex_init()
 
 int sync_add_usr(char* name, int uid)
 {    
-    int err, i;
+    int err;
+    int i = -1;
     if((err = pthread_mutex_lock(&usr_mutex)) == 0)
     {
         i = add_usr(name, uid);
@@ -38,7 +39,8 @@ int sync_user_disconnect(int uid)
 
 int sync_add_msg(char* text, int uid)
 {
-    int err, i;
+    int err;
+    int i = -1;
     if((err = pthread_mutex_lock(&msg_mutex)) == 0)
     {
         i = add_msg(text, uid);

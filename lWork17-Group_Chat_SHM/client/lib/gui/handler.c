@@ -6,7 +6,7 @@ int h_main()
     WINDOW* w = INPUT_AREA;
     wmove(w, 1, P(0));
 
-    while (key = wgetch(w))
+    while ((key = wgetch(w)) != ERR)
     {
         if(key == KEY_F(3) || key == 0033)
         {

@@ -8,6 +8,6 @@
 WINDOW *USERS_AREA;
 
 
-int update_usr_area(); 
+void update_usr_area(); 
 
 #endif

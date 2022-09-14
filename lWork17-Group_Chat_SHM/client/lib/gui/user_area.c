@@ -1,6 +1,6 @@
 #include "user_area.h"
 
-int update_usr_area()
+void update_usr_area()
 {
     wclear(USERS_AREA);
     for (size_t i = 0; i < MAX_USERS; i++)
