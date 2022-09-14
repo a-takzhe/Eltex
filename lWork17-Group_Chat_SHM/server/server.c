@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
     PROJ_ID = get_proj_id();
     SEM_ID = create_sem(SERVER_NAME, PROJ_ID, FOR_READER);
-    puts("Server semophore is created");
+    puts("Server semophore is created!");
     
 
     init_user_arr();
@@ -59,8 +59,10 @@ int main(int argc, char* argv[])
         }
         if(isExit(str))
         {
+            send_to_other_clients(-1, "I am stopped", 5);
             cancel_transport_thread(pth_transport);
-            send_to_other_clients(-1, "", 5);
+            // close_all_clients_shm(); Do it
+
             ERROR_MS(printf("Server(%s) stopped!\n", SERVER_NAME));
             break;
         }

@@ -20,7 +20,9 @@ int send_to_other_clients(int uid, const char* mes, int status)
 {
     for (size_t i = 0; i < MAX_USERS; i++)
     {
-        if(i != uid && USERS[i].active != -1){
+        if(i != uid && USERS[i].active != -1)
+        {
+            printf("Send from (%s) to (%s) mes(%s)\n", USERS[uid].name, USERS[i].name, mes);
             send_message(i, uid, mes, status);
         }
     }
@@ -31,8 +33,10 @@ int send_old_to_new_clients(int uid, const char* mes, int status)
 {
     for (size_t i = 0; i < MAX_USERS; i++)
     {
-        if(i != uid && USERS[i].active != -1){
-            send_message(uid, i, USERS[i].name, status);
+        if(i != uid && USERS[i].active != -1)
+        {
+            printf("Send to (%s), about old user(%s)\n", mes, USERS[uid].name);
+            send_message(uid, i, mes, status);
         }
     }
     return 1;    
@@ -76,7 +80,7 @@ int client_attach(package pack)
 int client_deattach(package pack)
 {
     close_shm(USERS[pack.uid].ptr, USERS[pack.uid].name);
-    send_to_other_clients(pack.uid, pack.message, 4);
+    send_to_other_clients(pack.uid, "deattach", 4);
     return 1;
 }
 
