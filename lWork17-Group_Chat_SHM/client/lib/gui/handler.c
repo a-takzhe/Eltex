@@ -11,9 +11,8 @@ int h_main()
         if(key == KEY_F(3) || key == 0033)
         {
             err = pthread_cancel(pth_listener);
-            if(err != 0)
-                handle_error_en(err, "pthread_cancel");
-            break;
+            if(err != 0) handle_error_en(err, "pthread_cancel");
+            return -1;
         }
         if(key == KEY_F0) 
         {

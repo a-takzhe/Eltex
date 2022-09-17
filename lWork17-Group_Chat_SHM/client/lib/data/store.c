@@ -39,7 +39,7 @@ int add_usr(char* name, int uid)
 {
     for (int i = 0; i < MAX_USERS; i++)
     {
-        if(USERS[i].active != -1)
+        if(USERS[i].active == -1)
         {
             USERS[i].active = 1;    
             USERS[i].uid = uid;

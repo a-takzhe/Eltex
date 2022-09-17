@@ -7,5 +7,6 @@ int add_msg(char* text, int uid);
 int add_usr(char* name, int uid);
 void user_disconnect(int uid);
 void clear_input();
+void init_user_arr();
 
 #endif

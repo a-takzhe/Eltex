@@ -41,11 +41,15 @@ int main(int argc, char* argv[])
     LOGIN[0]='/';
     SERV_NAME[0]='/';
     
+
+    init_user_arr();
     create_my_ipc(LOGIN);
-    if(attach_to_server(SERV_NAME) == -1)
+    attach_to_server_ipc(SERV_NAME);
+    if(attach_to_server() == -1)
     {
         close_server_ipc();
         delete_my_ipc();
+        exit(EXIT_FAILURE);
     }
 
     init();
@@ -53,10 +57,11 @@ int main(int argc, char* argv[])
     int err = pthread_create(&pth_listener, NULL, listen_server, NULL);
     if (err != 0) handle_error_en(err, "pthread_create");
 
-    h_main();
+    if(h_main() == -1){
+        write_message(LOGIN, 3);
+    }
     wend();
     close_server_ipc();
     delete_my_ipc();
-    
-    return 0;
+    exit(EXIT_SUCCESS);
 }

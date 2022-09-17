@@ -14,41 +14,37 @@ void create_my_ipc(const char* name)
     sleep(1);
 }
 
-int attach_to_server(const char* name)
+void attach_to_server_ipc(const char* name)
 {
-    package* pack;
-    
     STAT_MS(printf("Connection to server (%s)...",name));
     if((SERVER_PTR = create_shm(name, FOR_WRITER)) == NULL)
     {
-        ERROR_MS(printf("Can't connect to server shm"));
-        return -1;
+        handle_error("Can't connect to server shm");
     }
     puts("Shm connected!");
     if((SERVER_SEM = create_sem(name, PROJ_ID, FOR_WRITER))==-1)
     {
-        ERROR_MS(printf("Can't connect to server sem"));
-        return -1;
+        handle_error("Can't connect to server sem");
     }
-    puts("Semophore is attached!");
+    puts("Semaphore is attached!");
+    sleep(1);
+}
 
+int attach_to_server()
+{
+    int ret = 1;
+    package* pack = NULL;
+    
     write_message(LOGIN, 2);
-    if(read_message(&pack) == -1)
-    {
-        return -1;
-    }
-
+    ret = read_message(&pack);
     if(pack->status == 3 && !strcmp(pack->message, "Attach successe!"))
     {
         MY_UID = pack->uid;
     }
-    else
-    {
-        free(pack);
-        return -1;
-    }
-    free(pack);
-    return 1;
+    else { ret = -1; }
+
+    if(pack != NULL) free(pack);
+    return ret;
 }
 
 void close_server_ipc()
@@ -83,9 +79,11 @@ void* listen_server()
             }
             else if(pack->status == 5)
             {
-                free(pack);
                 close_server_ipc();
                 delete_my_ipc();
+                wend();
+                puts("Server stopped");
+                exit(EXIT_FAILURE);
                 return NULL;
             }
             else{ERROR_MS(puts("Unrecognize message!!"));}

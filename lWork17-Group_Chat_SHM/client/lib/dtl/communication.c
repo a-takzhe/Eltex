@@ -2,7 +2,7 @@
 
 int read_message(package** pack)
 {
-    puts("start read from server");
+    //puts("start read from server");
     if(sem_lock(MY_SEM, FOR_READER) == -1){
         puts("Error! Can`t lock semaphore!\nListener STOPPED!");
         return -1;
@@ -18,13 +18,13 @@ int read_message(package** pack)
         puts("Error! Can`t unlock semaphore!\nListener STOPPED!");
         return -1;
     }
-    printf("finish read from server (mes: %s)\n", (*pack)->message);
+    //printf("finish read from server (mes: %s)\n", (*pack)->message);
     return 1;
 }
 
 int write_message(const char* mes, int status)
 {
-    puts("start write to server");
+    //puts("start write to server");
     if(sem_lock(SERVER_SEM, FOR_WRITER) == -1){
         printf("Error! Can`t lock server semaphore!\n");
         return -1;
@@ -36,6 +36,6 @@ int write_message(const char* mes, int status)
         printf("Error! Can`t unlock server semaphore!\n");
         return -1;
     }
-    puts("finish write to server");
+    //puts("finish write to server");
     return 1;
 }

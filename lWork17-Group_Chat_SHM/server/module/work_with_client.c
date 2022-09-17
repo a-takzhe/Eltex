@@ -35,8 +35,8 @@ int send_old_to_new_clients(int uid, const char* mes, int status)
     {
         if(i != uid && USERS[i].active != -1)
         {
-            printf("Send to (%s), about old user(%s)\n", mes, USERS[uid].name);
-            send_message(uid, i, mes, status);
+            printf("Send to (%s), about old user(%s)\n", mes, USERS[i].name);
+            send_message(uid, i, USERS[i].name, status);
         }
     }
     return 1;    
@@ -81,6 +81,7 @@ int client_deattach(package pack)
 {
     close_shm(USERS[pack.uid].ptr, USERS[pack.uid].name);
     send_to_other_clients(pack.uid, "deattach", 4);
+    del_user(pack.uid);
     return 1;
 }
 
