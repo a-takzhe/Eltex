@@ -19,6 +19,7 @@ set foldmethod=syntax
 nnoremap <C-p> :!%astyle <CR>
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <z-v> <z-o>
+nnoremap <CR> i
 ca tn tabnew
 nnoremap <C-Right> :tabnext<CR>
 nnoremap <C-o> <c-w>gf
@@ -120,3 +121,9 @@ let g:coc_disable_startup_warning = 1
 let g:ycm_clangd_uses_ycmd_caching = 0
 " Use installed clangd, not YCM-bundled clangd which doesn't get updates.
 let g:ycm_clangd_binary_path = exepath("clangd")
+" Use <c-space> to trigger completion.
+if has('nvim')
+    inoremap <silent><expr> <c-space> coc#refresh()
+else
+    inoremap <silent><expr> <c-@> coc#refresh()
+endif
