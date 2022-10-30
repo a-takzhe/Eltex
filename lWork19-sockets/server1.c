@@ -9,8 +9,7 @@
 
 #define BUF_SIZE 500
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     struct addrinfo hints;
     struct addrinfo *result, *rp;
@@ -55,6 +54,9 @@ main(int argc, char *argv[])
         if (sfd == -1)
             continue;
 
+        printf("sa_family: %d\n", rp->ai_addr->sa_family);
+        printf("sa_data: %s\n", inet_ntoa(((struct sockaddr_in*)rp->ai_addr)->sin_addr));
+
         if (bind(sfd, rp->ai_addr, rp->ai_addrlen) == 0)
             break;                  /* Success */
 
@@ -82,6 +84,9 @@ main(int argc, char *argv[])
         s = getnameinfo((struct sockaddr *) &peer_addr,
                         peer_addr_len, host, NI_MAXHOST,
                         service, NI_MAXSERV, NI_NUMERICSERV);
+
+        printf("sa_data: %s\n", inet_ntoa(((struct sockaddr_in*)&peer_addr)->sin_addr));
+
         if (s == 0)
             printf("Received %zd bytes from %s:%s\n",
                     nread, host, service);
