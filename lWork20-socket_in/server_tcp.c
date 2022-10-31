@@ -43,6 +43,9 @@ int main (int argc, char *argv[])
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = inet_addr(argv[1]);
     serv_addr.sin_port = atoi(argv[2]);
+    if(setsockopt(FD, SOL_IP, IP_TRANSPARENT, &(int){1}, sizeof(int)) == -1){
+        serv_exit(FD, "IP_TRANSPARENT");
+    }
     
     if(bind(FD, (struct sockaddr *)&serv_addr, sizeof(struct sockaddr_in)) == -1){
         serv_exit(FD, "bind");
@@ -64,8 +67,8 @@ int main (int argc, char *argv[])
     // if(getsockname(client_fd, (struct sockaddr*)&client_addr, &len) == -1){
     //     serv_exit(FD, "getsockname");
     // }
-    printf("client ip: %s\n", inet_ntoa(client_addr.sin_addr));
-    printf("client port: %d\n", client_addr.sin_port);
+    printf("client addr: %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
     
     close(FD);
+    close(client_fd);
 }

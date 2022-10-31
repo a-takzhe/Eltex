@@ -1,0 +1,5 @@
+https://powerdns.org/tproxydoc/tproxy.md.html -- IP_TRANSPARENT/TPROXY
+https://hea-www.harvard.edu/~fine/Tech/addrinuse.html -- SO_REUSEADDR (TIME_WAIT for port)
+https://stackoverflow.com/questions/42738588/ip-transparent-usage
+
+iptables -t mangle -A PREROUTING -p tcp --dport 8888 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 8080 --on-ip 127.0.1.25
