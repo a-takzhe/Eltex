@@ -23,18 +23,18 @@ int main (int argc, char *argv[])
 
     memset(&client_addr, 0, sizeof(struct sockaddr_in));
     client_addr.sin_family = AF_INET;
-    client_addr.sin_addr.s_addr = inet_addr("192.168.123.1");
+    client_addr.sin_addr.s_addr = inet_addr("127.1.1.1");
     client_addr.sin_port = htons(atoi("8888"));
 
-    if(setsockopt(fd, SOL_IP, IP_FREEBIND, &(int){1}, sizeof(int)) == -1){
-        client_exit(fd, "IP_FREEBIND");
-    }
-    if(setsockopt(fd, SOL_IP, IP_TRANSPARENT, &(int){1}, sizeof(int)) == -1){
-        client_exit(fd, "IP_TRANSPARENT");
-    }
-    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &(int){1}, sizeof(int)) == -1){
-        client_exit(fd, "SO_REUSEADDR|SO_REUSEPORT");
-    }
+    // if(setsockopt(fd, SOL_IP, IP_FREEBIND, &(int){1}, sizeof(int)) == -1){
+    //     client_exit(fd, "IP_FREEBIND");
+    // }
+    // if(setsockopt(fd, SOL_IP, IP_TRANSPARENT, &(int){1}, sizeof(int)) == -1){
+    //     client_exit(fd, "IP_TRANSPARENT");
+    // }
+    // if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &(int){1}, sizeof(int)) == -1){
+    //     client_exit(fd, "SO_REUSEADDR|SO_REUSEPORT");
+    // }
     if(bind(fd, (struct sockaddr*)&client_addr, sizeof(client_addr)) == -1){
         client_exit(fd, "bind");
     }
