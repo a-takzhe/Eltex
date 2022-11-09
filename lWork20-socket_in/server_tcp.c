@@ -27,6 +27,7 @@ int main (int argc, char *argv[])
         case 'h':
             printf("server address: %s\n", optarg);
             char* ind = index(optarg, (int)':');
+            if (ind == NULL){port = -1; break;}
             strncpy(host, optarg, (int)(ind-optarg));
             port = atoi(optarg+(ind-optarg)+1);
             break;
@@ -73,7 +74,7 @@ int main (int argc, char *argv[])
         serv_exit(FD, "listen");
     }
 
-    printf("Server waiting to receive...\n");
+    printf("Server waiting for a client connection...\n");
     socklen_t len = sizeof(client_addr); 
     if((client_fd = accept(FD, (struct sockaddr*)&client_addr, &len)) == -1){
         serv_exit(FD, "accept");
@@ -83,7 +84,20 @@ int main (int argc, char *argv[])
         serv_exit(FD, "getsockname");
     }
     printf("client (%s:%d) accepted!\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-    
+
+    char buf[256]; 
+    if(recv(client_fd, buf, 256, 0)==-1){
+        serv_exit(FD, "recv");
+    }
+    printf("msg from client(%s:%d)>>  %s\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port), buf);
+
+    memset(buf, 0, 256);
+    strcpy(buf, "Accept - OK!\n Send msg - OK!");
+    if(send(client_fd, buf, 256, 0) == -1){
+        serv_exit(FD, "send");
+    }
+
+    puts("BAY, server close all desriptors!");
     close(FD);
     close(client_fd);
 }
