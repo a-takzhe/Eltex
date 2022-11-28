@@ -12,13 +12,13 @@ CC := gcc
 
 all: tcp udp 
 
-broad: broadcast_server.c broadcast_client.c
-	gcc broadcast_server.c -o broadcast_server.out
-	gcc broadcast_client.c -o broadcast_client.out
+broad: bcast_server.c bcast_client.c
+	gcc bcast_server.c -o bcast_server.out
+	gcc bcast_client.c -o bcast_client.out
 
-multi: bmulticast_server.c bmulticast_client.c
-	gcc bmulticast_server.c -o bmulticast_server.out
-	gcc bmulticast_client.c -o bmulticast_client.out
+multi: mcast_sender.c mcast_reciever.c
+	gcc mcast_sender.c -o mcast_sender.out
+	gcc mcast_reciever.c -o mcast_reciever.out
 
 clean: 
 	rm -rf *.out *.o
