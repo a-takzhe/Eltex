@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
     if(listen(fd, 5) == -1){
         serv_exit(fd, "listen");
     }
-    puts("server vait aconnection...");
+    puts("server is waiting for a connection...");
 
     while(1)
     {    
