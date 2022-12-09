@@ -2,11 +2,10 @@
 #define PARSER_H_
 
 #include <unistd.h>
+#include <stdio.h>
 #include <string.h>
-
-#define ALL_LA 22
+#include <stdlib.h>
 
 int parse(int argc, char** argv, char *appName, int* fork_num, char** newargw);
-//int check();
 
 #endif

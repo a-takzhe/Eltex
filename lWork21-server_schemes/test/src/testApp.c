@@ -13,6 +13,5 @@ int main(int argc, char* argv[])
         puts("please use all param!");
         exit(EXIT_FAILURE);
     }
-    
-    printf("argc: %d\n", argc);
+    printf("proc: (%s) loop_num: (%d)\n", appName, fork_num);
 }
