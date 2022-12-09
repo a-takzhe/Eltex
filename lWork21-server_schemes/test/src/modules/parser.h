@@ -7,5 +7,6 @@
 #include <stdlib.h>
 
 int parse(int argc, char** argv, char *appName, int* fork_num, char** newargw);
+int bincheck(const char* __name__);
 
 #endif
