@@ -1,23 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "modules/parser.h"
+#include "modules/executor.h"
 
 
 
 int main(int argc, char* argv[])
 {
-    char appName[256]={0};
+    char *path;
+    char projname[256]={0};
     int fork_num = 0;
 
-    if(parse(argc, argv, appName, &fork_num, NULL) == -1){
-        puts("please use all param!");
+    if(parse(argc, argv, projname, &fork_num, NULL) == -1){
+        puts("Please use:\n\t ./projtester -l|-L [num_proc] [proj_name]");
+        exit(EXIT_FAILURE);
+    }
+    if(bincheck(projname, &path) == -1){
+        exit(EXIT_FAILURE);
+    }
+    if(start_proc(path, fork_num) == -1){
         exit(EXIT_FAILURE);
     }
     
-    if(bincheck(appName) == -1){
-        exit(EXIT_FAILURE);
-    }
-
-    printf("proc: (%s) loop_num: (%d)\n", appName, fork_num);
+    
+    printf("proc: (%s) loop_num: (%d)\n", path, fork_num);
 
 }

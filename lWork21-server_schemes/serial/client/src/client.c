@@ -14,6 +14,7 @@
 
 int main (int argc, char *argv[])
 {
+    puts("HAHAHAHA START!");
     int fd;
     char buf[256];
     //socklen_t len = sizeof(struct sockaddr_in);

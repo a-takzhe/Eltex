@@ -33,7 +33,7 @@ BINS	  = $(subst $(SRC_DIR),$(OUTPUT_DIR),$(SOURCES_C:.c=.out))
 BINS	  := $(patsubst $(OUTPUT_DIR)$(SRC_MOD_DIR)/%.out, ,$(BINS))
 
 
-CC_FLAGS  := -Wall -O1 -g3 
+CC_FLAGS  := -Wall -g3 #-O1
 #CC_FLAGS  +=  
 
 LCF_FLAGS := 

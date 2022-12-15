@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int parse(int argc, char** argv, char *appName, int* fork_num, char** newargw);
-int bincheck(const char* __name__);
+int parse(int argc, char** argv, char *projname, int* fork_num, char** newargw);
+int bincheck(const char* __name__, char** token);
 
 #endif

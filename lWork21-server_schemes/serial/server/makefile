@@ -25,7 +25,7 @@ OUTPUT_DIR  := ./bin$(C_MODE)
 #---------------------------------------------------------------------
 SOURCES_C = $(wildcard $(SRC_DIR)/*.c)
 OBJS      = $(subst src,$(OUT_O_DIR),$(SOURCES_C:.c=.o))
-BINS	  = $(subst src,$(OUTPUT_DIR),$(SOURCES_C:.c=.out))
+BINS	  = $(subst src,$(OUTPUT_DIR),$(SOURCES_C:.c=))
 
 
 CC_FLAGS  := -Wall -O1 -g3 
@@ -50,7 +50,7 @@ CC := gcc
 all: MD $(OBJS) $(BINS)
 	@echo -n "${RESET}"
 
-$(OUTPUT_DIR)/%.out: $(OUT_O_DIR)/%.o
+$(OUTPUT_DIR)/%: $(OUT_O_DIR)/%.o
 	$(CC) -o $@ $< $(CC_FLAGS) $(LD_FLAGS)
 
 
