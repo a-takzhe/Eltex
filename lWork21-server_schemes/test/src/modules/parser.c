@@ -15,7 +15,6 @@ int bincheck(const char* __name__, char** token)
         
         path = NULL;
         if(strstr(*token, __name__) != NULL){
-            printf("run proc >> %s\n", *token);
             break;
         }
     }

@@ -17,11 +17,9 @@ int main(int argc, char* argv[])
     if(bincheck(projname, &path) == -1){
         exit(EXIT_FAILURE);
     }
-    if(start_proc(path, fork_num) == -1){
+    printf(" Process: (%s) \nLoop_num: (%d)\n\n", path, fork_num);
+
+    if(task_manager(path, fork_num) == -1){
         exit(EXIT_FAILURE);
     }
-    
-    
-    printf("proc: (%s) loop_num: (%d)\n", path, fork_num);
-
 }

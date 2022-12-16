@@ -14,7 +14,6 @@
 
 int main (int argc, char *argv[])
 {
-    puts("HAHAHAHA START!");
     int fd;
     char buf[256];
     //socklen_t len = sizeof(struct sockaddr_in);
@@ -28,7 +27,7 @@ int main (int argc, char *argv[])
     memset(&addr, 0, sizeof(struct sockaddr_in));
     addr.sin_family      = AF_INET;
     addr.sin_port        = htons(8001);
-    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_addr.s_addr = inet_addr("127.0.0.5");
     bind(fd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
 
     memset(&dst_addr, 0, sizeof(struct sockaddr_in));
