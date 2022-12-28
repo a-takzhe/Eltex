@@ -54,18 +54,23 @@ int task_manager(char *path, int fork_num)
 {
     pthread_t *id_threads;
     pthread_attr_t attr;
+    int i = 0;
 
     id_threads = calloc(fork_num, sizeof(pthread_t));
     pthread_attr_init(&attr);
     
-    while(fork_num-- != 0)
+    while(i < fork_num)
     {
-        pthread_create(&id_threads[fork_num], &attr, start_proc, path);
+        pthread_create(&id_threads[i], &attr, start_proc, path);
+        i++;
     }
 
-    while(fork_num-- != 0)
+    i=0;
+    while(i < fork_num)
     {
-        pthread_join(id_threads[fork_num], NULL);
+        pthread_join(id_threads[i], NULL);
+        printf("thread_%d finish\n", i+1);
+        i++;
     } 
 
     free(id_threads);
