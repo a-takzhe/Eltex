@@ -8,6 +8,7 @@ BLUE         := $(shell tput -Txterm setaf 6)
 WHITE        := $(shell tput -Txterm setaf 7)
 RESET        := $(shell tput -Txterm sgr0)
 
+#case ":$SERV_CHEMES" in *"thread"*) echo "exists";; *) echo "not exists";; esac
 
 .PHONY: serial
 
