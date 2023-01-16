@@ -38,7 +38,7 @@ CC_FLAGS  := -Wall -O1 -g3
 
 LCF_FLAGS := 
 
-LD_FLAGS  := 
+LD_FLAGS  := -pthread
 
 #---------------------------------------------------------------------
 # executables
