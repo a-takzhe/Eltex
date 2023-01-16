@@ -10,7 +10,15 @@ RESET        := $(shell tput -Txterm sgr0)
 
 #case ":$SERV_CHEMES" in *"thread"*) echo "exists";; *) echo "not exists";; esac
 
-.PHONY: serial
+.PHONY: serial test client all
+
+all: client test serial  
+
+client:
+	cd ./client && make all PROJ_NAME=client --no-print-directory || cd ..
+
+test:
+	cd ./test && make all PROJ_NAME=test --no-print-directory || cd ..
 
 serial:
-	cd ./serial && make all PROJ_NAME=serial --no-print-directory || cd ..
+	cd ./serial_server && make all PROJ_NAME=serial --no-print-directory || cd ..

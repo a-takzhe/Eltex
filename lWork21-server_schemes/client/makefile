@@ -24,8 +24,8 @@ OUTPUT_DIR  := ./bin$(C_MODE)
 # settings
 #---------------------------------------------------------------------
 SOURCES_C = $(wildcard $(SRC_DIR)/*.c)
-OBJS      = $(subst src,$(OUT_O_DIR),$(SOURCES_C:.c=.o))
-BINS	  = $(subst src,$(OUTPUT_DIR),$(SOURCES_C:.c=.out))
+OBJS      = $(subst ./src,$(OUT_O_DIR),$(SOURCES_C:.c=.o))
+BINS	  = $(subst ./src,$(OUTPUT_DIR),$(SOURCES_C:.c=.out))
 
 
 CC_FLAGS  := -Wall -O1 -g3 
@@ -48,6 +48,7 @@ CC := gcc
 .PHONY: all clean
 
 all: MD $(OBJS) $(BINS)
+	bash ./deploy.sh $(BINS)
 	@echo -n "${RESET}"
 
 $(OUTPUT_DIR)/%.out: $(OUT_O_DIR)/%.o
